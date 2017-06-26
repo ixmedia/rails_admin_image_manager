@@ -1,8 +1,5 @@
-# RailsAdminImageManager
-Short description and motivation.
-
-## Usage
-How to use my plugin.
+# RailsAdmin_ImageManager
+Image manager for RailsAdmin and CKEditor.
 
 ## Installation
 Add this line to your application's Gemfile:
@@ -11,18 +8,24 @@ Add this line to your application's Gemfile:
 gem 'rails_admin_image_manager'
 ```
 
-And then execute:
+Execute:
 ```bash
-$ bundle
+$ bundle install
 ```
 
-Or install it yourself as:
+Install migrations:
 ```bash
-$ gem install rails_admin_image_manager
+$ rails rails_admin_image_manager:install:migrations
 ```
 
-## Contributing
-Contribution directions go here.
+Run migrations:
+```bash
+$ rails db:migrate SCOPE=rails_admin_image_manager
+```
+
+## Authors
+- Mario Bouchard
+- Louis-Philippe Dumas
 
 ## License
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
