@@ -3,7 +3,9 @@ RailsAdmin.config do |config|
     navigation_label I18n.t('admin.navigation_label.tag')
 
     list do
-      field :name
+      field :name do
+        filterable false
+      end
     end
 
     edit do
