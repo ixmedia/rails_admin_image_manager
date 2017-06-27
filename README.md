@@ -23,6 +23,13 @@ Run migrations:
 $ rails db:migrate SCOPE=rails_admin_image_manager
 ```
 
+If you need to explicitly specified the Files and Tags sections in RailsAdmin:
+```ruby
+index do
+  only ['RailsAdminImageManager::Tag', 'RailsAdminImageManager::File']
+end
+```
+
 ## Authors
 - Mario Bouchard
 - Louis-Philippe Dumas

@@ -1,11 +1,29 @@
 fr:
-  activerecord:
+  admin:
+    navigation_label:
+      file: Gestionnaire d'images
+      tag: Gestionnaire d'images
 
+  activerecord:
     models:
+      rails_admin_image_manager/file:
+        one: Image
+        other: Images
       rails_admin_image_manager/tag:
         one: Étiquette
         other: Étiquettes
 
     attributes:
-      rails_admin_image_manager/tag:
+      rails_admin_image_manager/file:
+        url: URL
         name: Titre
+        description: Description
+        copyright: Droits (auteur)
+        image: Image
+        tags: Étiquettes
+        created_at: Date de création
+        updated_at: Date de dernière modification
+      rails_admin_image_manager/tag:
+        name: Étiquette
+        created_at: Date de création
+        updated_at: Date de dernière modification
