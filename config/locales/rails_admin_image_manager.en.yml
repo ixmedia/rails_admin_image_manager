@@ -1,0 +1,11 @@
+en:
+  activerecord:
+
+    models:
+      rails_admin_image_manager/tag:
+        one: Tag
+        other: Tags
+
+    attributes:
+      rails_admin_image_manager/tag:
+        name: Title
