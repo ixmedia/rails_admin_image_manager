@@ -1,5 +1,5 @@
 module RailsAdminImageManager
-  class ImageManagerFile < ApplicationRecord
+  class File < ApplicationRecord
 
     # == Extensions ===========================================================
 
@@ -10,6 +10,8 @@ module RailsAdminImageManager
     # == Callbacks ============================================================
 
     # == Relationships ========================================================
+
+    has_and_belongs_to_many :tags, class_name: 'RailsAdminImageManager::Tag', join_table: 'image_manager_files_tags', foreign_key: :image_manager_file_id
 
     # == Validations ==========================================================
 
