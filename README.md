@@ -30,6 +30,11 @@ index do
 end
 ```
 
+## Developpement
+
+### Assets
+When developping for the gem, assets need to be watch/compile. We are running a webpack/gulp setup ; to run it, just `npm run start` at gem's root
+
 ## Authors
 - Mario Bouchard
 - Louis-Philippe Dumas

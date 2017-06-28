@@ -1,4 +1,4 @@
-class CreateImageManager < ActiveRecord::Migration
+class CreateImageManager < ActiveRecord::Migration[5.0]
   def change
     create_table :image_manager_files do |t|
       t.string      :name, null: false
@@ -11,8 +11,6 @@ class CreateImageManager < ActiveRecord::Migration
 
       t.timestamps
     end
-
-    add_index :image_manager_files, :type
 
     # ---------------------------------------------
 
