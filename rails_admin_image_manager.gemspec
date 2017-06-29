@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "rails_admin", ">= 1.1.1"
   s.add_dependency "ckeditor", ">= 4.2.3"
   s.add_dependency "paperclip", ">= 5.1.0"
+  s.add_dependency "dynamic_paperclip", ">= 1.0.0.alpha.4"
 
   s.add_development_dependency "sqlite3"
 end

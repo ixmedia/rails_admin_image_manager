@@ -1,3 +1,6 @@
+require 'dynamic_paperclip'
+require 'dynamic_paperclip_patch'
+
 module RailsAdminImageManager
   class Engine < ::Rails::Engine
     isolate_namespace RailsAdminImageManager

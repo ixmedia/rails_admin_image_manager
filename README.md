@@ -13,9 +13,9 @@ Execute:
 $ bundle install
 ```
 
-Install migrations:
+Install RailsAdmin_ImageManager
 ```bash
-$ rails rails_admin_image_manager:install:migrations
+$ rails generate rails_admin_image_manager:install
 ```
 
 Run migrations:
