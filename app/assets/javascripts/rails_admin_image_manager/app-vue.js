@@ -7,6 +7,7 @@ import store from './stores'
 
 axios.defaults.headers.common['X-CSRF-Token'] = $('meta[name="csrf-token"]').attr('content')
 
+console.log('foo');
 export default (() => {
 
   if (!document.getElementById('vue-app')) {

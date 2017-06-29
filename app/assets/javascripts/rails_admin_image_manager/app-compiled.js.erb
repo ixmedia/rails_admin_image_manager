@@ -72,6 +72,8 @@
 
 	_axios2.default.defaults.headers.common['X-CSRF-Token'] = $('meta[name="csrf-token"]').attr('content');
 
+	console.log('foo');
+
 	exports.default = function () {
 
 	  if (!document.getElementById('vue-app')) {

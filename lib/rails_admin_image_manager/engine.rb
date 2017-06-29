@@ -1,6 +1,10 @@
 module RailsAdminImageManager
   class Engine < ::Rails::Engine
     isolate_namespace RailsAdminImageManager
+    #
+    # initializer "RailsAdmin image manager hook" do |app|
+    #   app.config.assets.precompile += ['rails_admin_image_manager/app-compiled.js.erb']
+    # end
 
     initializer :reload_rails_admin_configs do |app|
       Rails.application.config.to_prepare do

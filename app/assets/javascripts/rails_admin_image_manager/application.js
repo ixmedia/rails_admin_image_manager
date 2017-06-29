@@ -10,4 +10,5 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= app-compiled.js
+//= require jquery
+//= require rails_admin_image_manager/app-compiled.js
