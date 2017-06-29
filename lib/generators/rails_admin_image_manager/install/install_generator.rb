@@ -5,6 +5,10 @@ module RailsAdminImageManager
 
       # desc "Installs RailsAdminImageManager into your app. Get wealthy."
 
+      def setup_route
+        route "mount RailsAdminImageManager::Engine => '/image-manager', as: 'image_manager'"
+      end
+
       def create_migrations
         rake "rails_admin_image_manager:install:migrations"
       end
