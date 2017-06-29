@@ -3,5 +3,6 @@ module RailsAdminImageManager
 
     def index
     end
+    
   end
 end

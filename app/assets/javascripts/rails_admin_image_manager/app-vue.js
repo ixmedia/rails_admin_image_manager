@@ -1,24 +1,19 @@
 import Vue from 'vue'
 import axios from 'axios'
 import vueAxios from 'vue-axios'
-import {mapState} from 'vuex'
+import router from './router'
 
 import store from './stores'
 
-axios.defaults.headers.common['X-CSRF-Token'] = $('meta[name="csrf-token"]').attr('content')
-
-console.log('foo');
-export default (() => {
-
-  if (!document.getElementById('vue-app')) {
-    return false
-  }
+document.addEventListener("DOMContentLoaded", function() {
+  let csrfElement = document.querySelectorAll('meta[name="csrf-token"]')[0]
+  axios.defaults.headers.common['X-CSRF-Token'] = csrfElement.getAttribute('content')
 
   Vue.use(vueAxios, axios)
-
-  const enio = new Vue({
-    el: '#vue-app',
+  Vue.config.productionTip = false
+  const imageManager = new Vue({
+    el: '#vue-image-manager',
     store: store,
+    router
   })
-
-})()
+});
