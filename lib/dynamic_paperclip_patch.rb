@@ -18,6 +18,8 @@ module DynamicPaperclip
   end
 end
 
+require 'action_dispatch/http/response.rb'
+
 module DynamicPaperclip
   class AttachmentStyleGenerator
 
@@ -28,6 +30,14 @@ module DynamicPaperclip
         if match = regexp_for_attachment_url(klass, (options[:url] || Attachment.default_options[:url])).match(request.path)
           id = id_from_partition(match[:id])
           attachment = klass.find(id).send(name)
+
+          # iXmedia
+          # Fix to avoid error: uninitialized constant ActionController::DataStreaming::FileBody
+          # When the filename is wrong
+          # Return a 404 instead
+          if attachment.original_filename != URI.unescape(match[:filename])
+            return [404, {}, []]
+          end
 
           # The definition will be escaped twice in the URL, so we need to unescape it once.
           # We should always reference dynamic style names after escaping once - that's how they reside on the FS.
@@ -41,21 +51,15 @@ module DynamicPaperclip
             # an existing style
             attachment.process_dynamic_style style_name unless attachment.exists?(style_name)
 
-            # iXmedia
-            # Fix to avoid error: uninitialized constant ActionController::DataStreaming::FileBody
-            # When the filename is wrong
-            # Return a 404 instead
-            if defined?(ActionController::DataStreaming::FileBody)
-              return [
-                200,
-                {
-                  'Content-Type' => attachment.content_type,
-                  'Content-Transfer-Encoding' => 'binary',
-                  'Content-Disposition' => "inline; filename=#{File.basename(attachment.path(style_name))}"
-                },
-                ActionController::DataStreaming::FileBody.new(attachment.path(style_name))
-              ]
-            end
+            return [
+              200,
+              {
+                'Content-Type' => attachment.content_type,
+                'Content-Transfer-Encoding' => 'binary',
+                'Content-Disposition' => "inline; filename=#{File.basename(attachment.path(style_name))}"
+              },
+              ActionDispatch::Response::FileBody.new(attachment.path(style_name))
+            ]
           else
             # Invalid hash, just 403
 
