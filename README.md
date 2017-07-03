@@ -2,35 +2,50 @@
 Image manager for RailsAdmin and CKEditor.
 
 ## Installation
-Add this line to your application's Gemfile:
+1. Add this line to your application's Gemfile:
 
 ```ruby
 gem 'rails_admin_image_manager'
 ```
 
-Execute:
+2. Run
 ```bash
 $ bundle install
 ```
 
-Install RailsAdmin_ImageManager
+3. Install RailsAdmin_ImageManager
 ```bash
 $ rails generate rails_admin_image_manager:install
 ```
 
-Run migrations:
+4. Run migrations
 ```bash
 $ rails db:migrate SCOPE=rails_admin_image_manager
 ```
 
-If you need to explicitly specified the Files and Tags sections in RailsAdmin:
+## Configuration
+
+1. The `mount RailsAdminImageManager::Engine` route must appear before the `mount RailsAdmin::Engine` route in the app routes.rb file.
+
+2. If you need to explicitly specified the Files and Tags sections in RailsAdmin:
 ```ruby
-index do
-  only ['RailsAdminImageManager::Tag', 'RailsAdminImageManager::File']
+RailsAdmin.config do |config|
+  config.actions do
+    index do
+      only ['RailsAdminImageManager::Tag', 'RailsAdminImageManager::File']
+    end
+  end
 end
 ```
 
-## Developpement
+## Authentication and authorization
+
+The gem uses the RailsAdmin authentication and authorization methods.
+
+- https://github.com/sferik/rails_admin/wiki/Authentication
+- https://github.com/sferik/rails_admin/wiki/Authorization
+
+## Development
 
 ### Assets
 When developping for the gem, assets need to be watch/compile. We are running a webpack/gulp setup ; to run it, just `npm run start` at gem's root
