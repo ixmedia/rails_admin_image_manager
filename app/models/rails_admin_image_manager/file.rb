@@ -7,7 +7,7 @@ module RailsAdminImageManager
 
     # == Attributes ===========================================================
 
-    has_attached_file :image, styles: { small: '50x50' }
+    has_dynamic_attached_file :image, styles: { small: '50x50' }
 
     # == Callbacks ============================================================
 
