@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const mediasStore = {
   namespaced: true,
   state: {
@@ -29,21 +31,29 @@ const mediasStore = {
   },
   actions: {
     useImage ({ commit, state }, data) {
-      // this.$http.get('#', data.id).then(() => {
+      // this.$http.get('#', data.id).then((data) => {
         // La reference opener devra être seté au click du bouton qui ouvre notre outils .. je me comprends
         // window.opener.editor.insertText("balise_image_généré");
         // window.close
       // })
     },
     setCurrentImg ({commit, state}, imgData) {
-      console.log(imgData);
       if (imgData.title) commit('UPDATE_CURRENT_IMG_TITLE', imgData.title)
       if (imgData.copyright) commit('UPDATE_CURRENT_IMG_COPYRIGHT', imgData.copyright)
       if (imgData.description) commit('UPDATE_CURRENT_IMG_DESC', imgData.description)
       if (imgData.src) commit('UPDATE_CURRENT_IMG_SRC', imgData.src)
       if (imgData.tags) commit('UPDATE_CURRENT_IMG_TAGS', imgData.tags)
     },
-
+    fetchSingleImage({ dispatch }, id) {
+      return new Promise((resolve, reject) => {
+        axios.get(`/${id}`)
+        .then((response) => {
+          dispatch('setCurrentImg', response.data)
+          resolve()
+        })
+        .catch(reject)
+      })
+    },
     updateSrc ({commit, state}, src) {
       commit('UPDATE_CURRENT_IMG_SRC', src)
     }

@@ -1,27 +1,27 @@
 <template>
   <transition name="fade">
-    <div class="image-insert-overlay form-horizontal" v-if="showInsertOverlay">
-      <div class="block">
-        <div class="block-content">
-          <p><img src="https://unsplash.it/680/480" style="width: 100%;" alt=""></p>
-          <div class="form-group">
-            <div class="col-sm-6">
-              <div class="form-material">
-                <input class="form-control" type="number" v-model="imgWidth" @keyup="keepRatio('width')">
-                <label for="material-text">Largeur</label>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="form-material">
-                <input class="form-control" type="number" v-model="imgHeight" @keyup="keepRatio('height')">
-                <label for="material-textarea-large">Hauteur</label>
-              </div>
+    <div class="image-insert-overlay form-horizontal block" v-if="showInsertOverlay">
+      <button @click="close" class="image-insert-overlay__close" type="button"><i class="fa fa-times"></i></button>
+      <div class="block-content">
+        <p><img src="https://unsplash.it/680/480" style="width: 100%;" alt=""></p>
+        <div class="form-group">
+          <div class="col-sm-6">
+            <div class="form-material">
+              <input class="form-control" type="number" v-model="imgWidth" @keyup="keepRatio('width')">
+              <label for="material-text">Largeur</label>
             </div>
           </div>
-          <div class="form-group">
-            <div class="col-sm-12">
-              <button type="button" @click="insert()">Insérer</button>
+          <div class="col-sm-6">
+            <div class="form-material">
+              <input class="form-control" type="number" v-model="imgHeight" @keyup="keepRatio('height')">
+              <label for="material-textarea-large">Hauteur</label>
             </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-12">
+            <button type="button" class="btn btn-primary" @click="insert()">Insérer</button>
+            <button type="button" class="btn btn-default" @click="close()">Annuler</button>
           </div>
         </div>
       </div>
@@ -47,6 +47,9 @@ export default {
   methods: {
     insert () {
       this.$store.dispatch('mediasStore/useImage', [this.width, this.height])
+      this.$store.dispatch('overlayStore/showInsertOverlay', false)
+    },
+    close() {
       this.$store.dispatch('overlayStore/showInsertOverlay', false)
     },
     keepRatio(e) {
@@ -76,5 +79,12 @@ export default {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
   opacity: 0
+}
+.image-insert-overlay__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: transparent;
+  border: none;
 }
 </style>

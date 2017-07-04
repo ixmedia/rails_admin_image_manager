@@ -1,10 +1,10 @@
 <template>
-  <div class="content">
+  <div class="content animated fadeIn">
     <div class="block">
       <div class="block-content">
 
         <div class="row items-push">
-          <div class="image-element col-lg-2 col-md-3 col-sm-4 animated fadeIn" v-for="(image, key) in images">
+          <div class="image-element col-lg-2 col-md-3 col-sm-4" v-for="(image, key) in images">
             <div class="img-container">
               <img class="img-responsive" src="https://unsplash.it/640/480" alt="">
               <div class="img-options">

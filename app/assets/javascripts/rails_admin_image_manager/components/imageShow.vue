@@ -1,5 +1,10 @@
 <template>
-  <div class="content content-narrow">
+  <div class="content content-narrow animated fadeIn">
+    <div class="row items-push">
+      <div class="col-sm-12">
+        <a href="#"><i class="fa fa-arrow-left"></i> Retour à la liste</a>
+      </div>
+    </div>
     <div class="block">
       <div class="block-header">
         <h3 class="block-title">Modifier l'image</h3>

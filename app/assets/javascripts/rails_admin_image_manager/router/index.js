@@ -20,17 +20,9 @@ let router = new Router({
       name: 'showImage',
       component: imageShow,
       beforeEnter: (to, from, next) => {
-        // #TODO AJAX CALL TO GET IMG INFO
-        let img = {
-          title: "Un titre image",
-          copyright: "Un copyright",
-          description: "Une description d'image",
-          src: "https://unsplash.it/680/480",
-          tags: ["foo", "bar", "Bobby"]
-        }
-        store.dispatch('mediasStore/setCurrentImg', img)
-        next()
-        // peopleStore.dispatch('retrievePeoples').then(next)
+        store.dispatch('mediasStore/fetchSingleImage', to.params.id)
+        .then(next)
+        .catch((e) => { console.log(e) })
       }
     },
   ]
