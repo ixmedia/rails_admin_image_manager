@@ -8,12 +8,12 @@
         <div class="row">
 
           <div class="col-sm-6">
-            <form class="form-horizontal" action="#" method="post">
+            <form class="form-horizontal" v-on:submit.prevent="save" method="post">
               <div class="form-group">
                 <div class="col-sm-12">
                   <div class="form-material">
-                    <input class="form-control" type="text" id="material-text" name="material-text" >
-                    <label for="material-text">Nom de l'image</label>
+                    <input v-model="currentImgTitle" class="form-control" type="text" id="material-text" name="material-text" >
+                    <label for="material-text">Titre</label>
                   </div>
                 </div>
               </div>
@@ -21,7 +21,7 @@
               <div class="form-group">
                 <div class="col-sm-12">
                   <div class="form-material">
-                    <input class="form-control" type="text" id="material-text" name="material-text" >
+                    <input v-model="currentImgCopyright" class="form-control" type="text" id="material-text" name="material-text" >
                     <label for="material-text">Copyright</label>
                   </div>
                 </div>
@@ -29,7 +29,7 @@
               <div class="form-group">
                 <div class="col-sm-12">
                   <div class="form-material">
-                    <textarea class="form-control" id="material-textarea-large" name="material-textarea-large" rows="8"></textarea>
+                    <textarea v-model="currentImgDescription" class="form-control" id="material-textarea-large" name="material-textarea-large" rows="8"></textarea>
                     <label for="material-textarea-large">Description</label>
                   </div>
                 </div>
@@ -37,18 +37,15 @@
 
               <div class="form-group">
                 <div class="col-sm-10">
-                  <button class="btn btn-sm btn-primary" type="button">Enregistrer</button>
+                  <button class="btn btn-sm btn-primary" type="submit">Enregistrer</button>
                   <image-insert-button/>
                 </div>
               </div>
             </form>
           </div>
           <div class="col-sm-6">
-            <p>
-              <img src="https://unsplash.it/680/480" style="width: 100%;" alt="">
-            </p>
+            <p><image-upload></image-upload></p>
           </div>
-
         </div>
       </div>
     </div>
@@ -56,22 +53,33 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
 import imageInsertButton from './imageInsertButton.vue'
+import imageUpload from './imageUpload.vue'
+
 export default {
-  components: {imageInsertButton},
+  components: {imageInsertButton, imageUpload},
   data () {
     return {
-      images: [0, 1, 3, 4, 5, 6, 7, 8, 9]
+      currentImgTitle: '',
+      currentImgCopyright: '',
+      currentImgDescription: ''
     }
   },
   methods: {
     save() {
-
+      let imgData = {
+        title: this.currentImgTitle,
+        description: this.currentImgDescription,
+        copyright: this.currentImgCopyright,
+      }
+      this.$store.dispatch('mediasStore/setCurrentImg', imgData)
     },
-    useImage() {
-      // #TODO
-      // * Call ajax qui retourne le vrai path généré de l'images
-    }
+  },
+  created () {
+    this.currentImgTitle = this.$store.state.mediasStore.currentImgTitle
+    this.currentImgCopyright = this.$store.state.mediasStore.currentImgCopyright
+    this.currentImgDescription = this.$store.state.mediasStore.currentImgDescription
   }
 }
 </script>

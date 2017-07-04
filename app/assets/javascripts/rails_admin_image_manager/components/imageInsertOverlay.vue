@@ -62,6 +62,7 @@ export default {
 
 <style media="screen">
 .image-insert-overlay {
+  box-shadow: 0 0 200px rgba(0, 0, 0, 0.5);
   position: absolute;
   top: 50%;
   left: 50%;
