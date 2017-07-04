@@ -5,6 +5,8 @@ import router from './router'
 
 import store from './stores'
 
+import imageInsertOverlay from './components/imageInsertOverlay.vue'
+
 document.addEventListener("DOMContentLoaded", function() {
   let csrfElement = document.querySelectorAll('meta[name="csrf-token"]')[0]
   axios.defaults.headers.common['X-CSRF-Token'] = csrfElement.getAttribute('content')
@@ -13,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
   Vue.config.productionTip = false
   const imageManager = new Vue({
     el: '#vue-image-manager',
+    components: {imageInsertOverlay},
     store: store,
     router
   })

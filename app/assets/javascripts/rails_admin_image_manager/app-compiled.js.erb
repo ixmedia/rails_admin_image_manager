@@ -62,9 +62,13 @@
 
 	var _router2 = _interopRequireDefault(_router);
 
-	var _stores = __webpack_require__(41);
+	var _stores = __webpack_require__(52);
 
 	var _stores2 = _interopRequireDefault(_stores);
+
+	var _imageInsertOverlay = __webpack_require__(55);
+
+	var _imageInsertOverlay2 = _interopRequireDefault(_imageInsertOverlay);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -76,6 +80,7 @@
 	  _vue2.default.config.productionTip = false;
 	  var imageManager = new _vue2.default({
 	    el: '#vue-image-manager',
+	    components: { imageInsertOverlay: _imageInsertOverlay2.default },
 	    store: _stores2.default,
 	    router: _router2.default
 	  });
@@ -11520,6 +11525,10 @@
 
 	var _imageListing2 = _interopRequireDefault(_imageListing);
 
+	var _imageShow = __webpack_require__(41);
+
+	var _imageShow2 = _interopRequireDefault(_imageShow);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	_vue2.default.use(_vueRouter2.default);
@@ -11529,6 +11538,10 @@
 	    path: '/',
 	    name: 'root',
 	    component: _imageListing2.default
+	  }, {
+	    path: '/show/:id',
+	    name: 'showImage',
+	    component: _imageShow2.default
 	  }]
 	});
 
@@ -14127,7 +14140,7 @@
 
 
 	// module
-	exports.push([module.id, "\n.image-listing {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-wrap: wrap;\n      flex-wrap: wrap;\n  /*justify-content: center;*/\n  /*margin-left: -10px;*/\n  /*margin-right: -10px;*/\n}\n.image-listing .block {\n  width: 175px;\n  height: 175px;\n  margin: 10px;\n  background-size: cover;\n  background-position: center center;\n}\n", ""]);
+	exports.push([module.id, "\n.image-element {\n  margin-bottom: 15px\n}\n", ""]);
 
 	// exports
 
@@ -14589,6 +14602,16 @@
 	//
 	//
 	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
 
 	exports.default = {
 	  data: function data() {
@@ -14604,28 +14627,48 @@
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
 	  return _c('div', {
-	    staticClass: "image-listing"
+	    staticClass: "content"
+	  }, [_c('div', {
+	    staticClass: "block"
+	  }, [_c('div', {
+	    staticClass: "block-content"
+	  }, [_c('div', {
+	    staticClass: "row items-push"
 	  }, _vm._l((_vm.images), function(image, key) {
 	    return _c('div', {
-	      staticClass: "block",
-	      staticStyle: {
-	        "background-image": "url('http://via.placeholder.com/350x150')"
+	      staticClass: "image-element col-lg-2 col-md-3 col-sm-4 animated fadeIn"
+	    }, [_c('div', {
+	      staticClass: "img-container"
+	    }, [_c('img', {
+	      staticClass: "img-responsive",
+	      attrs: {
+	        "src": "https://unsplash.it/640/480",
+	        "alt": ""
 	      }
-	    }, [_vm._m(0, true)])
-	  }))
-	},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-	  return _c('div', {
-	    staticClass: "block-header"
-	  }, [_c('ul', {
-	    staticClass: "block-options"
-	  }, [_c('li', [_c('button', {
-	    attrs: {
-	      "type": "button"
-	    }
-	  }, [_c('i', {
-	    staticClass: "si si-settings"
-	  })])])])])
-	}]}
+	    }), _vm._v(" "), _c('div', {
+	      staticClass: "img-options"
+	    }, [_c('div', {
+	      staticClass: "img-options-content"
+	    }, [_c('h4', {
+	      staticClass: "h6 font-w400 text-white-op push-15"
+	    }, [_vm._v("Image name")]), _vm._v(" "), _c('router-link', {
+	      staticClass: "btn btn-sm btn-default",
+	      attrs: {
+	        "to": {
+	          name: 'showImage',
+	          params: {
+	            id: 123
+	          }
+	        }
+	      }
+	    }, [_vm._v("Modifier")]), _vm._v(" "), _c('a', {
+	      staticClass: "btn btn-sm btn-default",
+	      attrs: {
+	        "href": "javascript:void(0)"
+	      }
+	    }, [_vm._v("Supprimer")])], 1)])])])
+	  }))])])])
+	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 	if (false) {
 	  module.hot.accept()
@@ -14638,86 +14681,288 @@
 /* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	'use strict';
+	var disposed = false
+	function injectStyle (ssrContext) {
+	  if (disposed) return
+	  __webpack_require__(42)
+	}
+	var Component = __webpack_require__(38)(
+	  /* script */
+	  __webpack_require__(44),
+	  /* template */
+	  __webpack_require__(51),
+	  /* styles */
+	  injectStyle,
+	  /* scopeId */
+	  null,
+	  /* moduleIdentifier (server only) */
+	  null
+	)
+	Component.options.__file = "/Users/lpdumas/vm/www/rails_admin_image_manager/app/assets/javascripts/rails_admin_image_manager/components/imageShow.vue"
+	if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+	if (Component.options.functional) {console.error("[vue-loader] imageShow.vue: functional components are not supported with templates, they should use render functions.")}
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _medias = __webpack_require__(42);
-
-	var _medias2 = _interopRequireDefault(_medias);
-
-	var _vue = __webpack_require__(1);
-
-	var _vue2 = _interopRequireDefault(_vue);
-
-	var _vuex = __webpack_require__(43);
-
-	var _vuex2 = _interopRequireDefault(_vuex);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	_vue2.default.use(_vuex2.default);
-	exports.default = new _vuex2.default.Store({
-	  modules: {
-	    mediasStore: _medias2.default
+	/* hot reload */
+	if (false) {(function () {
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  module.hot.accept()
+	  if (!module.hot.data) {
+	    hotAPI.createRecord("data-v-3b1653c8", Component.options)
+	  } else {
+	    hotAPI.reload("data-v-3b1653c8", Component.options)
 	  }
-	});
+	  module.hot.dispose(function (data) {
+	    disposed = true
+	  })
+	})()}
+
+	module.exports = Component.exports
+
 
 /***/ }),
 /* 42 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(43);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	if(content.locals) module.exports = content.locals;
+	// add the styles to the DOM
+	var update = __webpack_require__(36)("5a5d0039", content, false);
+	// Hot Module Replacement
+	if(false) {
+	 // When the styles change, update the <style> tags
+	 if(!content.locals) {
+	   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-3b1653c8\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./imageShow.vue", function() {
+	     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-3b1653c8\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./imageShow.vue");
+	     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+	     update(newContent);
+	   });
+	 }
+	 // When the module is disposed, remove the <style> tags
+	 module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(35)(undefined);
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var mediasStore = {
-	  namespaced: true,
-	  state: {
-	    showOverlay: false,
-	    srcImgDataUrl: '',
-	    imgDataUrl: ''
+
+	var _imageInsertButton = __webpack_require__(45);
+
+	var _imageInsertButton2 = _interopRequireDefault(_imageInsertButton);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = {
+	  components: { imageInsertButton: _imageInsertButton2.default },
+	  data: function data() {
+	    return {
+	      images: [0, 1, 3, 4, 5, 6, 7, 8, 9]
+	    };
 	  },
-	  mutations: {
-	    SET_SHOW_OVERLAY: function SET_SHOW_OVERLAY(state, value) {
-	      state.showOverlay = value;
-	    },
-	    SET_IMG_DATA: function SET_IMG_DATA(state, data) {
-	      state.imgDataUrl = data;
-	    },
-	    SET_SRC_IMG_DATA: function SET_SRC_IMG_DATA(state, data) {
-	      state.srcImgDataUrl = data;
-	    }
-	  },
-	  actions: {
-	    showOverlay: function showOverlay(_ref, value) {
-	      var commit = _ref.commit,
-	          state = _ref.state;
 
-	      commit('SET_SHOW_OVERLAY', value);
-	    },
-	    saveImgDataUrl: function saveImgDataUrl(_ref2, data) {
-	      var commit = _ref2.commit,
-	          state = _ref2.state;
-
-	      commit('SET_IMG_DATA', data);
-	    },
-	    saveSrcImgDataUrl: function saveSrcImgDataUrl(_ref3, data) {
-	      var commit = _ref3.commit,
-	          state = _ref3.state;
-
-	      commit('SET_SRC_IMG_DATA', data);
+	  methods: {
+	    save: function save() {},
+	    useImage: function useImage() {
+	      // #TODO
+	      // * Call ajax qui retourne le vrai path généré de l'images
 	    }
 	  }
-	};
-
-	exports.default = mediasStore;
+	}; //
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
 
 /***/ }),
-/* 43 */
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var disposed = false
+	function injectStyle (ssrContext) {
+	  if (disposed) return
+	  __webpack_require__(46)
+	}
+	var Component = __webpack_require__(38)(
+	  /* script */
+	  __webpack_require__(48),
+	  /* template */
+	  __webpack_require__(50),
+	  /* styles */
+	  injectStyle,
+	  /* scopeId */
+	  null,
+	  /* moduleIdentifier (server only) */
+	  null
+	)
+	Component.options.__file = "/Users/lpdumas/vm/www/rails_admin_image_manager/app/assets/javascripts/rails_admin_image_manager/components/imageInsertButton.vue"
+	if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+	if (Component.options.functional) {console.error("[vue-loader] imageInsertButton.vue: functional components are not supported with templates, they should use render functions.")}
+
+	/* hot reload */
+	if (false) {(function () {
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  module.hot.accept()
+	  if (!module.hot.data) {
+	    hotAPI.createRecord("data-v-21326616", Component.options)
+	  } else {
+	    hotAPI.reload("data-v-21326616", Component.options)
+	  }
+	  module.hot.dispose(function (data) {
+	    disposed = true
+	  })
+	})()}
+
+	module.exports = Component.exports
+
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(47);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	if(content.locals) module.exports = content.locals;
+	// add the styles to the DOM
+	var update = __webpack_require__(36)("12526bb2", content, false);
+	// Hot Module Replacement
+	if(false) {
+	 // When the styles change, update the <style> tags
+	 if(!content.locals) {
+	   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-21326616\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./imageInsertButton.vue", function() {
+	     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-21326616\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./imageInsertButton.vue");
+	     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+	     update(newContent);
+	   });
+	 }
+	 // When the module is disposed, remove the <style> tags
+	 module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(35)(undefined);
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _vuex = __webpack_require__(49);
+
+	exports.default = {
+	  data: function data() {
+	    return {};
+	  },
+
+	  methods: {
+	    insert: function insert() {
+	      this.$store.dispatch('overlayStore/showInsertOverlay', true);
+	    }
+	  }
+	}; //
+	//
+	//
+	//
+
+/***/ }),
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -15530,6 +15775,519 @@
 
 	})));
 
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _c('button', {
+	    staticClass: "btn btn-sm btn-default",
+	    attrs: {
+	      "typ": "button"
+	    },
+	    on: {
+	      "click": function($event) {
+	        $event.preventDefault();
+	        _vm.insert()
+	      }
+	    }
+	  }, [_vm._v("Insérer l'image")])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+	if (false) {
+	  module.hot.accept()
+	  if (module.hot.data) {
+	     require("vue-hot-reload-api").rerender("data-v-21326616", module.exports)
+	  }
+	}
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _c('div', {
+	    staticClass: "content content-narrow"
+	  }, [_c('div', {
+	    staticClass: "block"
+	  }, [_vm._m(0), _vm._v(" "), _c('div', {
+	    staticClass: "block-content"
+	  }, [_c('div', {
+	    staticClass: "row"
+	  }, [_c('div', {
+	    staticClass: "col-sm-6"
+	  }, [_c('form', {
+	    staticClass: "form-horizontal",
+	    attrs: {
+	      "action": "#",
+	      "method": "post"
+	    }
+	  }, [_vm._m(1), _vm._v(" "), _vm._m(2), _vm._v(" "), _vm._m(3), _vm._v(" "), _c('div', {
+	    staticClass: "form-group"
+	  }, [_c('div', {
+	    staticClass: "col-sm-10"
+	  }, [_c('button', {
+	    staticClass: "btn btn-sm btn-primary",
+	    attrs: {
+	      "type": "button"
+	    }
+	  }, [_vm._v("Enregistrer")]), _vm._v(" "), _c('image-insert-button')], 1)])])]), _vm._v(" "), _vm._m(4)])])])])
+	},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _c('div', {
+	    staticClass: "block-header"
+	  }, [_c('h3', {
+	    staticClass: "block-title"
+	  }, [_vm._v("Modifier l'image")])])
+	},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _c('div', {
+	    staticClass: "form-group"
+	  }, [_c('div', {
+	    staticClass: "col-sm-12"
+	  }, [_c('div', {
+	    staticClass: "form-material"
+	  }, [_c('input', {
+	    staticClass: "form-control",
+	    attrs: {
+	      "type": "text",
+	      "id": "material-text",
+	      "name": "material-text"
+	    }
+	  }), _vm._v(" "), _c('label', {
+	    attrs: {
+	      "for": "material-text"
+	    }
+	  }, [_vm._v("Nom de l'image")])])])])
+	},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _c('div', {
+	    staticClass: "form-group"
+	  }, [_c('div', {
+	    staticClass: "col-sm-12"
+	  }, [_c('div', {
+	    staticClass: "form-material"
+	  }, [_c('input', {
+	    staticClass: "form-control",
+	    attrs: {
+	      "type": "text",
+	      "id": "material-text",
+	      "name": "material-text"
+	    }
+	  }), _vm._v(" "), _c('label', {
+	    attrs: {
+	      "for": "material-text"
+	    }
+	  }, [_vm._v("Copyright")])])])])
+	},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _c('div', {
+	    staticClass: "form-group"
+	  }, [_c('div', {
+	    staticClass: "col-sm-12"
+	  }, [_c('div', {
+	    staticClass: "form-material"
+	  }, [_c('textarea', {
+	    staticClass: "form-control",
+	    attrs: {
+	      "id": "material-textarea-large",
+	      "name": "material-textarea-large",
+	      "rows": "8"
+	    }
+	  }), _vm._v(" "), _c('label', {
+	    attrs: {
+	      "for": "material-textarea-large"
+	    }
+	  }, [_vm._v("Description")])])])])
+	},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _c('div', {
+	    staticClass: "col-sm-6"
+	  }, [_c('p', [_c('img', {
+	    staticStyle: {
+	      "width": "100%"
+	    },
+	    attrs: {
+	      "src": "https://unsplash.it/680/480",
+	      "alt": ""
+	    }
+	  })])])
+	}]}
+	module.exports.render._withStripped = true
+	if (false) {
+	  module.hot.accept()
+	  if (module.hot.data) {
+	     require("vue-hot-reload-api").rerender("data-v-3b1653c8", module.exports)
+	  }
+	}
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _medias = __webpack_require__(53);
+
+	var _medias2 = _interopRequireDefault(_medias);
+
+	var _overlay = __webpack_require__(54);
+
+	var _overlay2 = _interopRequireDefault(_overlay);
+
+	var _vue = __webpack_require__(1);
+
+	var _vue2 = _interopRequireDefault(_vue);
+
+	var _vuex = __webpack_require__(49);
+
+	var _vuex2 = _interopRequireDefault(_vuex);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	_vue2.default.use(_vuex2.default);
+	exports.default = new _vuex2.default.Store({
+	  modules: {
+	    mediasStore: _medias2.default,
+	    overlayStore: _overlay2.default
+	  }
+	});
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var mediasStore = {
+	  namespaced: true,
+	  state: {
+	    currentImg: null
+	  },
+	  mutations: {
+	    SET_CURRENT_IMG: function SET_CURRENT_IMG(state, imageData) {
+	      state.currentImg = imageData;
+	    }
+	  },
+	  actions: {
+	    useImage: function useImage(_ref, data) {
+	      // this.$http.get('#', data.id).then(() => {
+	      // La reference opener devra être seté au click du bouton qui ouvre notre outils .. je me comprends
+	      // window.opener.editor.insertText("balise_image_généré");
+	      // window.close
+	      // })
+
+	      var commit = _ref.commit,
+	          state = _ref.state;
+	    }
+	  }
+	};
+
+	exports.default = mediasStore;
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var overlayStore = {
+	  namespaced: true,
+	  state: {
+	    showInsertOverlay: false
+	  },
+	  mutations: {
+	    SET_SHOW_INSERT_OVERLAY: function SET_SHOW_INSERT_OVERLAY(state, value) {
+	      state.showInsertOverlay = value;
+	    }
+	  },
+	  actions: {
+	    showInsertOverlay: function showInsertOverlay(_ref, value) {
+	      var commit = _ref.commit,
+	          state = _ref.state;
+
+	      state.showInsertOverlay;
+	      commit('SET_SHOW_INSERT_OVERLAY', value);
+	    }
+	  }
+	};
+
+	exports.default = overlayStore;
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var disposed = false
+	function injectStyle (ssrContext) {
+	  if (disposed) return
+	  __webpack_require__(56)
+	}
+	var Component = __webpack_require__(38)(
+	  /* script */
+	  __webpack_require__(58),
+	  /* template */
+	  __webpack_require__(59),
+	  /* styles */
+	  injectStyle,
+	  /* scopeId */
+	  null,
+	  /* moduleIdentifier (server only) */
+	  null
+	)
+	Component.options.__file = "/Users/lpdumas/vm/www/rails_admin_image_manager/app/assets/javascripts/rails_admin_image_manager/components/imageInsertOverlay.vue"
+	if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+	if (Component.options.functional) {console.error("[vue-loader] imageInsertOverlay.vue: functional components are not supported with templates, they should use render functions.")}
+
+	/* hot reload */
+	if (false) {(function () {
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  module.hot.accept()
+	  if (!module.hot.data) {
+	    hotAPI.createRecord("data-v-585a831c", Component.options)
+	  } else {
+	    hotAPI.reload("data-v-585a831c", Component.options)
+	  }
+	  module.hot.dispose(function (data) {
+	    disposed = true
+	  })
+	})()}
+
+	module.exports = Component.exports
+
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(57);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	if(content.locals) module.exports = content.locals;
+	// add the styles to the DOM
+	var update = __webpack_require__(36)("aae6a61c", content, false);
+	// Hot Module Replacement
+	if(false) {
+	 // When the styles change, update the <style> tags
+	 if(!content.locals) {
+	   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-585a831c\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./imageInsertOverlay.vue", function() {
+	     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-585a831c\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./imageInsertOverlay.vue");
+	     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+	     update(newContent);
+	   });
+	 }
+	 // When the module is disposed, remove the <style> tags
+	 module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(35)(undefined);
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n.image-insert-overlay {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%,-50%);\n          transform: translate(-50%,-50%);\n  width: 100%;\n  max-width: 640px;\n  z-index: 20;\n}\n.fade-enter-active, .fade-leave-active {\n  transition: opacity .5s\n}\n.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {\n  opacity: 0\n}\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	var _vuex = __webpack_require__(49);
+
+	exports.default = {
+	  data: function data() {
+	    return {
+	      imgWidth: 800,
+	      imgHeight: 600,
+	      ratio: 800 / 600
+	    };
+	  },
+
+	  computed: _extends({}, (0, _vuex.mapState)('overlayStore', ['showInsertOverlay']), (0, _vuex.mapState)('mediasStore', ['currentImg'])),
+	  methods: {
+	    insert: function insert() {
+	      this.$store.dispatch('mediasStore/useImage', [this.width, this.height]);
+	      this.$store.dispatch('overlayStore/showInsertOverlay', false);
+	    },
+	    keepRatio: function keepRatio(e) {
+	      if (e == 'width') {
+	        this.imgHeight = parseInt(this.imgWidth / this.ratio);
+	      } else {
+	        this.imgWidth = parseInt(this.imgHeight * this.ratio);
+	      }
+	    }
+	  }
+	};
+
+/***/ }),
+/* 59 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _c('transition', {
+	    attrs: {
+	      "name": "fade"
+	    }
+	  }, [(_vm.showInsertOverlay) ? _c('div', {
+	    staticClass: "image-insert-overlay form-horizontal"
+	  }, [_c('div', {
+	    staticClass: "block"
+	  }, [_c('div', {
+	    staticClass: "block-content"
+	  }, [_c('p', [_c('img', {
+	    staticStyle: {
+	      "width": "100%"
+	    },
+	    attrs: {
+	      "src": "https://unsplash.it/680/480",
+	      "alt": ""
+	    }
+	  })]), _vm._v(" "), _c('div', {
+	    staticClass: "form-group"
+	  }, [_c('div', {
+	    staticClass: "col-sm-6"
+	  }, [_c('div', {
+	    staticClass: "form-material"
+	  }, [_c('input', {
+	    directives: [{
+	      name: "model",
+	      rawName: "v-model",
+	      value: (_vm.imgWidth),
+	      expression: "imgWidth"
+	    }],
+	    staticClass: "form-control",
+	    attrs: {
+	      "type": "number"
+	    },
+	    domProps: {
+	      "value": (_vm.imgWidth)
+	    },
+	    on: {
+	      "keyup": function($event) {
+	        _vm.keepRatio('width')
+	      },
+	      "input": function($event) {
+	        if ($event.target.composing) { return; }
+	        _vm.imgWidth = $event.target.value
+	      },
+	      "blur": function($event) {
+	        _vm.$forceUpdate()
+	      }
+	    }
+	  }), _vm._v(" "), _c('label', {
+	    attrs: {
+	      "for": "material-text"
+	    }
+	  }, [_vm._v("Largeur")])])]), _vm._v(" "), _c('div', {
+	    staticClass: "col-sm-6"
+	  }, [_c('div', {
+	    staticClass: "form-material"
+	  }, [_c('input', {
+	    directives: [{
+	      name: "model",
+	      rawName: "v-model",
+	      value: (_vm.imgHeight),
+	      expression: "imgHeight"
+	    }],
+	    staticClass: "form-control",
+	    attrs: {
+	      "type": "number"
+	    },
+	    domProps: {
+	      "value": (_vm.imgHeight)
+	    },
+	    on: {
+	      "keyup": function($event) {
+	        _vm.keepRatio('height')
+	      },
+	      "input": function($event) {
+	        if ($event.target.composing) { return; }
+	        _vm.imgHeight = $event.target.value
+	      },
+	      "blur": function($event) {
+	        _vm.$forceUpdate()
+	      }
+	    }
+	  }), _vm._v(" "), _c('label', {
+	    attrs: {
+	      "for": "material-textarea-large"
+	    }
+	  }, [_vm._v("Hauteur")])])])]), _vm._v(" "), _c('div', {
+	    staticClass: "form-group"
+	  }, [_c('div', {
+	    staticClass: "col-sm-12"
+	  }, [_c('button', {
+	    attrs: {
+	      "type": "button"
+	    },
+	    on: {
+	      "click": function($event) {
+	        _vm.insert()
+	      }
+	    }
+	  }, [_vm._v("Insérer")])])])])])]) : _vm._e()])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+	if (false) {
+	  module.hot.accept()
+	  if (module.hot.data) {
+	     require("vue-hot-reload-api").rerender("data-v-585a831c", module.exports)
+	  }
+	}
 
 /***/ })
 /******/ ]);

@@ -1,12 +1,22 @@
 <template>
-  <div class="image-listing">
-    <div v-for="(image, key) in images" class="block" style="background-image: url('http://via.placeholder.com/350x150')">
-      <div class="block-header">
-        <ul class="block-options">
-          <li>
-            <button type="button"><i class="si si-settings"></i></button>
-          </li>
-        </ul>
+  <div class="content">
+    <div class="block">
+      <div class="block-content">
+
+        <div class="row items-push">
+          <div class="image-element col-lg-2 col-md-3 col-sm-4 animated fadeIn" v-for="(image, key) in images">
+            <div class="img-container">
+              <img class="img-responsive" src="https://unsplash.it/640/480" alt="">
+              <div class="img-options">
+                <div class="img-options-content">
+                  <h4 class="h6 font-w400 text-white-op push-15">Image name</h4>
+                  <router-link class="btn btn-sm btn-default" :to="{ name: 'showImage', params: { id: 123 }}">Modifier</router-link>
+                  <a class="btn btn-sm btn-default" href="javascript:void(0)">Supprimer</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -24,19 +34,7 @@ export default {
 </script>
 
 <style media="screen">
-  .image-listing {
-    display: flex;
-    flex-wrap: wrap;
-    /*justify-content: center;*/
-    /*margin-left: -10px;*/
-    /*margin-right: -10px;*/
-  }
-
-  .image-listing .block {
-    width: 175px;
-    height: 175px;
-    margin: 10px;
-    background-size: cover;
-    background-position: center center;
+  .image-element {
+    margin-bottom: 15px
   }
 </style>
