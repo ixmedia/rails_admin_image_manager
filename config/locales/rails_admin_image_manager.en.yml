@@ -3,6 +3,8 @@ en:
     navigation_label:
       file: Image manager
       tag: Image manager
+    image_manager_picker:
+      browse: Select or upload
 
   activerecord:
     models:

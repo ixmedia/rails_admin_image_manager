@@ -3,6 +3,8 @@ fr:
     navigation_label:
       file: Gestionnaire d'images
       tag: Gestionnaire d'images
+    image_manager_picker:
+      browse: Sélectionner ou télécharger
 
   activerecord:
     models:
