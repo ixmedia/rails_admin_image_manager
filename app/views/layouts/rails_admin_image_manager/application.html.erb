@@ -7,8 +7,10 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-
-<%= yield %>
+<div id="vue-image-manager" data-default-path="<%= images_path %>">
+  <%= yield %>
+  <image-insert-overlay/>
+</div>
 
 </body>
 </html>
