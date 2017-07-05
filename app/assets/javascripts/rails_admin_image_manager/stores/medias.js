@@ -23,6 +23,7 @@ const mediasStore = {
       state.currentImgSrc = src
     },
     UPDATE_CURRENT_IMG_TAGS (state, tags) {
+      state.currentImgTags = []
       for (var i = 0; i < tags.length; i++) {
         let tag = tags[i]
         state.currentImgTags.push(tag)
