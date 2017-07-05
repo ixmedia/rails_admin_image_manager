@@ -11,6 +11,14 @@ module RailsAdmin::Config::Fields::Types
       :form_image_manager_picker
     end
 
+    register_instance_option(:delete_method) do
+      "#{name}_deselect"
+    end
+
+    register_instance_option :allowed_methods do
+      [method_name, delete_method].compact
+    end
+
     def editor_options
       RailsAdminImageManager.options(config)
     end

@@ -1,7 +1,9 @@
 require "rails_admin_image_manager/rails_admin/config/fields/types/image_manager_picker"
+require "rails_admin_image_manager/has_managed_file"
 require "rails_admin_image_manager/engine"
 
 module RailsAdminImageManager
+  extend ActiveSupport::Autoload
 
   # configuration for picker
   mattr_accessor :placeholder_image
@@ -36,4 +38,9 @@ module RailsAdminImageManager
 
     editor_options
   end
+
+end
+
+ActiveSupport.on_load(:active_record) do
+  extend RailsAdminImageManager::HasManagedFile
 end

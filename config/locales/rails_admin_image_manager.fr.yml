@@ -5,6 +5,7 @@ fr:
       tag: Gestionnaire d'images
     image_manager_picker:
       browse: Sélectionner ou télécharger
+      deselect: Désélectionner cette image
 
   activerecord:
     models:
