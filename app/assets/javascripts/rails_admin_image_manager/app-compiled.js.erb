@@ -66,7 +66,7 @@
 
 	var _stores2 = _interopRequireDefault(_stores);
 
-	var _imageInsertOverlay = __webpack_require__(66);
+	var _imageInsertOverlay = __webpack_require__(67);
 
 	var _imageInsertOverlay2 = _interopRequireDefault(_imageInsertOverlay);
 
@@ -86,7 +86,20 @@
 	    el: '#vue-image-manager',
 	    components: { imageInsertOverlay: _imageInsertOverlay2.default },
 	    store: _stores2.default,
-	    router: _router2.default
+	    router: _router2.default,
+	    mounted: function mounted() {
+	      var _this = this;
+
+	      if (this.$el.attributes['ck-fn'] !== undefined && this.$el.attributes['ck-id'] !== undefined) {
+	        this.$store.dispatch('ckEditorStore/setCkId', this.$el.attributes['ck-fn'].value);
+	        this.$store.dispatch('ckEditorStore/setCkFun', this.$el.attributes['ck-id'].value);
+	      }
+	      if (this.$el.attributes['ck-selected-image-id'] !== undefined) {
+	        this.$store.dispatch('mediasStore/fetchSingleImage', this.$el.attributes['ck-selected-image-id'].value).then(function () {
+	          _this.$store.dispatch('overlayStore/showInsertOverlay', true);
+	        });
+	      }
+	    }
 	  });
 	});
 
@@ -16507,6 +16520,10 @@
 
 	var _overlay2 = _interopRequireDefault(_overlay);
 
+	var _ckeditor = __webpack_require__(66);
+
+	var _ckeditor2 = _interopRequireDefault(_ckeditor);
+
 	var _vue = __webpack_require__(1);
 
 	var _vue2 = _interopRequireDefault(_vue);
@@ -16521,7 +16538,8 @@
 	exports.default = new _vuex2.default.Store({
 	  modules: {
 	    mediasStore: _medias2.default,
-	    overlayStore: _overlay2.default
+	    overlayStore: _overlay2.default,
+	    ckEditorStore: _ckeditor2.default
 	  }
 	});
 
@@ -16582,14 +16600,16 @@
 	  },
 	  actions: {
 	    useImage: function useImage(_ref, data) {
+	      var commit = _ref.commit,
+	          state = _ref.state;
+
+	      window.opener.CKEDITOR.tools.callFunction(2, 'https://unsplash.it/680/480', 2, 'un nom');
+	      window.close();
 	      // this.$http.get('#', data.id).then((data) => {
 	      // La reference opener devra être seté au click du bouton qui ouvre notre outils .. je me comprends
 	      // window.opener.editor.insertText("balise_image_généré");
 	      // window.close
 	      // })
-
-	      var commit = _ref.commit,
-	          state = _ref.state;
 	    },
 	    setCurrentImg: function setCurrentImg(_ref2, imgData) {
 	      var commit = _ref2.commit,
@@ -16666,18 +16686,57 @@
 
 /***/ }),
 /* 66 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var ckEditor = {
+	  namespaced: true,
+	  state: {
+	    ckId: "",
+	    ckFun: ""
+	  },
+	  mutations: {
+	    SET_CK_ID: function SET_CK_ID(state, value) {
+	      state.ckId = value;
+	    },
+	    SET_CK_FUN: function SET_CK_FUN(state, value) {
+	      state.ckFun = value;
+	    }
+	  },
+	  actions: {
+	    setCkFun: function setCkFun(_ref, value) {
+	      var commit = _ref.commit;
+
+	      commit('SET_CK_FUN', value);
+	    },
+	    setCkId: function setCkId(_ref2, value) {
+	      var commit = _ref2.commit;
+
+	      commit('SET_CK_ID', value);
+	    }
+	  }
+	};
+
+	exports.default = ckEditor;
+
+/***/ }),
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var disposed = false
 	function injectStyle (ssrContext) {
 	  if (disposed) return
-	  __webpack_require__(67)
+	  __webpack_require__(68)
 	}
 	var Component = __webpack_require__(38)(
 	  /* script */
-	  __webpack_require__(69),
-	  /* template */
 	  __webpack_require__(70),
+	  /* template */
+	  __webpack_require__(71),
 	  /* styles */
 	  injectStyle,
 	  /* scopeId */
@@ -16709,13 +16768,13 @@
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(68);
+	var content = __webpack_require__(69);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	if(content.locals) module.exports = content.locals;
 	// add the styles to the DOM
@@ -16735,7 +16794,7 @@
 	}
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(35)(undefined);
@@ -16749,7 +16808,7 @@
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -16821,7 +16880,7 @@
 	};
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;

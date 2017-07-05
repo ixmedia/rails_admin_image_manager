@@ -41,6 +41,8 @@ const mediasStore = {
   },
   actions: {
     useImage ({ commit, state }, data) {
+      window.opener.CKEDITOR.tools.callFunction(2, 'https://unsplash.it/680/480', 2, 'un nom');
+      window.close()
       // this.$http.get('#', data.id).then((data) => {
         // La reference opener devra être seté au click du bouton qui ouvre notre outils .. je me comprends
         // window.opener.editor.insertText("balise_image_généré");

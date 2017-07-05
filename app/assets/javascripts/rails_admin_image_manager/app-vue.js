@@ -21,6 +21,17 @@ document.addEventListener("DOMContentLoaded", function() {
     el: '#vue-image-manager',
     components: {imageInsertOverlay},
     store: store,
-    router
+    router,
+    mounted: function () {
+      if (this.$el.attributes['ck-fn'] !== undefined && this.$el.attributes['ck-id'] !== undefined) {
+        this.$store.dispatch('ckEditorStore/setCkId', this.$el.attributes['ck-fn'].value)
+        this.$store.dispatch('ckEditorStore/setCkFun', this.$el.attributes['ck-id'].value)
+      }
+      if (this.$el.attributes['ck-selected-image-id'] !== undefined) {
+        this.$store.dispatch('mediasStore/fetchSingleImage', this.$el.attributes['ck-selected-image-id'].value).then(()=> {
+          this.$store.dispatch('overlayStore/showInsertOverlay', true)
+        })
+      }
+    }
   })
 });
