@@ -25,9 +25,18 @@ const mediasStore = {
     UPDATE_CURRENT_IMG_TAGS (state, tags) {
       for (var i = 0; i < tags.length; i++) {
         let tag = tags[i]
-        state.currentImgTags.push = tag
+        state.currentImgTags.push(tag)
       }
-    }
+    },
+    ADD_CURRENT_IMG_TAG(state, string) {
+      state.currentImgTags.push(string)
+    },
+    REMOVE_CURRENT_IMG_TAG(state, string) {
+      let index = state.currentImgTags.indexOf(string)
+      if (index >= 0) {
+        state.currentImgTags.splice(index, 1)
+      }
+    },
   },
   actions: {
     useImage ({ commit, state }, data) {
@@ -56,6 +65,12 @@ const mediasStore = {
     },
     updateSrc ({commit, state}, src) {
       commit('UPDATE_CURRENT_IMG_SRC', src)
+    },
+    addTag ({ commit }, string) {
+      commit('ADD_CURRENT_IMG_TAG', string)
+    },
+    removeTag ({ commit }, string) {
+      commit('REMOVE_CURRENT_IMG_TAG', string)
     }
   }
 }
