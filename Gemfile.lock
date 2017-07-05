@@ -3,6 +3,7 @@ PATH
   specs:
     rails_admin_image_manager (0.1.0)
       ckeditor (>= 4.2.3)
+      dynamic_paperclip (>= 1.0.0.alpha.4)
       paperclip (>= 5.1.0)
       rails (>= 5.0.2)
       rails_admin (>= 1.1.1)
@@ -63,6 +64,11 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
+    dynamic_paperclip (1.0.0.alpha.4)
+      actionpack (>= 3.2)
+      activesupport
+      paperclip (>= 3.5.1)
+      rack
     erubi (1.6.0)
     execjs (2.7.0)
     font-awesome-rails (4.7.0.2)

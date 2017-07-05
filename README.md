@@ -45,6 +45,52 @@ The gem uses the RailsAdmin authentication and authorization methods.
 - https://github.com/sferik/rails_admin/wiki/Authentication
 - https://github.com/sferik/rails_admin/wiki/Authorization
 
+## Usage
+
+Create the image foreign key in your db:
+
+```ruby
+class CreateImageForeignKey < ActiveRecord::Migration[5.0]
+  def change
+    change_table :mymodel do |t|
+      t.integer :image_manager_file_id
+    end
+    add_foreign_key :mymodel, :image_manager_files, on_update: :cascade, on_delete: :restrict
+  end
+end
+```
+
+Add the image relationship to your model:
+
+```ruby
+class Mymodel < ApplicationRecord
+  belongs_to :image_manager_file, class_name: "RailsAdminImageManager::File"
+
+  validates_presence_of :image_manager_file_id
+end
+```
+
+Add the image picker in RailsAdmin:
+
+```ruby
+config.model Mymodel do
+  edit do
+    field :image_manager_file_id, :image_manager_picker do
+      config({
+        hidden_input: true,
+        paginates_per: 10
+      }) # Optionnal
+    end
+  end
+end
+```
+
+To display the image in a Rails template:
+
+```html
+<img src="<%= image_url @mymodel.image_manager_file.dynamic_url('100x100') %>">
+```
+
 ## Development
 
 ### Assets

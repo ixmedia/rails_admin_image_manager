@@ -1,7 +1,11 @@
+require 'kaminari'
+
 module RailsAdminImageManager
   class File < ApplicationRecord
 
     # == Extensions ===========================================================
+
+    paginates_per RailsAdminImageManager.options[:paginates_per]
 
     # == Constants ============================================================
 
@@ -24,6 +28,15 @@ module RailsAdminImageManager
     # == Scopes ===============================================================
 
     # == Instance Methods =====================================================
+
+    # To avoid the 500 error when the foreign key constraint fails
+    def destroy
+      begin
+        super
+      rescue
+        return false
+      end
+    end
 
     # == Class Methods ========================================================
 

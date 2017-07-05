@@ -4,10 +4,10 @@ require 'dynamic_paperclip_patch'
 module RailsAdminImageManager
   class Engine < ::Rails::Engine
     isolate_namespace RailsAdminImageManager
-    #
-    # initializer "RailsAdmin image manager hook" do |app|
-    #   app.config.assets.precompile += ['rails_admin_image_manager/app-compiled.js.erb']
-    # end
+
+    initializer :add_to_precompile do |app|
+      app.config.assets.precompile += %w( rails_admin_image_manager/base.js.erb )
+    end
 
     initializer :reload_rails_admin_configs do |app|
       Rails.application.config.to_prepare do
