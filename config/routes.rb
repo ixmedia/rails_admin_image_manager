@@ -1,4 +1,11 @@
 RailsAdminImageManager::Engine.routes.draw do
+
   root "images#index"
-  get 'foo', to: 'images#index', as: 'images_index'
+
+  get '/images'    => 'images#index'
+  get '/images/:id'    => 'images#show'
+  put '/images'    => 'images#update'
+  post '/images'   => 'images#create'
+  delete '/images' => 'images#destroy'
+
 end

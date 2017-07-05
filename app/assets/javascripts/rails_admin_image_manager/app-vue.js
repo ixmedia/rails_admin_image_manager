@@ -1,24 +1,26 @@
 import Vue from 'vue'
 import axios from 'axios'
 import vueAxios from 'vue-axios'
-import {mapState} from 'vuex'
+import router from './router'
 
 import store from './stores'
 
-axios.defaults.headers.common['X-CSRF-Token'] = $('meta[name="csrf-token"]').attr('content')
+import imageInsertOverlay from './components/imageInsertOverlay.vue'
 
-console.log('foo');
-export default (() => {
+document.addEventListener("DOMContentLoaded", function() {
 
-  if (!document.getElementById('vue-app')) {
-    return false
-  }
+  let csrfElement = document.querySelectorAll('meta[name="csrf-token"]')[0]
+  axios.defaults.headers.common['X-CSRF-Token'] = csrfElement.getAttribute('content')
+  let appElement = document.getElementById('vue-image-manager')
+
+  axios.defaults.baseURL = appElement.getAttribute('data-default-path')
 
   Vue.use(vueAxios, axios)
-
-  const enio = new Vue({
-    el: '#vue-app',
+  Vue.config.productionTip = false
+  const imageManager = new Vue({
+    el: '#vue-image-manager',
+    components: {imageInsertOverlay},
     store: store,
+    router
   })
-
-})()
+});
