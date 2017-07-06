@@ -29,6 +29,9 @@ module RailsAdminImageManager
 
     # == Scopes ===============================================================
 
+    scope :filter_by_text, -> (text) { where("image_manager_files.name LIKE ? OR image_manager_files.description LIKE ?", "%#{text}%", "%#{text}%") }
+    scope :filter_by_tags, -> (tags) { joins(:tags).where('image_manager_files_tags.image_manager_tag_id IN (?)', tags).distinct }
+
     # == Instance Methods =====================================================
 
     # To avoid the 500 error when the foreign key constraint fails
