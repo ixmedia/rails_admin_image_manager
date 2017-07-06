@@ -11570,6 +11570,10 @@
 	        console.log(e);
 	      });
 	    }
+	  }, {
+	    path: '/new/',
+	    name: 'createImage',
+	    component: _imageShow2.default
 	  }]
 	});
 
@@ -14144,13 +14148,13 @@
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	if(content.locals) module.exports = content.locals;
 	// add the styles to the DOM
-	var update = __webpack_require__(36)("24d4f5ca", content, false);
+	var update = __webpack_require__(36)("34094db4", content, false);
 	// Hot Module Replacement
 	if(false) {
 	 // When the styles change, update the <style> tags
 	 if(!content.locals) {
-	   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-2942dd89\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./imageListing.vue", function() {
-	     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-2942dd89\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./imageListing.vue");
+	   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-2942dd89\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/sass-loader/lib/loader.js?indentedSyntax!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./imageListing.vue", function() {
+	     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-2942dd89\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/sass-loader/lib/loader.js?indentedSyntax!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./imageListing.vue");
 	     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 	     update(newContent);
 	   });
@@ -14168,7 +14172,7 @@
 
 
 	// module
-	exports.push([module.id, "\n.image-element {\n  margin-bottom: 15px\n}\n.img-options-content .btn {\n  margin: 4px\n}\n", ""]);
+	exports.push([module.id, "\n.add-image-link {\n  margin-bottom: 15px;\n}\n.img-options-content .btn {\n  margin: 4px;\n}\n.add-image-link {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  width: 100%;\n  font-size: 50px;\n}\n", ""]);
 
 	// exports
 
@@ -14630,6 +14634,15 @@
 	    };
 	  }
 	}; //
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
 	//
 	//
 	//
@@ -15637,16 +15650,29 @@
 	  }, [_vm._m(0), _vm._v(" "), _c('div', {
 	    staticClass: "block-content"
 	  }, [_c('div', {
+	    staticClass: "row"
+	  }, [_c('div', {
+	    staticClass: "col-sm-6"
+	  }, [_c('p', [_c('router-link', {
+	    staticClass: "btn btn-primary",
+	    attrs: {
+	      "to": {
+	        name: 'createImage'
+	      }
+	    }
+	  }, [_c('i', {
+	    staticClass: "fa fa-plus"
+	  }), _vm._v(" Ajouter une image\n          ")])], 1)])]), _vm._v(" "), _c('div', {
 	    staticClass: "row items-push"
 	  }, _vm._l((_vm.images), function(image, key) {
 	    return _c('div', {
-	      staticClass: "image-element col-lg-2 col-md-3 col-sm-4"
+	      staticClass: "image-element col-lg-2 col-md-3 col-sm-4 col-xs-6"
 	    }, [_c('div', {
 	      staticClass: "img-container"
 	    }, [_c('img', {
 	      staticClass: "img-responsive",
 	      attrs: {
-	        "src": "https://unsplash.it/640/480",
+	        "src": "https://unsplash.it/250/250",
 	        "alt": ""
 	      }
 	    }), _vm._v(" "), _c('div', {
@@ -15992,7 +16018,7 @@
 
 
 	// module
-	exports.push([module.id, "\n.image-upload {\n  position: relative;\n}\n.image-upload__img {\n  width: 100%;\n}\n.image-upload__file-input {\n  position: absolute;\n  top: 0;\n  left: 0;\n  bottom: 0;\n  right: 0;\n  width: 100%;\n  opacity: 0;\n}\n.image-upload__content {\n  position: relative;\n}\n", ""]);
+	exports.push([module.id, "\n.image-upload {\n  position: relative;\n}\n.image-upload__img {\n  width: 100%;\n}\n.image-upload__file-input {\n  position: absolute;\n  top: 0;\n  left: 0;\n  bottom: 0;\n  right: 0;\n  width: 100%;\n  opacity: 0;\n  cursor: pointer;\n}\n.image-upload__content {\n  position: relative;\n  border: 6px dashed #fcfcfc;\n  transition: all 200ms linear;\n}\n.image-upload__content:hover {\n    border-color: #c9c9c9;\n}\n.image-upload__placeholder {\n  width: 100%;\n  padding: 30px 0;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  cursor: pointer;\n  opacity: 0.8;\n}\n.image-upload__placeholder i {\n    font-size: 70px;\n}\n", ""]);
 
 	// exports
 
@@ -16008,6 +16034,10 @@
 	});
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
+	//
+	//
+	//
+	//
 	//
 	//
 	//
@@ -16087,7 +16117,11 @@
 	      "src": _vm.currentImgSrc,
 	      "alt": ""
 	    }
-	  }) : _vm._e(), _vm._v(" "), _c('input', {
+	  }) : _vm._e(), _vm._v(" "), (_vm.currentImgSrc == '') ? _c('div', {
+	    staticClass: "image-upload__placeholder"
+	  }, [_c('i', {
+	    staticClass: "fa fa-image"
+	  }), _vm._v("\n      Ajouter une image\n    ")]) : _vm._e(), _vm._v(" "), _c('input', {
 	    staticClass: "image-upload__file-input",
 	    attrs: {
 	      "type": "file"

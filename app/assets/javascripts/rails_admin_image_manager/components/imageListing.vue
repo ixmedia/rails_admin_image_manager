@@ -11,10 +11,19 @@
       </div>
       <div class="block-content">
 
+        <div class="row">
+          <div class="col-sm-6">
+            <p>
+              <router-link class="btn btn-primary" :to="{ name: 'createImage'}">
+              <i class="fa fa-plus"></i> Ajouter une image
+            </router-link>
+            </p>
+          </div>
+        </div>
         <div class="row items-push">
-          <div class="image-element col-lg-2 col-md-3 col-sm-4" v-for="(image, key) in images">
+          <div class="image-element col-lg-2 col-md-3 col-sm-4 col-xs-6" v-for="(image, key) in images">
             <div class="img-container">
-              <img class="img-responsive" src="https://unsplash.it/640/480" alt="">
+              <img class="img-responsive" src="https://unsplash.it/250/250" alt="">
               <div class="img-options">
                 <div class="img-options-content">
                   <h4 class="h6 font-w400 text-white-op push-15">Image name</h4>
@@ -44,11 +53,19 @@ export default {
 }
 </script>
 
-<style media="screen">
-  .image-element {
+<style media="screen" lang="sass">
+  .add-image-link
     margin-bottom: 15px
-  }
-  .img-options-content .btn {
+
+  .img-options-content .btn
     margin: 4px
-  }
+
+  .add-image-link
+    display: flex
+    align-items: center
+    justify-content: center
+    width: 100%
+    font-size: 50px
+    // width: 250px
+    // height: 250px
 </style>
