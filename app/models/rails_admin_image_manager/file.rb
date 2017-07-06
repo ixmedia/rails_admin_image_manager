@@ -11,7 +11,9 @@ module RailsAdminImageManager
 
     # == Attributes ===========================================================
 
-    has_dynamic_attached_file :image, styles: { small: '50x50' }
+    has_dynamic_attached_file :image, styles: { show: '680x480', index: '250x250#', rails_admin: '75x75' }
+
+    attr_accessor :src
 
     # == Callbacks ============================================================
 
@@ -36,6 +38,10 @@ module RailsAdminImageManager
       rescue
         return false
       end
+    end
+
+    def tags_list
+      tags.collect { |t| t.name }
     end
 
     # == Class Methods ========================================================

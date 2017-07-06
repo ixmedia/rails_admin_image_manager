@@ -30,7 +30,7 @@ module RailsAdmin::Config::Fields::Types
           # Check if the id exist otherwise show placeholder image
           if RailsAdminImageManager::File.exists?(value)
             image_manager_file = RailsAdminImageManager::File.find(value)
-            image_manager_file.image.url(:small)
+            image_manager_file.image.url(:rails_admin)
           else
             editor_options[:placeholder_image]
           end

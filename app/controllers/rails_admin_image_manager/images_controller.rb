@@ -5,15 +5,12 @@ module RailsAdminImageManager
     end
 
     def show
-      image = {
-        title: 'Ma vie en cinemascope',
-        description: 'Une longue description',
-        copyright: 'Un copyright',
-        src: "https://unsplash.it/680/480",
-        tags: ["un tag", "un autre tag", "another one"]
-      }
-      render json: image, status: :ok
+      image     = RailsAdminImageManager::File.select(:id, :name, :description, :copyright, :image_file_name).find_by!(id: params[:id])
+      image.src = image.image.url(:show)
+
+      render json: image, methods: [:src, :tags_list], status: :ok
     end
+
     def update
     end
 
