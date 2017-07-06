@@ -78,7 +78,7 @@
 	  _axios2.default.defaults.headers.common['X-CSRF-Token'] = csrfElement.getAttribute('content');
 	  var appElement = document.getElementById('vue-image-manager');
 
-	  _axios2.default.defaults.baseURL = appElement.getAttribute('data-default-path');
+	  _axios2.default.defaults.baseURL = AJAX_ENDPOINT;
 
 	  _vue2.default.use(_vueAxios2.default, _axios2.default);
 	  _vue2.default.config.productionTip = false;
@@ -90,10 +90,12 @@
 	    mounted: function mounted() {
 	      var _this = this;
 
+	      // Checking if we are from CKEDITOR
 	      if (this.$el.attributes['ck-fn'] !== undefined && this.$el.attributes['ck-id'] !== undefined) {
 	        this.$store.dispatch('ckEditorStore/setCkId', this.$el.attributes['ck-fn'].value);
 	        this.$store.dispatch('ckEditorStore/setCkFun', this.$el.attributes['ck-id'].value);
 	      }
+	      // Opening inser overlay if we have selectImage in queryString
 	      if (this.$el.attributes['ck-selected-image-id'] !== undefined) {
 	        this.$store.dispatch('mediasStore/fetchSingleImage', this.$el.attributes['ck-selected-image-id'].value).then(function () {
 	          _this.$store.dispatch('overlayStore/showInsertOverlay', true);
@@ -15786,7 +15788,7 @@
 
 
 	// module
-	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 	// exports
 
@@ -15901,6 +15903,7 @@
 	        copyright: this.currentImgCopyright
 	      };
 	      this.$store.dispatch('mediasStore/setCurrentImg', imgData);
+	      this.$store.dispatch('mediasStore/saveCurrentImg');
 	    }
 	  },
 	  created: function created() {
@@ -16562,6 +16565,7 @@
 	var mediasStore = {
 	  namespaced: true,
 	  state: {
+	    currentImgId: "",
 	    currentImgTitle: "",
 	    currentImgCopyright: "",
 	    currentImgDescription: "",
@@ -16569,6 +16573,9 @@
 	    currentImgTags: []
 	  },
 	  mutations: {
+	    UPDATE_CURRENT_IMG_ID: function UPDATE_CURRENT_IMG_ID(state, id) {
+	      state.currentImgId = id;
+	    },
 	    UPDATE_CURRENT_IMG_TITLE: function UPDATE_CURRENT_IMG_TITLE(state, title) {
 	      state.currentImgTitle = title;
 	    },
@@ -16598,12 +16605,24 @@
 	      }
 	    }
 	  },
+	  getters: {
+	    imageObject: function imageObject(state) {
+	      return {
+	        id: state.currentImgId,
+	        title: state.currentImgTitle,
+	        copyright: state.currentImgCopyright,
+	        description: state.currentImgDescription,
+	        src: state.currentImgSrc,
+	        tags: state.currentImgTags
+	      };
+	    }
+	  },
 	  actions: {
 	    useImage: function useImage(_ref, data) {
 	      var commit = _ref.commit,
 	          state = _ref.state;
 
-	      window.opener.CKEDITOR.tools.callFunction(2, 'https://unsplash.it/680/480', 2, 'un nom');
+	      window.opener.CKEDITOR.tools.callFunction(2, state.currentImgSrc, 2, state.currentImgTitle);
 	      window.close();
 	      // this.$http.get('#', data.id).then((data) => {
 	      // La reference opener devra être seté au click du bouton qui ouvre notre outils .. je me comprends
@@ -16615,14 +16634,31 @@
 	      var commit = _ref2.commit,
 	          state = _ref2.state;
 
+	      if (imgData.id) commit('UPDATE_CURRENT_IMG_ID', imgData.id);
 	      if (imgData.title) commit('UPDATE_CURRENT_IMG_TITLE', imgData.title);
 	      if (imgData.copyright) commit('UPDATE_CURRENT_IMG_COPYRIGHT', imgData.copyright);
 	      if (imgData.description) commit('UPDATE_CURRENT_IMG_DESC', imgData.description);
 	      if (imgData.src) commit('UPDATE_CURRENT_IMG_SRC', imgData.src);
 	      if (imgData.tags) commit('UPDATE_CURRENT_IMG_TAGS', imgData.tags);
 	    },
-	    fetchSingleImage: function fetchSingleImage(_ref3, id) {
-	      var dispatch = _ref3.dispatch;
+	    saveCurrentImg: function saveCurrentImg(_ref3) {
+	      var commit = _ref3.commit,
+	          state = _ref3.state,
+	          getters = _ref3.getters;
+
+	      if (state.currentImgId) {
+	        _axios2.default.put('/', getters.imageObject);
+	      } else {
+	        _axios2.default.post('/', getters.imageObject);
+	      }
+	    },
+	    deleteImg: function deleteImg(_ref4, id) {
+	      var commit = _ref4.commit;
+
+	      _axios2.default.delete({ params: { id: id } });
+	    },
+	    fetchSingleImage: function fetchSingleImage(_ref5, id) {
+	      var dispatch = _ref5.dispatch;
 
 	      return new Promise(function (resolve, reject) {
 	        _axios2.default.get("/" + id).then(function (response) {
@@ -16631,19 +16667,19 @@
 	        }).catch(reject);
 	      });
 	    },
-	    updateSrc: function updateSrc(_ref4, src) {
-	      var commit = _ref4.commit,
-	          state = _ref4.state;
+	    updateSrc: function updateSrc(_ref6, src) {
+	      var commit = _ref6.commit,
+	          state = _ref6.state;
 
 	      commit('UPDATE_CURRENT_IMG_SRC', src);
 	    },
-	    addTag: function addTag(_ref5, string) {
-	      var commit = _ref5.commit;
+	    addTag: function addTag(_ref7, string) {
+	      var commit = _ref7.commit;
 
 	      commit('ADD_CURRENT_IMG_TAG', string);
 	    },
-	    removeTag: function removeTag(_ref6, string) {
-	      var commit = _ref6.commit;
+	    removeTag: function removeTag(_ref8, string) {
+	      var commit = _ref8.commit;
 
 	      commit('REMOVE_CURRENT_IMG_TAG', string);
 	    }

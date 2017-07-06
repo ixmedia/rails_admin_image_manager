@@ -3,6 +3,7 @@ import axios from 'axios';
 const mediasStore = {
   namespaced: true,
   state: {
+    currentImgId: "",
     currentImgTitle: "",
     currentImgCopyright: "",
     currentImgDescription: "",
@@ -10,6 +11,9 @@ const mediasStore = {
     currentImgTags: []
   },
   mutations: {
+    UPDATE_CURRENT_IMG_ID (state, id) {
+      state.currentImgId = id
+    },
     UPDATE_CURRENT_IMG_TITLE (state, title) {
       state.currentImgTitle = title
     },
@@ -39,9 +43,21 @@ const mediasStore = {
       }
     },
   },
+  getters: {
+    imageObject: (state) => {
+      return {
+        id: state.currentImgId,
+        title: state.currentImgTitle,
+        copyright: state.currentImgCopyright,
+        description: state.currentImgDescription,
+        src: state.currentImgSrc,
+        tags: state.currentImgTags
+      }
+    }
+  },
   actions: {
     useImage ({ commit, state }, data) {
-      window.opener.CKEDITOR.tools.callFunction(2, 'https://unsplash.it/680/480', 2, 'un nom');
+      window.opener.CKEDITOR.tools.callFunction(2, state.currentImgSrc, 2, state.currentImgTitle);
       window.close()
       // this.$http.get('#', data.id).then((data) => {
         // La reference opener devra être seté au click du bouton qui ouvre notre outils .. je me comprends
@@ -50,11 +66,22 @@ const mediasStore = {
       // })
     },
     setCurrentImg ({commit, state}, imgData) {
+      if (imgData.id) commit('UPDATE_CURRENT_IMG_ID', imgData.id)
       if (imgData.title) commit('UPDATE_CURRENT_IMG_TITLE', imgData.title)
       if (imgData.copyright) commit('UPDATE_CURRENT_IMG_COPYRIGHT', imgData.copyright)
       if (imgData.description) commit('UPDATE_CURRENT_IMG_DESC', imgData.description)
       if (imgData.src) commit('UPDATE_CURRENT_IMG_SRC', imgData.src)
       if (imgData.tags) commit('UPDATE_CURRENT_IMG_TAGS', imgData.tags)
+    },
+    saveCurrentImg ({commit, state, getters}) {
+      if (state.currentImgId) {
+        axios.put('/',getters.imageObject)
+      } else {
+        axios.post('/',getters.imageObject)
+      }
+    },
+    deleteImg ({ commit }, id) {
+      axios.delete({params: {id: id}})
     },
     fetchSingleImage({ dispatch }, id) {
       return new Promise((resolve, reject) => {

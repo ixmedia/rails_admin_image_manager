@@ -86,6 +86,7 @@ export default {
         copyright: this.currentImgCopyright,
       }
       this.$store.dispatch('mediasStore/setCurrentImg', imgData)
+      this.$store.dispatch('mediasStore/saveCurrentImg')
     },
   },
   created () {
