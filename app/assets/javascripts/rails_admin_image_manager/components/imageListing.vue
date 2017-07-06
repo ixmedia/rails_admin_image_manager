@@ -27,7 +27,7 @@
               <div class="img-options">
                 <div class="img-options-content">
                   <h4 class="h6 font-w400 text-white-op push-15">Image name</h4>
-                  <router-link class="btn btn-sm btn-default" :to="{ name: 'showImage', params: { id: 123 }}">Modifier</router-link>
+                  <router-link class="btn btn-sm btn-default" :to="{ name: 'showImage', params: { id: 4 }}">Modifier</router-link>
                   <image-insert-button id="12"/>
                   <a class="btn btn-sm btn-default" href="javascript:void(0)">Supprimer</a>
                 </div>

@@ -81,7 +81,7 @@ export default {
   methods: {
     save() {
       let imgData = {
-        title: this.currentImgTitle,
+        name: this.currentImgTitle,
         description: this.currentImgDescription,
         copyright: this.currentImgCopyright,
       }
@@ -89,7 +89,14 @@ export default {
       this.$store.dispatch('mediasStore/saveCurrentImg')
     },
   },
+  mounted () {
+    console.log('mounted');
+  },
+  beforeRouteUpdate() {
+    console.log('route update');
+  },
   created () {
+    console.log('created');
     this.currentImgTitle = this.$store.state.mediasStore.currentImgTitle
     this.currentImgCopyright = this.$store.state.mediasStore.currentImgCopyright
     this.currentImgDescription = this.$store.state.mediasStore.currentImgDescription

@@ -28,7 +28,12 @@ let router = new Router({
     {
       path: '/new/',
       name: 'createImage',
-      component: imageShow
+      component: imageShow,
+      beforeEnter: (to, from, next) => {
+        console.log('before');
+        store.dispatch('mediasStore/clearCurrentImg')
+        next()
+      }
     }
   ]
 })

@@ -47,11 +47,11 @@ const mediasStore = {
     imageObject: (state) => {
       return {
         id: state.currentImgId,
-        title: state.currentImgTitle,
+        name: state.currentImgTitle,
         copyright: state.currentImgCopyright,
         description: state.currentImgDescription,
         src: state.currentImgSrc,
-        tags: state.currentImgTags
+        tags_list: state.currentImgTags
       }
     }
   },
@@ -59,19 +59,14 @@ const mediasStore = {
     useImage ({ commit, state }, data) {
       window.opener.CKEDITOR.tools.callFunction(2, state.currentImgSrc, 2, state.currentImgTitle);
       window.close()
-      // this.$http.get('#', data.id).then((data) => {
-        // La reference opener devra être seté au click du bouton qui ouvre notre outils .. je me comprends
-        // window.opener.editor.insertText("balise_image_généré");
-        // window.close
-      // })
     },
     setCurrentImg ({commit, state}, imgData) {
-      if (imgData.id) commit('UPDATE_CURRENT_IMG_ID', imgData.id)
-      if (imgData.title) commit('UPDATE_CURRENT_IMG_TITLE', imgData.title)
-      if (imgData.copyright) commit('UPDATE_CURRENT_IMG_COPYRIGHT', imgData.copyright)
-      if (imgData.description) commit('UPDATE_CURRENT_IMG_DESC', imgData.description)
-      if (imgData.src) commit('UPDATE_CURRENT_IMG_SRC', imgData.src)
-      if (imgData.tags) commit('UPDATE_CURRENT_IMG_TAGS', imgData.tags)
+      if (imgData.id != undefined) commit('UPDATE_CURRENT_IMG_ID', imgData.id)
+      if (imgData.name != undefined) commit('UPDATE_CURRENT_IMG_TITLE', imgData.name)
+      if (imgData.copyright != undefined) commit('UPDATE_CURRENT_IMG_COPYRIGHT', imgData.copyright)
+      if (imgData.description != undefined) commit('UPDATE_CURRENT_IMG_DESC', imgData.description)
+      if (imgData.src != undefined) commit('UPDATE_CURRENT_IMG_SRC', imgData.src)
+      if (imgData.tags_list != undefined) commit('UPDATE_CURRENT_IMG_TAGS', imgData.tags_list)
     },
     saveCurrentImg ({commit, state, getters}) {
       if (state.currentImgId) {
@@ -92,6 +87,17 @@ const mediasStore = {
         })
         .catch(reject)
       })
+    },
+    clearCurrentImg({dispatch}){
+      let clearObject = {
+        id:'',
+        name:'',
+        copyright:'',
+        description:'',
+        src:'',
+        tags_list: []
+      }
+      dispatch('setCurrentImg', clearObject)
     },
     updateSrc ({commit, state}, src) {
       commit('UPDATE_CURRENT_IMG_SRC', src)
