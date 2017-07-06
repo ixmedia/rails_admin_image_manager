@@ -21,6 +21,8 @@ module RailsAdminImageManager
 
     # == Scopes ===============================================================
 
+    scope :with_files, -> { joins(:files).distinct }
+
     # == Instance Methods =====================================================
 
     # == Class Methods ========================================================
