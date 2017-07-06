@@ -25,6 +25,11 @@ let router = new Router({
         .catch((e) => { console.log(e) })
       }
     },
+    {
+      path: '/new/',
+      name: 'createImage',
+      component: imageShow
+    }
   ]
 })
 

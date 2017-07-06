@@ -19,6 +19,9 @@ module RailsAdminImageManager
     end
 
     def create
+      @foo = Model.new
+      Model.save
+      Model.errors
     end
 
     def destroy
