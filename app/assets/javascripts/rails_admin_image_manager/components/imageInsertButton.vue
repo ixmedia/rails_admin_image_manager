@@ -6,12 +6,19 @@
 import {mapState} from 'vuex'
 
 export default {
+  props: ['id'],
   data () {
     return {}
   },
   methods: {
     insert () {
-      this.$store.dispatch('overlayStore/showInsertOverlay', true)
+      if (this.id) {
+        this.$store.dispatch('mediasStore/fetchSingleImage', this.id).then(()=> {
+          this.$store.dispatch('overlayStore/showInsertOverlay', true)
+        })
+      } else {
+        this.$store.dispatch('overlayStore/showInsertOverlay', true)
+      }
     }
   }
 }
