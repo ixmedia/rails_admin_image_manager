@@ -6,6 +6,7 @@ module RailsAdminImageManager
 
     def show
       image = {
+        id: 12,
         title: 'Ma vie en cinemascope',
         description: 'Une longue description',
         copyright: 'Un copyright',

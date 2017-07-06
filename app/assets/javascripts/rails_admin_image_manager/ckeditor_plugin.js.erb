@@ -1,0 +1,42 @@
+console.log('ben voyons');
+function addQueryString( url, params ) {
+	var queryString = [];
+	if (!params) return url;
+	else {
+		for (var i in params) queryString.push(i + "=" + encodeURIComponent( params[i]));
+	}
+	return url + ( ( url.indexOf( "?" ) != -1 ) ? "&" : "?" ) + queryString.join( "&" );
+}
+CKEDITOR.plugins.add( 'imageManager', {
+  icons: 'abbr',
+  init: function( editor ) {
+
+    editor._.insertImagefn = CKEDITOR.tools.addFunction(function(url, id, name){
+  			this.insertHtml('<img src="' + url + '" alt="" data-image-id="' + id + '" />');
+  		}, editor);
+
+
+    editor.ui.addButton( 'imageManager', {
+      label: 'Ajouter une image',
+      command: 'insertImage',
+      icon: "<%= asset_path 'rich/files.png' %>"
+    });
+
+    editor.addCommand( 'insertImage', {
+				exec: function(editor) {
+					var params = {};
+          var sel = editor.getSelection();
+          if (sel.getSelectedElement() != null && sel.getSelectedElement().$.getAttribute('data-image-id')) {
+            params.selectImage = sel.getSelectedElement().$.getAttribute('data-image-id')
+          }
+					params.CKEditor = editor.name;
+					params.CKEditorFuncNum = editor._.insertImagefn;
+
+          // TODO DYNAMIC URL
+					var url = addQueryString('/admin/image-manager/', params );
+					editor.popup(url, 1024, 700);
+				}
+			});
+
+  }
+});

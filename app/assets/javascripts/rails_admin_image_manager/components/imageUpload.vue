@@ -34,7 +34,6 @@ export default {
       })
     },
     undo() {
-      console.log(this.originalSrc);
       this.$store.dispatch('mediasStore/updateSrc', this.originalSrc)
       this.showOriginal = false
     }

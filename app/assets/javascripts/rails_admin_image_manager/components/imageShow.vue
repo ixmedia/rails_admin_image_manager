@@ -17,8 +17,8 @@
               <div class="form-group">
                 <div class="col-sm-12">
                   <div class="form-material">
-                    <input v-model="currentImgTitle" class="form-control" type="text" id="material-text" name="material-text" >
-                    <label for="material-text">Titre</label>
+                    <input v-model="currentImgTitle" class="form-control" type="text" id="image-title" name="material-text" >
+                    <label for="image-title">Titre</label>
                   </div>
                 </div>
               </div>
@@ -26,8 +26,8 @@
               <div class="form-group">
                 <div class="col-sm-12">
                   <div class="form-material">
-                    <input v-model="currentImgCopyright" class="form-control" type="text" id="material-text" name="material-text" >
-                    <label for="material-text">Copyright</label>
+                    <input v-model="currentImgCopyright" class="form-control" type="text" id="image-copyright" name="material-text" >
+                    <label for="image-copyright">Copyright</label>
                   </div>
                 </div>
               </div>
@@ -37,6 +37,12 @@
                     <textarea v-model="currentImgDescription" class="form-control" id="material-textarea-large" name="material-textarea-large" rows="8"></textarea>
                     <label for="material-textarea-large">Description</label>
                   </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-sm-12">
+                  <image-tag-selector label="Étiquettes"></image-tag-selector>
                 </div>
               </div>
 
@@ -61,9 +67,10 @@
 import {mapState} from 'vuex'
 import imageInsertButton from './imageInsertButton.vue'
 import imageUpload from './imageUpload.vue'
+import imageTagSelector from './imageTagSelector.vue'
 
 export default {
-  components: {imageInsertButton, imageUpload},
+  components: {imageInsertButton, imageUpload, imageTagSelector},
   data () {
     return {
       currentImgTitle: '',
@@ -79,6 +86,7 @@ export default {
         copyright: this.currentImgCopyright,
       }
       this.$store.dispatch('mediasStore/setCurrentImg', imgData)
+      this.$store.dispatch('mediasStore/saveCurrentImg')
     },
   },
   created () {
