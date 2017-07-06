@@ -5,6 +5,7 @@ en:
       tag: Image manager
     image_manager_picker:
       browse: Select or upload
+      deselect: Deselect this image
 
   activerecord:
     models:

@@ -16,5 +16,9 @@ module RailsAdminImageManager
       instance_eval(&RailsAdmin::Config.authorize_with)
     end
 
+    def filter_by?(param)
+      params[param].present?
+    end
+
   end
 end

@@ -15,7 +15,7 @@ RailsAdmin.config do |config|
       end
 
       field :image do
-        thumb_method :small
+        thumb_method :rails_admin
         searchable true
         filterable false
       end

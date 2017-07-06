@@ -64,9 +64,8 @@ Add the image relationship to your model:
 
 ```ruby
 class Mymodel < ApplicationRecord
-  belongs_to :image_manager_file, class_name: "RailsAdminImageManager::File"
-
-  validates_presence_of :image_manager_file_id
+  # has_managed_file :attribute_name, :attribute_id, :options
+  has_managed_file :image_manager_file, :image_manager_file_id, mandatory: false
 end
 ```
 
