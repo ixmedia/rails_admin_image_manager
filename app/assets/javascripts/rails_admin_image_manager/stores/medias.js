@@ -66,9 +66,14 @@ const mediasStore = {
     }
   },
   actions: {
-    useImage ({ commit, state }, data) {
-      window.opener.CKEDITOR.tools.callFunction(2, state.currentImgSrc, state.currentImgId, state.currentImgTitle);
-      window.close()
+    useImage ({ commit, state, dispatch}, data) {
+      dispatch('overlayStore/showProgressOverlay', true, {root:true})
+      axios.get(`/images/${state.currentImgId}?width=${data[0]}&height=${data[1]}`).then((response) => {
+        dispatch('overlayStore/showProgressOverlay', false, {root:true})
+        window.opener.CKEDITOR.tools.callFunction(2, response.data.src_for_wysiwyg, state.currentImgId, state.currentImgTitle);
+        window.close()
+      })
+      // window.close()
     },
     setCurrentImg ({commit, state}, imgData) {
       if (imgData.id != undefined) commit('UPDATE_CURRENT_IMG_ID', imgData.id)

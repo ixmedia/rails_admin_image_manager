@@ -16701,10 +16701,16 @@
 	  actions: {
 	    useImage: function useImage(_ref, data) {
 	      var commit = _ref.commit,
-	          state = _ref.state;
+	          state = _ref.state,
+	          dispatch = _ref.dispatch;
 
-	      window.opener.CKEDITOR.tools.callFunction(2, state.currentImgSrc, state.currentImgId, state.currentImgTitle);
-	      window.close();
+	      dispatch('overlayStore/showProgressOverlay', true, { root: true });
+	      _axios2.default.get("/images/" + state.currentImgId + "?width=" + data[0] + "&height=" + data[1]).then(function (response) {
+	        dispatch('overlayStore/showProgressOverlay', false, { root: true });
+	        window.opener.CKEDITOR.tools.callFunction(2, response.data.src_for_wysiwyg, state.currentImgId, state.currentImgTitle);
+	        window.close();
+	      });
+	      // window.close()
 	    },
 	    setCurrentImg: function setCurrentImg(_ref2, imgData) {
 	      var commit = _ref2.commit,
@@ -17015,7 +17021,7 @@
 	  computed: _extends({}, (0, _vuex.mapState)('overlayStore', ['showInsertOverlay']), (0, _vuex.mapState)('mediasStore', ['currentImgSrc'])),
 	  methods: {
 	    insert: function insert() {
-	      this.$store.dispatch('mediasStore/useImage', [this.width, this.height]);
+	      this.$store.dispatch('mediasStore/useImage', [this.imgWidth, this.imgHeight]);
 	      this.$store.dispatch('overlayStore/showInsertOverlay', false);
 	    },
 	    close: function close() {

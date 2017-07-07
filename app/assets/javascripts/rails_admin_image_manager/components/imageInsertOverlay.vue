@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     insert () {
-      this.$store.dispatch('mediasStore/useImage', [this.width, this.height])
+      this.$store.dispatch('mediasStore/useImage', [this.imgWidth, this.imgHeight])
       this.$store.dispatch('overlayStore/showInsertOverlay', false)
     },
     close() {

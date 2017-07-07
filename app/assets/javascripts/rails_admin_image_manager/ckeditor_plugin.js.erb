@@ -13,8 +13,8 @@ CKEDITOR.plugins.add( 'imageManager', {
   icons: 'abbr',
   init: function( editor ) {
 
-    editor._.insertImagefn = CKEDITOR.tools.addFunction(function(url, id, name){
-  			this.insertHtml('<img src="' + url + '" alt="" data-image-id="' + id + '" />');
+    editor._.insertImagefn = CKEDITOR.tools.addFunction(function(src){
+  			this.insertHtml('<img src="' + src + '" data-image-id="' + id + '" />');
   		}, editor);
 
 
