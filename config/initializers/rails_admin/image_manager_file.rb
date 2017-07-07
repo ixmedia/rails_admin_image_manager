@@ -57,7 +57,7 @@ RailsAdmin.config do |config|
       end
       field :name
       field :image
-      field :description, :ck_editor
+      field :description
       field :copyright
       field :tags
     end
