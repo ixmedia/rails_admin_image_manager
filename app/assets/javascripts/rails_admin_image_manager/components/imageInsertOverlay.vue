@@ -3,7 +3,7 @@
     <div class="image-insert-overlay form-horizontal block" v-if="showInsertOverlay">
       <button @click="close" class="image-insert-overlay__close" type="button"><i class="fa fa-times"></i></button>
       <div class="block-content">
-        <p><img src="https://unsplash.it/680/480" style="width: 100%;" alt=""></p>
+        <p><img :src="currentImgSrc" style="width: 100%;" alt=""></p>
         <div class="form-group">
           <div class="col-sm-6">
             <div class="form-material">
@@ -42,7 +42,7 @@ export default {
   },
   computed: {
     ...mapState('overlayStore', ['showInsertOverlay']),
-    ...mapState('mediasStore', ['currentImg'])
+    ...mapState('mediasStore', ['currentImgSrc'])
   },
   methods: {
     insert () {

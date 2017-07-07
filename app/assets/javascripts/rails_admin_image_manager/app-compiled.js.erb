@@ -11560,7 +11560,11 @@
 	  routes: [{
 	    path: '/',
 	    name: 'root',
-	    component: _imageListing2.default
+	    component: _imageListing2.default,
+	    beforeEnter: function beforeEnter(to, from, next) {
+	      _stores2.default.dispatch('mediasStore/clearImgListing');
+	      next();
+	    }
 	  }, {
 	    path: '/show/:id',
 	    name: 'showImage',
@@ -14687,7 +14691,6 @@
 
 	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['imageListItems'])),
 	  created: function created() {
-	    console.log(this.$router.push({ query: { page: 12 } }));
 	    this.$store.dispatch('mediasStore/fetchImageForPage', 1);
 	  }
 	};
@@ -15687,7 +15690,7 @@
 	    }, [_c('img', {
 	      staticClass: "img-responsive",
 	      attrs: {
-	        "src": "https://unsplash.it/250/250",
+	        "src": image.src,
 	        "alt": ""
 	      }
 	    }), _vm._v(" "), _c('div', {
@@ -15696,19 +15699,19 @@
 	      staticClass: "img-options-content"
 	    }, [_c('h4', {
 	      staticClass: "h6 font-w400 text-white-op push-15"
-	    }, [_vm._v("Image name")]), _vm._v(" "), _c('router-link', {
+	    }, [_vm._v(_vm._s(image.name))]), _vm._v(" "), _c('router-link', {
 	      staticClass: "btn btn-sm btn-default",
 	      attrs: {
 	        "to": {
 	          name: 'showImage',
 	          params: {
-	            id: 4
+	            id: image.id
 	          }
 	        }
 	      }
 	    }, [_vm._v("Modifier")]), _vm._v(" "), _c('image-insert-button', {
 	      attrs: {
-	        "id": "4"
+	        "id": image.id
 	      }
 	    }), _vm._v(" "), _c('a', {
 	      staticClass: "btn btn-sm btn-default",
@@ -16652,8 +16655,17 @@
 	        state.currentImgTags.push(tag);
 	      }
 	    },
+	    ADD_TO_LIST_ITEMS: function ADD_TO_LIST_ITEMS(state, items) {
+	      for (var i = 0; i < items.length; i++) {
+	        var item = items[i];
+	        state.imageListItems.push(item);
+	      }
+	    },
 	    ADD_CURRENT_IMG_TAG: function ADD_CURRENT_IMG_TAG(state, string) {
 	      state.currentImgTags.push(string);
+	    },
+	    CLEAR_IMG_LISTING: function CLEAR_IMG_LISTING(state) {
+	      state.imageListItems = [];
 	    },
 	    REMOVE_CURRENT_IMG_TAG: function REMOVE_CURRENT_IMG_TAG(state, string) {
 	      var index = state.currentImgTags.indexOf(string);
@@ -16713,8 +16725,7 @@
 	      var commit = _ref5.commit;
 
 	      _axios2.default.get('images.json', { page: pageNumber }).then(function (response) {
-	        console.log(response);
-	        // commit('ADD_TO_LIST_ITEMS', pageNumber)
+	        commit('ADD_TO_LIST_ITEMS', response.data.items);
 	      });
 	    },
 	    fetchSingleImage: function fetchSingleImage(_ref6, id) {
@@ -16740,19 +16751,24 @@
 	      };
 	      dispatch('setCurrentImg', clearObject);
 	    },
-	    updateSrc: function updateSrc(_ref8, src) {
-	      var commit = _ref8.commit,
-	          state = _ref8.state;
+	    clearImgListing: function clearImgListing(_ref8) {
+	      var commit = _ref8.commit;
+
+	      commit('CLEAR_IMG_LISTING');
+	    },
+	    updateSrc: function updateSrc(_ref9, src) {
+	      var commit = _ref9.commit,
+	          state = _ref9.state;
 
 	      commit('UPDATE_CURRENT_IMG_SRC', src);
 	    },
-	    addTag: function addTag(_ref9, string) {
-	      var commit = _ref9.commit;
+	    addTag: function addTag(_ref10, string) {
+	      var commit = _ref10.commit;
 
 	      commit('ADD_CURRENT_IMG_TAG', string);
 	    },
-	    removeTag: function removeTag(_ref10, string) {
-	      var commit = _ref10.commit;
+	    removeTag: function removeTag(_ref11, string) {
+	      var commit = _ref11.commit;
 
 	      commit('REMOVE_CURRENT_IMG_TAG', string);
 	    }
@@ -16969,7 +16985,7 @@
 	    };
 	  },
 
-	  computed: _extends({}, (0, _vuex.mapState)('overlayStore', ['showInsertOverlay']), (0, _vuex.mapState)('mediasStore', ['currentImg'])),
+	  computed: _extends({}, (0, _vuex.mapState)('overlayStore', ['showInsertOverlay']), (0, _vuex.mapState)('mediasStore', ['currentImgSrc'])),
 	  methods: {
 	    insert: function insert() {
 	      this.$store.dispatch('mediasStore/useImage', [this.width, this.height]);
@@ -17016,7 +17032,7 @@
 	      "width": "100%"
 	    },
 	    attrs: {
-	      "src": "https://unsplash.it/680/480",
+	      "src": _vm.currentImgSrc,
 	      "alt": ""
 	    }
 	  })]), _vm._v(" "), _c('div', {
