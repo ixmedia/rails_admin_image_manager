@@ -24,10 +24,11 @@ module RailsAdminImageManager
     end
 
     def show
-      image     = RailsAdminImageManager::File.select(:id, :name, :description, :copyright, :image_file_name).find_by!(id: params[:id])
-      image.src = image.image.url(:show)
+      image                 = RailsAdminImageManager::File.select(:id, :name, :description, :copyright, :image_file_name).find_by!(id: params[:id])
+      image.src             = image.image.url(:show)
+      image.src_for_wysiwyg = {width: params[:width], height: params[:height]} if filter_by?(:width) && filter_by?(:height)
 
-      render json: image, methods: [:src, :tags_list], status: :ok
+      render json: image, methods: [:src, :src_for_wysiwyg, :tags_list], status: :ok
     end
 
     def update
