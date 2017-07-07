@@ -46,6 +46,8 @@
 
 	'use strict';
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _vue = __webpack_require__(1);
 
 	var _vue2 = _interopRequireDefault(_vue);
@@ -62,6 +64,8 @@
 
 	var _router2 = _interopRequireDefault(_router);
 
+	var _vuex = __webpack_require__(44);
+
 	var _stores = __webpack_require__(63);
 
 	var _stores2 = _interopRequireDefault(_stores);
@@ -69,6 +73,10 @@
 	var _imageInsertOverlay = __webpack_require__(67);
 
 	var _imageInsertOverlay2 = _interopRequireDefault(_imageInsertOverlay);
+
+	var _progressOverlay = __webpack_require__(72);
+
+	var _progressOverlay2 = _interopRequireDefault(_progressOverlay);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -84,9 +92,10 @@
 	  _vue2.default.config.productionTip = false;
 	  var imageManager = new _vue2.default({
 	    el: '#vue-image-manager',
-	    components: { imageInsertOverlay: _imageInsertOverlay2.default },
+	    components: { imageInsertOverlay: _imageInsertOverlay2.default, progressOverlay: _progressOverlay2.default },
 	    store: _stores2.default,
 	    router: _router2.default,
+	    computed: _extends({}, (0, _vuex.mapState)('overlayStore', ['showProgress'])),
 	    mounted: function mounted() {
 	      var _this = this;
 
@@ -11570,8 +11579,12 @@
 	    name: 'showImage',
 	    component: _imageShow2.default,
 	    beforeEnter: function beforeEnter(to, from, next) {
-	      _stores2.default.dispatch('mediasStore/fetchSingleImage', to.params.id).then(next).catch(function (e) {
-	        console.log(e);
+	      _stores2.default.dispatch('overlayStore/showProgressOverlay', true);
+	      _stores2.default.dispatch('mediasStore/fetchSingleImage', to.params.id).then(function () {
+	        _stores2.default.dispatch('overlayStore/showProgressOverlay', false);
+	        next();
+	      }).catch(function (e) {
+	        console.log(e);_stores2.default.dispatch('overlayStore/showProgressOverlay', false);
 	      });
 	    }
 	  }, {
@@ -11579,7 +11592,6 @@
 	    name: 'createImage',
 	    component: _imageShow2.default,
 	    beforeEnter: function beforeEnter(to, from, next) {
-	      console.log('before');
 	      _stores2.default.dispatch('mediasStore/clearCurrentImg');
 	      next();
 	    }
@@ -16729,13 +16741,19 @@
 	      });
 	    },
 	    fetchSingleImage: function fetchSingleImage(_ref6, id) {
-	      var dispatch = _ref6.dispatch;
+	      var dispatch = _ref6.dispatch,
+	          rootDispatch = _ref6.rootDispatch;
 
+	      dispatch('overlayStore/showProgressOverlay', true, { root: true });
 	      return new Promise(function (resolve, reject) {
 	        _axios2.default.get("/images/" + id).then(function (response) {
 	          dispatch('setCurrentImg', response.data);
+	          dispatch('overlayStore/showProgressOverlay', false, { root: true });
 	          resolve();
-	        }).catch(reject);
+	        }).catch(function () {
+	          dispatch('overlayStore/showProgressOverlay', false, { root: true });
+	          reject();
+	        });
 	      });
 	    },
 	    clearCurrentImg: function clearCurrentImg(_ref7) {
@@ -16789,11 +16807,15 @@
 	var overlayStore = {
 	  namespaced: true,
 	  state: {
-	    showInsertOverlay: false
+	    showInsertOverlay: false,
+	    showProgress: false
 	  },
 	  mutations: {
 	    SET_SHOW_INSERT_OVERLAY: function SET_SHOW_INSERT_OVERLAY(state, value) {
 	      state.showInsertOverlay = value;
+	    },
+	    SET_SHOW_PROGRESS_OVERLAY: function SET_SHOW_PROGRESS_OVERLAY(state, value) {
+	      state.showProgress = value;
 	    }
 	  },
 	  actions: {
@@ -16801,8 +16823,13 @@
 	      var commit = _ref.commit,
 	          state = _ref.state;
 
-	      state.showInsertOverlay;
 	      commit('SET_SHOW_INSERT_OVERLAY', value);
+	    },
+	    showProgressOverlay: function showProgressOverlay(_ref2, value) {
+	      var commit = _ref2.commit,
+	          state = _ref2.state;
+
+	      commit('SET_SHOW_PROGRESS_OVERLAY', value);
 	    }
 	  }
 	};
@@ -17136,6 +17163,150 @@
 	  module.hot.accept()
 	  if (module.hot.data) {
 	     require("vue-hot-reload-api").rerender("data-v-585a831c", module.exports)
+	  }
+	}
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var disposed = false
+	function injectStyle (ssrContext) {
+	  if (disposed) return
+	  __webpack_require__(73)
+	}
+	var Component = __webpack_require__(38)(
+	  /* script */
+	  __webpack_require__(75),
+	  /* template */
+	  __webpack_require__(76),
+	  /* styles */
+	  injectStyle,
+	  /* scopeId */
+	  null,
+	  /* moduleIdentifier (server only) */
+	  null
+	)
+	Component.options.__file = "/Users/lpdumas/vm/www/rails_admin_image_manager/app/assets/javascripts/rails_admin_image_manager/components/progressOverlay.vue"
+	if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+	if (Component.options.functional) {console.error("[vue-loader] progressOverlay.vue: functional components are not supported with templates, they should use render functions.")}
+
+	/* hot reload */
+	if (false) {(function () {
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  module.hot.accept()
+	  if (!module.hot.data) {
+	    hotAPI.createRecord("data-v-3ae986b3", Component.options)
+	  } else {
+	    hotAPI.reload("data-v-3ae986b3", Component.options)
+	  }
+	  module.hot.dispose(function (data) {
+	    disposed = true
+	  })
+	})()}
+
+	module.exports = Component.exports
+
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(74);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	if(content.locals) module.exports = content.locals;
+	// add the styles to the DOM
+	var update = __webpack_require__(36)("b5b9bbd2", content, false);
+	// Hot Module Replacement
+	if(false) {
+	 // When the styles change, update the <style> tags
+	 if(!content.locals) {
+	   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-3ae986b3\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/sass-loader/lib/loader.js?indentedSyntax!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./progressOverlay.vue", function() {
+	     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-3ae986b3\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/sass-loader/lib/loader.js?indentedSyntax!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./progressOverlay.vue");
+	     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+	     update(newContent);
+	   });
+	 }
+	 // When the module is disposed, remove the <style> tags
+	 module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(35)(undefined);
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n.progress-overlay {\n  position: fixed;\n  top: 0;\n  width: 100%;\n}\n.fade-enter-active, .fade-leave-active {\n  transition: opacity .150s;\n}\n.fade-enter, .fade-leave-to {\n  opacity: 0;\n}\n.image-insert-overlay__close {\n  position: absolute;\n  top: 0;\n  right: 0;\n  background-color: transparent;\n  border: none;\n}\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	var _vuex = __webpack_require__(44);
+
+	exports.default = {
+	  computed: _extends({}, (0, _vuex.mapState)('overlayStore', ['showProgress']))
+	};
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _c('transition', {
+	    attrs: {
+	      "name": "fade"
+	    }
+	  }, [(_vm.showProgress) ? _c('div', {
+	    staticClass: "progress-overlay progress active",
+	    staticStyle: {
+	      "height": "6px"
+	    }
+	  }, [_c('div', {
+	    staticClass: "progress-bar progress-bar-success progress-bar-striped",
+	    staticStyle: {
+	      "width": "100%"
+	    },
+	    attrs: {
+	      "role": "progressbar",
+	      "aria-valuenow": "100",
+	      "aria-valuemin": "0",
+	      "aria-valuemax": "100"
+	    }
+	  })]) : _vm._e()])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+	if (false) {
+	  module.hot.accept()
+	  if (module.hot.data) {
+	     require("vue-hot-reload-api").rerender("data-v-3ae986b3", module.exports)
 	  }
 	}
 

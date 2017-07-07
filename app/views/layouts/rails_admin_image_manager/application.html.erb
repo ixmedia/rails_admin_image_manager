@@ -15,7 +15,8 @@
   <%== (params["selectImage"].present?) ? " ck-selected-image-id=\"#{params["selectImage"]}\"" : '' %>
   >
   <%= yield %>
-  <image-insert-overlay/>
+  <progress-overlay></progress-overlay>
+  <image-insert-overlay></image-insert-overlay>
 </div>
 
 </body>

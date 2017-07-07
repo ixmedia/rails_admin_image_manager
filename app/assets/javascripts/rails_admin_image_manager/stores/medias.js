@@ -94,14 +94,19 @@ const mediasStore = {
         commit('ADD_TO_LIST_ITEMS', response.data.items)
       })
     },
-    fetchSingleImage({ dispatch }, id) {
+    fetchSingleImage({ dispatch, rootDispatch}, id) {
+      dispatch('overlayStore/showProgressOverlay', true, {root:true})
       return new Promise((resolve, reject) => {
         axios.get(`/images/${id}`)
         .then((response) => {
           dispatch('setCurrentImg', response.data)
+          dispatch('overlayStore/showProgressOverlay', false, {root:true})
           resolve()
         })
-        .catch(reject)
+        .catch(()=> {
+          dispatch('overlayStore/showProgressOverlay', false, {root:true})
+          reject()
+        })
       })
     },
     clearCurrentImg({dispatch}){

@@ -24,9 +24,13 @@ let router = new Router({
       name: 'showImage',
       component: imageShow,
       beforeEnter: (to, from, next) => {
+        store.dispatch('overlayStore/showProgressOverlay', true)
         store.dispatch('mediasStore/fetchSingleImage', to.params.id)
-        .then(next)
-        .catch((e) => { console.log(e) })
+        .then(() => {
+          store.dispatch('overlayStore/showProgressOverlay', false)
+          next()
+        })
+        .catch((e) => { console.log(e); store.dispatch('overlayStore/showProgressOverlay', false); })
       }
     },
     {
@@ -34,7 +38,6 @@ let router = new Router({
       name: 'createImage',
       component: imageShow,
       beforeEnter: (to, from, next) => {
-        console.log('before');
         store.dispatch('mediasStore/clearCurrentImg')
         next()
       }

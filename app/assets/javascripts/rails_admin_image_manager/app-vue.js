@@ -3,9 +3,11 @@ import axios from 'axios'
 import vueAxios from 'vue-axios'
 import router from './router'
 
+import {mapState} from 'vuex'
 import store from './stores'
 
 import imageInsertOverlay from './components/imageInsertOverlay.vue'
+import progressOverlay from './components/progressOverlay.vue'
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -19,9 +21,12 @@ document.addEventListener("DOMContentLoaded", function() {
   Vue.config.productionTip = false
   const imageManager = new Vue({
     el: '#vue-image-manager',
-    components: {imageInsertOverlay},
+    components: {imageInsertOverlay, progressOverlay},
     store: store,
     router,
+    computed: {
+      ...mapState('overlayStore', ['showProgress'])
+    },
     mounted: function () {
       // Checking if we are from CKEDITOR
       if (this.$el.attributes['ck-fn'] !== undefined && this.$el.attributes['ck-id'] !== undefined) {
