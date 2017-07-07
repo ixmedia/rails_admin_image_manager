@@ -2,7 +2,7 @@
 
 <%= form.send field.view_helper, field.method_name, field.html_attributes.merge({style: (field.editor_options[:hidden_input]==true ? "visibility:hidden;position:absolute" : "")}) %>
 
-<%= link_to t('admin.image_manager_picker.browse').capitalize, RailsAdminImageManager.editor[:imageManagerBrowserUrl], class: "btn btn-default" %>
+<%= link_to t(field.value.present? ? 'admin.image_manager_picker.edit' : 'admin.image_manager_picker.browse').capitalize, RailsAdminImageManager.editor[:imageManagerBrowserUrl], class: "btn btn-default" %>
 
 <%= image_tag field.preview_image_path, style: "padding: 10px 0; display: block;" %>
 
