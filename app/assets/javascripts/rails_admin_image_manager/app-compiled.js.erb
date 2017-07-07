@@ -16689,12 +16689,14 @@
 	  getters: {
 	    imageObject: function imageObject(state) {
 	      return {
-	        id: state.currentImgId,
-	        name: state.currentImgTitle,
-	        copyright: state.currentImgCopyright,
-	        description: state.currentImgDescription,
-	        src: state.currentImgSrc,
-	        tags_list: state.currentImgTags
+	        image: {
+	          id: state.currentImgId,
+	          name: state.currentImgTitle,
+	          copyright: state.currentImgCopyright,
+	          description: state.currentImgDescription,
+	          src: state.currentImgSrc,
+	          tags_list: state.currentImgTags
+	        }
 	      };
 	    }
 	  },
@@ -16730,10 +16732,20 @@
 	          state = _ref3.state,
 	          getters = _ref3.getters;
 
-	      if (state.currentImgId) {
-	        _axios2.default.put('/images', getters.imageObject);
+	      console.log(state.currentImgId);
+	      if (state.currentImgId != '') {
+	        console.log('in if');
+	        _axios2.default.put('/images', getters.imageObject).then(function (response) {
+	          console.log(response);
+	        }).catch(function (response) {
+	          console.log(response);
+	        });
 	      } else {
-	        _axios2.default.post('/images', getters.imageObject);
+	        _axios2.default.post('/images', getters.imageObject).then(function (response) {
+	          console.log(response);
+	        }).catch(function (response) {
+	          console.log(response);
+	        });
 	      }
 	    },
 	    deleteImg: function deleteImg(_ref4, id) {

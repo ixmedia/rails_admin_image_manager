@@ -35,10 +35,20 @@ module RailsAdminImageManager
     end
 
     def create
+      image = RailsAdminImageManager::File.new(images_params)
+      if image.save()
+        render json: image, status: :ok
+      else
+        p image.errors
+        render json: image, status: :unprocessable_entity
+      end
     end
 
     def destroy
     end
 
+    def images_params
+      params.require(:image).permit(:id, :name, :description, :copyright, :src)
+    end
   end
 end

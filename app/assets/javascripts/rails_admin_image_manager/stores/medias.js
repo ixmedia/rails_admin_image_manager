@@ -56,12 +56,14 @@ const mediasStore = {
   getters: {
     imageObject: (state) => {
       return {
-        id: state.currentImgId,
-        name: state.currentImgTitle,
-        copyright: state.currentImgCopyright,
-        description: state.currentImgDescription,
-        src: state.currentImgSrc,
-        tags_list: state.currentImgTags
+        image: {
+          id: state.currentImgId,
+          name: state.currentImgTitle,
+          copyright: state.currentImgCopyright,
+          description: state.currentImgDescription,
+          src: state.currentImgSrc,
+          tags_list: state.currentImgTags
+        }
       }
     }
   },
@@ -86,10 +88,20 @@ const mediasStore = {
       if (imgData.tags_list != undefined) commit('UPDATE_CURRENT_IMG_TAGS', imgData.tags_list)
     },
     saveCurrentImg ({commit, state, getters}) {
-      if (state.currentImgId) {
-        axios.put('/images',getters.imageObject)
+      console.log(state.currentImgId);
+      if (state.currentImgId != '') {
+        console.log('in if');
+        axios.put('/images', getters.imageObject).then((response)=> {
+          console.log(response);
+        }).catch((response) => {
+          console.log(response);
+        })
       } else {
-        axios.post('/images',getters.imageObject)
+        axios.post('/images',getters.imageObject).then((response)=> {
+          console.log(response);
+        }).catch((response) => {
+          console.log(response);
+        })
       }
     },
     deleteImg ({ commit }, id) {
