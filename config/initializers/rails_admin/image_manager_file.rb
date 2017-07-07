@@ -56,15 +56,19 @@ RailsAdmin.config do |config|
         end
       end
       field :name
-      field :image
-      field :description, :ck_editor
+      field :image do
+        thumb_method :show
+      end
+      field :description
       field :copyright
       field :tags
     end
 
     show do
       field :name
-      field :image
+      field :image do
+        thumb_method :show
+      end
       field :tags
       field :created_at
       field :updated_at

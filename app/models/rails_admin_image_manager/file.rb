@@ -14,6 +14,7 @@ module RailsAdminImageManager
     has_dynamic_attached_file :image, styles: { show: '680x480', index: '250x250#', rails_admin: '75x75' }
 
     attr_accessor :src
+    attr_accessor :src_for_wysiwyg
 
     # == Callbacks ============================================================
 
@@ -41,6 +42,12 @@ module RailsAdminImageManager
       rescue
         return false
       end
+    end
+
+    def src_for_wysiwyg=(params)
+      width   = params[:width].to_i
+      height  = params[:height].to_i
+      @src_for_wysiwyg = image.dynamic_url("#{width}x#{height}") if width > 0 && height > 0
     end
 
     def tags_list

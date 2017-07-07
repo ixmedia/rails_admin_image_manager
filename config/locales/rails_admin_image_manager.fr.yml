@@ -4,7 +4,8 @@ fr:
       file: Gestionnaire d'images
       tag: Gestionnaire d'images
     image_manager_picker:
-      browse: Sélectionner ou télécharger
+      browse: Sélectionner ou télécharger une image
+      edit: Sélectionner ou télécharger une autre image
       deselect: Désélectionner cette image
 
   activerecord:

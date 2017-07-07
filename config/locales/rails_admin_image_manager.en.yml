@@ -4,7 +4,8 @@ en:
       file: Image manager
       tag: Image manager
     image_manager_picker:
-      browse: Select or upload
+      browse: Select or upload an image
+      edit: Select or upload an other image
       deselect: Deselect this image
 
   activerecord:

@@ -1,5 +1,5 @@
 module RailsAdminImageManager
-  class HomeController < ApplicationController
+  class HomeController < RailsAdminImageManager::ApplicationController
 
     def index
       redirect_to image_manager_index_path
