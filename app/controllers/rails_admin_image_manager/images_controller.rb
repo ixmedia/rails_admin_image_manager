@@ -1,5 +1,5 @@
 module RailsAdminImageManager
-  class ImagesController < ApplicationController
+  class ImagesController < RailsAdminImageManager::ApplicationController
 
     def index
       respond_to do |format|
