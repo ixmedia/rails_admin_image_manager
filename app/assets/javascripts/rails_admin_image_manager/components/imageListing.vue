@@ -23,12 +23,12 @@
         <div class="row items-push">
           <div class="image-element col-lg-2 col-md-3 col-sm-4 col-xs-6" v-for="(image, key) in imageListItems">
             <div class="img-container">
-              <img class="img-responsive" src="https://unsplash.it/250/250" alt="">
+              <img class="img-responsive" :src="image.src" alt="">
               <div class="img-options">
                 <div class="img-options-content">
-                  <h4 class="h6 font-w400 text-white-op push-15">Image name</h4>
-                  <router-link class="btn btn-sm btn-default" :to="{ name: 'showImage', params: { id: 4 }}">Modifier</router-link>
-                  <image-insert-button id="4"/>
+                  <h4 class="h6 font-w400 text-white-op push-15">{{ image.name }}</h4>
+                  <router-link class="btn btn-sm btn-default" :to="{ name: 'showImage', params: { id: image.id }}">Modifier</router-link>
+                  <image-insert-button :id="image.id"/>
                   <a class="btn btn-sm btn-default" href="javascript:void(0)">Supprimer</a>
                 </div>
               </div>
@@ -55,7 +55,6 @@ export default {
     ...mapState('mediasStore', ['imageListItems'])
   },
   created() {
-    console.log(this.$router.push({query: {page: 12}}));
     this.$store.dispatch('mediasStore/fetchImageForPage', 1)
   }
 }

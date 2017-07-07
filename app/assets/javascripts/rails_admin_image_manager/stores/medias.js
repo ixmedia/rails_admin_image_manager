@@ -34,8 +34,17 @@ const mediasStore = {
         state.currentImgTags.push(tag)
       }
     },
+    ADD_TO_LIST_ITEMS(state, items) {
+      for (var i = 0; i < items.length; i++) {
+        let item = items[i]
+        state.imageListItems.push(item)
+      }
+    },
     ADD_CURRENT_IMG_TAG(state, string) {
       state.currentImgTags.push(string)
+    },
+    CLEAR_IMG_LISTING(state){
+      state.imageListItems = []
     },
     REMOVE_CURRENT_IMG_TAG(state, string) {
       let index = state.currentImgTags.indexOf(string)
@@ -82,8 +91,7 @@ const mediasStore = {
     fetchImageForPage({commit}, pageNumber) {
       axios.get('images.json', {page: pageNumber})
       .then((response) => {
-        console.log(response);
-        // commit('ADD_TO_LIST_ITEMS', pageNumber)
+        commit('ADD_TO_LIST_ITEMS', response.data.items)
       })
     },
     fetchSingleImage({ dispatch }, id) {
@@ -106,6 +114,9 @@ const mediasStore = {
         tags_list: []
       }
       dispatch('setCurrentImg', clearObject)
+    },
+    clearImgListing({ commit }){
+      commit('CLEAR_IMG_LISTING')
     },
     updateSrc ({commit, state}, src) {
       commit('UPDATE_CURRENT_IMG_SRC', src)

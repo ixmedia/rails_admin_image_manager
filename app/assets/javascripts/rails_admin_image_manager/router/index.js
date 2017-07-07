@@ -14,6 +14,10 @@ let router = new Router({
       path: '/',
       name: 'root',
       component: imageListing,
+      beforeEnter: (to, from, next) => {
+        store.dispatch('mediasStore/clearImgListing')
+        next()
+      }
     },
     {
       path: '/show/:id',
