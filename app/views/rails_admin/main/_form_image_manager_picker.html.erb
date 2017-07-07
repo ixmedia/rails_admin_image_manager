@@ -2,13 +2,13 @@
 
 <%= form.send field.view_helper, field.method_name, field.html_attributes.merge({style: (field.editor_options[:hidden_input]==true ? "visibility:hidden;position:absolute" : "")}) %>
 
-<%= link_to t('admin.image_manager_picker.browse').capitalize, RailsAdminImageManager.editor[:imageManagerBrowserUrl], class: "btn create" %>
+<%= link_to t('admin.image_manager_picker.browse').capitalize, RailsAdminImageManager.editor[:imageManagerBrowserUrl], class: "btn btn-default" %>
 
 <%= image_tag field.preview_image_path, style: "padding: 10px 0; display: block;" %>
 
 <% if field.value.present? && !form.object.class.managed_file_is_mandatory?(field.method_name) %>
-  <a class="btn btn-info" data-toggle="button" href="#" onclick="$(this).siblings('[type=checkbox]').click(); $(this).siblings('.toggle').toggle('slow'); jQuery(this).toggleClass('btn-danger btn-info'); return false">
-    <i class="icon-white icon-trash"></i>
+  <a class="btn btn-default" data-toggle="button" href="#" onclick="$(this).siblings('[type=checkbox]').click(); $(this).siblings('.toggle').toggle('slow'); jQuery(this).toggleClass('btn-danger btn-info'); return false">
+    <i class="icon-black icon-trash"></i>
     <%= t('admin.image_manager_picker.deselect') %>
   </a>
   <%= form.check_box field.delete_method, style: 'display:none;' %>
