@@ -56,7 +56,9 @@ RailsAdmin.config do |config|
         end
       end
       field :name
-      field :image
+      field :image do
+        thumb_method :show
+      end
       field :description
       field :copyright
       field :tags
@@ -64,7 +66,9 @@ RailsAdmin.config do |config|
 
     show do
       field :name
-      field :image
+      field :image do
+        thumb_method :show
+      end
       field :tags
       field :created_at
       field :updated_at
