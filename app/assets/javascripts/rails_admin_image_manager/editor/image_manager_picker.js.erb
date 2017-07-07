@@ -12,8 +12,11 @@ rails_admin_image_manager.AssetPicker.prototype = {
 	showFinder: function(dom_id, options, file_id){
 		// open a popup
 		var params = {};
-		params.CKEditor			= 'picker'; // this is not CKEditor
-		params.selectImage	= file_id;
+		params.CKEditor = 'picker'; // this is not CKEditor
+
+		if (file_id > 0) {
+			params.selectImage = file_id;
+		}
 
 		var url = addQueryString('<%= image_manager_index_path %>', params);
 		window.open(url, 'filebrowser', "resizable=yes,scrollbars=yes,width=1024,height=700")
