@@ -12,6 +12,10 @@ module RailsAdminImageManager
           images  = images.filter_by_text(params[:search]) if filter_by?(:search)
           images  = images.filter_by_tags(params[:tags].split(',').map{|i| i.to_i }) if filter_by?(:tags)
 
+          images.each do |image|
+              image.src = image.image.url(:index)
+          end
+
           data    = { items: images, total_count: images.total_count, limit_value: images.limit_value }
 
           render json: data, methods: [:src, :tags_list], status: :ok
