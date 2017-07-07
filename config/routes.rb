@@ -6,4 +6,6 @@ RailsAdminImageManager::Engine.routes.draw do
   post '/images'    => 'images#create'
   delete '/images'  => 'images#destroy'
 
+
+
 end

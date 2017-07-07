@@ -1,4 +1,3 @@
-console.log('ben voyons');
 function addQueryString( url, params ) {
 	var queryString = [];
 	if (!params) return url;
@@ -7,6 +6,7 @@ function addQueryString( url, params ) {
 	}
 	return url + ( ( url.indexOf( "?" ) != -1 ) ? "&" : "?" ) + queryString.join( "&" );
 }
+
 CKEDITOR.plugins.add( 'imageManager', {
   icons: 'abbr',
   init: function( editor ) {
@@ -33,7 +33,7 @@ CKEDITOR.plugins.add( 'imageManager', {
 					params.CKEditorFuncNum = editor._.insertImagefn;
 
           // TODO DYNAMIC URL
-					var url = addQueryString('/admin/image-manager/', params );
+					var url = addQueryString('/admin/image-manager/images', params );
 					editor.popup(url, 1024, 700);
 				}
 			});
