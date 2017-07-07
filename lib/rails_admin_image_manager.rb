@@ -16,7 +16,7 @@ module RailsAdminImageManager
   # Configuration defaults (these map directly to ckeditor settings)
   mattr_accessor :editor
   @@editor = {
-    :imageManagerBrowserUrl => '/admin/image_manager/',
+    imageManagerBrowserUrl: '/admin/image_manager/',
   }
   # End configuration defaults
 
@@ -27,9 +27,9 @@ module RailsAdminImageManager
     # merge in editor settings configured elsewhere
 
     base = {
-      :placeholder_image => self.placeholder_image,
-      :hidden_input => self.hidden_input,
-      :paginates_per => self.paginates_per
+      placeholder_image:  self.placeholder_image,
+      hidden_input:       self.hidden_input,
+      paginates_per:      self.paginates_per
     }
     editor_options = self.editor.merge(base)
 

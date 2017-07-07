@@ -29,7 +29,7 @@ CKEDITOR.plugins.add( 'imageManager', {
 					var params = {};
           var sel = editor.getSelection();
           if (sel.getSelectedElement() != null && sel.getSelectedElement().$.getAttribute('data-image-id')) {
-            params.selectImage = sel.getSelectedElement().$.getAttribute('data-image-id')
+            params.selectImage = sel.getSelectedElement().$.getAttribute('data-image-id');
           }
 					params.CKEditor = editor.name;
 					params.CKEditorFuncNum = editor._.insertImagefn;

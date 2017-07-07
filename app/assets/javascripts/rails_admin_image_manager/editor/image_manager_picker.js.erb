@@ -1,3 +1,5 @@
+<% self.class.include RailsAdminImageManager::Engine.routes.url_helpers %>
+
 // Direct asset picker
 
 var rails_admin_image_manager = rails_admin_image_manager || {};
@@ -7,22 +9,13 @@ rails_admin_image_manager.AssetPicker = function(){
 
 rails_admin_image_manager.AssetPicker.prototype = {
 
-	showFinder: function(dom_id, options){
+	showFinder: function(dom_id, options, file_id){
 		// open a popup
 		var params = {};
-		params.CKEditor = 'picker'; // this is not CKEditor
-		params.default_style = options.default_style;
-		params.allowed_styles = options.allowed_styles;
-		params.insert_many = options.insert_many;
-		params.type = options.type || "image";
-		params.viewMode = options.view_mode || "grid";
-		params.scoped = options.scoped || false;
-		if(params.scoped == true) {
-			params.scope_type = options.scope_type
-			params.scope_id = options.scope_id;
-		}
-		params.dom_id = dom_id;
-		var url = addQueryString(options.imageManagerBrowserUrl, params);
+		params.CKEditor			= 'picker'; // this is not CKEditor
+		params.selectImage	= file_id;
+
+		var url = addQueryString('<%= image_manager_index_path %>', params);
 		window.open(url, 'filebrowser', "resizable=yes,scrollbars=yes,width=860,height=500")
   },
 
@@ -34,7 +27,7 @@ rails_admin_image_manager.AssetPicker.prototype = {
 			$(dom_id).val(asset);
 		}
 
-    if(type=='image') {
+    if (type=='image') {
 		  $(dom_id).siblings('img.rich-image-preview').first().attr({src: asset});
     }
   }
