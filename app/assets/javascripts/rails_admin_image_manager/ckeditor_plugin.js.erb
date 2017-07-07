@@ -1,3 +1,5 @@
+<% self.class.include RailsAdminImageManager::Engine.routes.url_helpers %>
+
 function addQueryString( url, params ) {
 	var queryString = [];
 	if (!params) return url;
@@ -32,8 +34,7 @@ CKEDITOR.plugins.add( 'imageManager', {
 					params.CKEditor = editor.name;
 					params.CKEditorFuncNum = editor._.insertImagefn;
 
-          // TODO DYNAMIC URL
-					var url = addQueryString('/admin/image-manager/images', params );
+					var url = addQueryString('<%= image_manager_index_path %>', params);
 					editor.popup(url, 1024, 700);
 				}
 			});
