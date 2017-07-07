@@ -16702,15 +16702,17 @@
 	    useImage: function useImage(_ref, data) {
 	      var commit = _ref.commit,
 	          state = _ref.state,
-	          dispatch = _ref.dispatch;
+	          dispatch = _ref.dispatch,
+	          rootState = _ref.rootState;
 
 	      dispatch('overlayStore/showProgressOverlay', true, { root: true });
+
+	      // Generating new dynamic image size before sending it back to CKEDITOR
 	      _axios2.default.get("/images/" + state.currentImgId + "?width=" + data[0] + "&height=" + data[1]).then(function (response) {
 	        dispatch('overlayStore/showProgressOverlay', false, { root: true });
-	        window.opener.CKEDITOR.tools.callFunction(2, response.data.src_for_wysiwyg, state.currentImgId, state.currentImgTitle);
+	        window.opener.CKEDITOR.tools.callFunction(rootState.ckEditorStore.ckId, response.data.src_for_wysiwyg, state.currentImgId, state.currentImgTitle);
 	        window.close();
 	      });
-	      // window.close()
 	    },
 	    setCurrentImg: function setCurrentImg(_ref2, imgData) {
 	      var commit = _ref2.commit,
