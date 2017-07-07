@@ -8,7 +8,7 @@
 </head>
 <body>
   <script type="text/javascript">
-    window.AJAX_ENDPOINT = "<%= image_manager_index_path %>"
+    window.AJAX_ENDPOINT = "<%= root_path %>"
   </script>
 <div id="vue-image-manager" data-default-path="<%= images_path %>"
   <%== (params["CKEditor"].present?) ? "ck-id=\"#{params["CKEditor"]}\" ck-fn=\"#{params["CKEditorFuncNum"]}\"" : '' %>

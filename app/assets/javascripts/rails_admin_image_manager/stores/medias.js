@@ -8,7 +8,8 @@ const mediasStore = {
     currentImgCopyright: "",
     currentImgDescription: "",
     currentImgSrc: "",
-    currentImgTags: []
+    currentImgTags: [],
+    imageListItems: []
   },
   mutations: {
     UPDATE_CURRENT_IMG_ID (state, id) {
@@ -57,7 +58,7 @@ const mediasStore = {
   },
   actions: {
     useImage ({ commit, state }, data) {
-      window.opener.CKEDITOR.tools.callFunction(2, state.currentImgSrc, 2, state.currentImgTitle);
+      window.opener.CKEDITOR.tools.callFunction(2, state.currentImgSrc, state.currentImgId, state.currentImgTitle);
       window.close()
     },
     setCurrentImg ({commit, state}, imgData) {
@@ -70,17 +71,24 @@ const mediasStore = {
     },
     saveCurrentImg ({commit, state, getters}) {
       if (state.currentImgId) {
-        axios.put('/',getters.imageObject)
+        axios.put('/images',getters.imageObject)
       } else {
-        axios.post('/',getters.imageObject)
+        axios.post('/images',getters.imageObject)
       }
     },
     deleteImg ({ commit }, id) {
       axios.delete({params: {id: id}})
     },
+    fetchImageForPage({commit}, pageNumber) {
+      axios.get('images.json', {page: pageNumber})
+      .then((response) => {
+        console.log(response);
+        // commit('ADD_TO_LIST_ITEMS', pageNumber)
+      })
+    },
     fetchSingleImage({ dispatch }, id) {
       return new Promise((resolve, reject) => {
-        axios.get(`/${id}`)
+        axios.get(`/images/${id}`)
         .then((response) => {
           dispatch('setCurrentImg', response.data)
           resolve()

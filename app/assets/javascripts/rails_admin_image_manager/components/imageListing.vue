@@ -21,14 +21,14 @@
           </div>
         </div>
         <div class="row items-push">
-          <div class="image-element col-lg-2 col-md-3 col-sm-4 col-xs-6" v-for="(image, key) in images">
+          <div class="image-element col-lg-2 col-md-3 col-sm-4 col-xs-6" v-for="(image, key) in imageListItems">
             <div class="img-container">
               <img class="img-responsive" src="https://unsplash.it/250/250" alt="">
               <div class="img-options">
                 <div class="img-options-content">
                   <h4 class="h6 font-w400 text-white-op push-15">Image name</h4>
                   <router-link class="btn btn-sm btn-default" :to="{ name: 'showImage', params: { id: 4 }}">Modifier</router-link>
-                  <image-insert-button id="12"/>
+                  <image-insert-button id="4"/>
                   <a class="btn btn-sm btn-default" href="javascript:void(0)">Supprimer</a>
                 </div>
               </div>
@@ -43,12 +43,20 @@
 
 <script>
 import imageInsertButton from './imageInsertButton.vue'
+import {mapState} from 'vuex'
 export default {
   components: {imageInsertButton},
   data () {
     return {
       images: [0, 1, 3, 4, 5, 6, 7, 8, 9]
     }
+  },
+  computed: {
+    ...mapState('mediasStore', ['imageListItems'])
+  },
+  created() {
+    console.log(this.$router.push({query: {page: 12}}));
+    this.$store.dispatch('mediasStore/fetchImageForPage', 1)
   }
 }
 </script>

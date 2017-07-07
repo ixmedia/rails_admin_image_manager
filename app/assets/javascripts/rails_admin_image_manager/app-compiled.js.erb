@@ -14625,9 +14625,55 @@
 	  value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
 	var _imageInsertButton = __webpack_require__(40);
 
 	var _imageInsertButton2 = _interopRequireDefault(_imageInsertButton);
+
+	var _vuex = __webpack_require__(44);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -14637,50 +14683,14 @@
 	    return {
 	      images: [0, 1, 3, 4, 5, 6, 7, 8, 9]
 	    };
+	  },
+
+	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['imageListItems'])),
+	  created: function created() {
+	    console.log(this.$router.push({ query: { page: 12 } }));
+	    this.$store.dispatch('mediasStore/fetchImageForPage', 1);
 	  }
-	}; //
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
+	};
 
 /***/ }),
 /* 40 */
@@ -15669,7 +15679,7 @@
 	    staticClass: "fa fa-plus"
 	  }), _vm._v(" Ajouter une image\n          ")])], 1)])]), _vm._v(" "), _c('div', {
 	    staticClass: "row items-push"
-	  }, _vm._l((_vm.images), function(image, key) {
+	  }, _vm._l((_vm.imageListItems), function(image, key) {
 	    return _c('div', {
 	      staticClass: "image-element col-lg-2 col-md-3 col-sm-4 col-xs-6"
 	    }, [_c('div', {
@@ -15698,7 +15708,7 @@
 	      }
 	    }, [_vm._v("Modifier")]), _vm._v(" "), _c('image-insert-button', {
 	      attrs: {
-	        "id": "12"
+	        "id": "4"
 	      }
 	    }), _vm._v(" "), _c('a', {
 	      staticClass: "btn btn-sm btn-default",
@@ -16616,7 +16626,8 @@
 	    currentImgCopyright: "",
 	    currentImgDescription: "",
 	    currentImgSrc: "",
-	    currentImgTags: []
+	    currentImgTags: [],
+	    imageListItems: []
 	  },
 	  mutations: {
 	    UPDATE_CURRENT_IMG_ID: function UPDATE_CURRENT_IMG_ID(state, id) {
@@ -16668,7 +16679,7 @@
 	      var commit = _ref.commit,
 	          state = _ref.state;
 
-	      window.opener.CKEDITOR.tools.callFunction(2, state.currentImgSrc, 2, state.currentImgTitle);
+	      window.opener.CKEDITOR.tools.callFunction(2, state.currentImgSrc, state.currentImgId, state.currentImgTitle);
 	      window.close();
 	    },
 	    setCurrentImg: function setCurrentImg(_ref2, imgData) {
@@ -16688,9 +16699,9 @@
 	          getters = _ref3.getters;
 
 	      if (state.currentImgId) {
-	        _axios2.default.put('/', getters.imageObject);
+	        _axios2.default.put('/images', getters.imageObject);
 	      } else {
-	        _axios2.default.post('/', getters.imageObject);
+	        _axios2.default.post('/images', getters.imageObject);
 	      }
 	    },
 	    deleteImg: function deleteImg(_ref4, id) {
@@ -16698,18 +16709,26 @@
 
 	      _axios2.default.delete({ params: { id: id } });
 	    },
-	    fetchSingleImage: function fetchSingleImage(_ref5, id) {
-	      var dispatch = _ref5.dispatch;
+	    fetchImageForPage: function fetchImageForPage(_ref5, pageNumber) {
+	      var commit = _ref5.commit;
+
+	      _axios2.default.get('images.json', { page: pageNumber }).then(function (response) {
+	        console.log(response);
+	        // commit('ADD_TO_LIST_ITEMS', pageNumber)
+	      });
+	    },
+	    fetchSingleImage: function fetchSingleImage(_ref6, id) {
+	      var dispatch = _ref6.dispatch;
 
 	      return new Promise(function (resolve, reject) {
-	        _axios2.default.get("/" + id).then(function (response) {
+	        _axios2.default.get("/images/" + id).then(function (response) {
 	          dispatch('setCurrentImg', response.data);
 	          resolve();
 	        }).catch(reject);
 	      });
 	    },
-	    clearCurrentImg: function clearCurrentImg(_ref6) {
-	      var dispatch = _ref6.dispatch;
+	    clearCurrentImg: function clearCurrentImg(_ref7) {
+	      var dispatch = _ref7.dispatch;
 
 	      var clearObject = {
 	        id: '',
@@ -16721,19 +16740,19 @@
 	      };
 	      dispatch('setCurrentImg', clearObject);
 	    },
-	    updateSrc: function updateSrc(_ref7, src) {
-	      var commit = _ref7.commit,
-	          state = _ref7.state;
+	    updateSrc: function updateSrc(_ref8, src) {
+	      var commit = _ref8.commit,
+	          state = _ref8.state;
 
 	      commit('UPDATE_CURRENT_IMG_SRC', src);
 	    },
-	    addTag: function addTag(_ref8, string) {
-	      var commit = _ref8.commit;
+	    addTag: function addTag(_ref9, string) {
+	      var commit = _ref9.commit;
 
 	      commit('ADD_CURRENT_IMG_TAG', string);
 	    },
-	    removeTag: function removeTag(_ref9, string) {
-	      var commit = _ref9.commit;
+	    removeTag: function removeTag(_ref10, string) {
+	      var commit = _ref10.commit;
 
 	      commit('REMOVE_CURRENT_IMG_TAG', string);
 	    }
