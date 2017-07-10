@@ -14,28 +14,32 @@
 
           <div class="col-sm-6">
             <form class="form-horizontal" v-on:submit.prevent="save" method="post">
-              <div class="form-group">
+
+              <div :class="[{ 'has-error': errors.name },'form-group']">
                 <div class="col-sm-12">
                   <div class="form-material">
                     <input v-model="currentImgTitle" class="form-control" type="text" id="image-title" name="material-text" >
                     <label for="image-title">Titre</label>
+                    <span class="help-block" v-if="errors.name">{{ errors.name[0] }}</span>
                   </div>
                 </div>
               </div>
 
-              <div class="form-group">
+              <div :class="[{ 'has-error': errors.copyright },'form-group']">
                 <div class="col-sm-12">
                   <div class="form-material">
                     <input v-model="currentImgCopyright" class="form-control" type="text" id="image-copyright" name="material-text" >
                     <label for="image-copyright">Copyright</label>
+                    <span class="help-block" v-if="errors.copyright">{{ errors.copyright[0] }}</span>
                   </div>
                 </div>
               </div>
-              <div class="form-group">
+              <div :class="[{ 'has-error': errors.description },'form-group']">
                 <div class="col-sm-12">
                   <div class="form-material">
                     <textarea v-model="currentImgDescription" class="form-control" id="material-textarea-large" name="material-textarea-large" rows="8"></textarea>
                     <label for="material-textarea-large">Description</label>
+                    <span class="help-block" v-if="errors.description">{{ errors.description[0] }}</span>
                   </div>
                 </div>
               </div>
@@ -89,14 +93,10 @@ export default {
       this.$store.dispatch('mediasStore/saveCurrentImg')
     },
   },
-  mounted () {
-    console.log('mounted');
-  },
-  beforeRouteUpdate() {
-    console.log('route update');
+  computed: {
+    ...mapState('mediasStore', ['errors'])
   },
   created () {
-    console.log('created');
     this.currentImgTitle = this.$store.state.mediasStore.currentImgTitle
     this.currentImgCopyright = this.$store.state.mediasStore.currentImgCopyright
     this.currentImgDescription = this.$store.state.mediasStore.currentImgDescription

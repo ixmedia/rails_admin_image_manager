@@ -1,4 +1,5 @@
 import axios from 'axios';
+import router from '../router';
 
 const mediasStore = {
   namespaced: true,
@@ -9,7 +10,9 @@ const mediasStore = {
     currentImgDescription: "",
     currentImgSrc: "",
     currentImgTags: [],
-    imageListItems: []
+    imageListItems: [],
+    maxImageListItems: -1,
+    errors: {}
   },
   mutations: {
     UPDATE_CURRENT_IMG_ID (state, id) {
@@ -52,6 +55,12 @@ const mediasStore = {
         state.currentImgTags.splice(index, 1)
       }
     },
+    SET_ERRORS(state, errorObject) {
+      state.errors = errorObject
+    },
+    SET_MAX_IMAGE_LIST_ITEMS(state, value) {
+      state.maxImageListItems = value
+    }
   },
   getters: {
     imageObject: (state) => {
@@ -70,7 +79,6 @@ const mediasStore = {
   actions: {
     useImage ({ commit, state, dispatch, rootState}, data) {
       dispatch('overlayStore/showProgressOverlay', true, {root:true})
-
       // Generating new dynamic image size before sending it back to CKEDITOR
       axios.get(`/images/${state.currentImgId}?width=${data[0]}&height=${data[1]}`).then((response) => {
         dispatch('overlayStore/showProgressOverlay', false, {root:true})
@@ -86,31 +94,86 @@ const mediasStore = {
       if (imgData.description != undefined) commit('UPDATE_CURRENT_IMG_DESC', imgData.description)
       if (imgData.src != undefined) commit('UPDATE_CURRENT_IMG_SRC', imgData.src)
       if (imgData.tags_list != undefined) commit('UPDATE_CURRENT_IMG_TAGS', imgData.tags_list)
+      if (imgData.errors != undefined) commit('SET_ERRORS', imgData.errors)
     },
-    saveCurrentImg ({commit, state, getters}) {
-      console.log(state.currentImgId);
+    saveCurrentImg ({dispatch, commit, state, getters}) {
+      // Loading bar
+      dispatch('overlayStore/showProgressOverlay', true, {root:true})
+
       if (state.currentImgId != '') {
-        console.log('in if');
         axios.put('/images', getters.imageObject).then((response)=> {
-          console.log(response);
-        }).catch((response) => {
-          console.log(response);
+
+          // Notificating
+          dispatch('overlayStore/pushNotification', {success: true, msg: 'Image mise à jour avec succès'}, {root:true})
+
+          // Clearing errors object
+          commit('SET_ERRORS', {})
+
+          // hiding loading bar
+          dispatch('overlayStore/showProgressOverlay', false, {root:true})
+
+        }).catch((error) => {
+          // hiding loading bar
+          dispatch('overlayStore/showProgressOverlay', false, {root:true})
+
+          // Error notification
+          dispatch('overlayStore/pushNotification', {error: true, msg: 'Erreur lors de la mise à jour'}, {root:true})
+
+          commit('SET_ERRORS', error.response.data)
+
         })
       } else {
         axios.post('/images',getters.imageObject).then((response)=> {
-          console.log(response);
-        }).catch((response) => {
-          console.log(response);
+
+          // Notificating
+          dispatch('overlayStore/pushNotification', {success: true, msg: 'Image créé avec succès'}, {root:true})
+
+          // Clearing errors object
+          commit('SET_ERRORS', {})
+
+          // Redirect
+          router.push({ name: 'root'})
+        }).catch((error) => {
+          // hiding loading bar
+          dispatch('overlayStore/showProgressOverlay', false, {root:true})
+
+          dispatch('overlayStore/pushNotification', {error: true, msg: 'Erreur lors de la création'}, {root:true})
+          commit('SET_ERRORS', error.response.data)
         })
       }
     },
     deleteImg ({ commit }, id) {
       axios.delete({params: {id: id}})
     },
-    fetchImageForPage({commit}, pageNumber) {
-      axios.get('images.json', {page: pageNumber})
-      .then((response) => {
-        commit('ADD_TO_LIST_ITEMS', response.data.items)
+
+    fetchImageWithParams({commit, dispatch, state}, params) {
+      return new Promise((resolve, reject) => {
+
+        // Showing progress bar
+        dispatch('overlayStore/showProgressOverlay', true, {root:true})
+
+        // GET WITH PARAMS
+        axios.get('images.json', {params: params})
+        // SUCCESS
+        .then((response) => {
+          if(state.maxImageListItems == -1) commit('SET_MAX_IMAGE_LIST_ITEMS', response.data.total_count)
+          // Calling mutation
+          commit('ADD_TO_LIST_ITEMS', response.data.items)
+
+          // Hiding progess bar
+          dispatch('overlayStore/showProgressOverlay', false, {root:true})
+          resolve()
+        })
+        // ERROR
+        .catch((error) => {
+
+          // hiding loading bar
+          dispatch('overlayStore/showProgressOverlay', false, {root:true})
+
+          // Notificating
+          dispatch('overlayStore/pushNotification', {success: true, msg: 'Problème lors du fetch'}, {root:true})
+          reject()
+        })
       })
     },
     fetchSingleImage({ dispatch, rootDispatch}, id) {
@@ -135,7 +198,8 @@ const mediasStore = {
         copyright:'',
         description:'',
         src:'',
-        tags_list: []
+        tags_list: [],
+        errors: {}
       }
       dispatch('setCurrentImg', clearObject)
     },

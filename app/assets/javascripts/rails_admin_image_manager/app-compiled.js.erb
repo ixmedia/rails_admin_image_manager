@@ -66,17 +66,21 @@
 
 	var _vuex = __webpack_require__(44);
 
-	var _stores = __webpack_require__(63);
+	var _stores = __webpack_require__(64);
 
 	var _stores2 = _interopRequireDefault(_stores);
 
-	var _imageInsertOverlay = __webpack_require__(67);
+	var _imageInsertOverlay = __webpack_require__(68);
 
 	var _imageInsertOverlay2 = _interopRequireDefault(_imageInsertOverlay);
 
-	var _progressOverlay = __webpack_require__(72);
+	var _progressOverlay = __webpack_require__(73);
 
 	var _progressOverlay2 = _interopRequireDefault(_progressOverlay);
+
+	var _notificationOverlay = __webpack_require__(78);
+
+	var _notificationOverlay2 = _interopRequireDefault(_notificationOverlay);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -92,7 +96,7 @@
 	  _vue2.default.config.productionTip = false;
 	  var imageManager = new _vue2.default({
 	    el: '#vue-image-manager',
-	    components: { imageInsertOverlay: _imageInsertOverlay2.default, progressOverlay: _progressOverlay2.default },
+	    components: { imageInsertOverlay: _imageInsertOverlay2.default, progressOverlay: _progressOverlay2.default, notificationOverlay: _notificationOverlay2.default },
 	    store: _stores2.default,
 	    router: _router2.default,
 	    computed: _extends({}, (0, _vuex.mapState)('overlayStore', ['showProgress'])),
@@ -11553,11 +11557,11 @@
 
 	var _imageListing2 = _interopRequireDefault(_imageListing);
 
-	var _imageShow = __webpack_require__(47);
+	var _imageShow = __webpack_require__(48);
 
 	var _imageShow2 = _interopRequireDefault(_imageShow);
 
-	var _stores = __webpack_require__(63);
+	var _stores = __webpack_require__(64);
 
 	var _stores2 = _interopRequireDefault(_stores);
 
@@ -14127,7 +14131,7 @@
 	  /* script */
 	  __webpack_require__(39),
 	  /* template */
-	  __webpack_require__(46),
+	  __webpack_require__(47),
 	  /* styles */
 	  injectStyle,
 	  /* scopeId */
@@ -14689,6 +14693,10 @@
 
 	var _imageInsertButton2 = _interopRequireDefault(_imageInsertButton);
 
+	var _lazyload = __webpack_require__(46);
+
+	var _lazyload2 = _interopRequireDefault(_lazyload);
+
 	var _vuex = __webpack_require__(44);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -14696,14 +14704,45 @@
 	exports.default = {
 	  components: { imageInsertButton: _imageInsertButton2.default },
 	  data: function data() {
+	    var _this = this;
+
 	    return {
-	      images: [0, 1, 3, 4, 5, 6, 7, 8, 9]
+	      images: [0, 1, 3, 4, 5, 6, 7, 8, 9],
+	      lazyload: new _lazyload2.default(function () {
+	        _this.fetchImage();
+	      }),
+	      page: 1,
+	      isFetching: false,
+	      query: ''
 	    };
 	  },
 
-	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['imageListItems'])),
+	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['imageListItems', 'maxImageListItems'])),
 	  created: function created() {
-	    this.$store.dispatch('mediasStore/fetchImageForPage', 1);
+	    this.$store.dispatch('mediasStore/fetchImageWithParams', { page: this.page });
+	  },
+
+	  methods: {
+	    fetchImage: function fetchImage() {
+	      var _this2 = this;
+
+	      if (!this.isFetching && (this.maxImageListItems == -1 || this.imageListItems.length < this.maxImageListItems)) {
+	        this.isFetching = true;
+	        this.$store.dispatch('mediasStore/fetchImageWithParams', { page: this.page + 1 }).then(function () {
+	          _this2.isFetching = false;
+	          _this2.page++;
+	        });
+	      }
+	    },
+	    search: function search() {
+	      this.page = 1;
+	      this.$store.dispatch('mediasStore/clearImgListing');
+	      this.$store.dispatch('mediasStore/fetchImageWithParams', { search: this.query });
+	    },
+	    filter: function filter() {}
+	  },
+	  mounted: function mounted() {
+	    this.lazyload.start();
 	  }
 	};
 
@@ -15658,7 +15697,7 @@
 	        _vm.insert()
 	      }
 	    }
-	  }, [_vm._v("Insérer l'image")])
+	  }, [_vm._v("Utiliser l'image")])
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 	if (false) {
@@ -15670,6 +15709,82 @@
 
 /***/ }),
 /* 46 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = Lazyload;
+
+	/**
+	 *
+	 * @param {Func} cb
+	 * @param {Object} options
+	 */
+	function Lazyload(cb) {
+	  var threshold = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 120;
+
+	  this.lastScroll = 0;
+	  this.cb = cb;
+	  this.threshold = threshold;
+
+	  this._boundHandleScroll = this.handleScroll.bind(this);
+	}
+
+	/**
+	 * Add event listener
+	 */
+	Lazyload.prototype.start = function () {
+	  // Keep initial scroll position
+	  this.lastScroll = getScrollTop();
+	  window.addEventListener('scroll', this._boundHandleScroll);
+	};
+
+	/**
+	 * Remove event listener
+	 */
+	Lazyload.prototype.stop = function () {
+	  window.removeEventListener('scroll', this._boundHandleScroll);
+	};
+
+	/**
+	 * Handle scroll
+	 */
+	Lazyload.prototype.handleScroll = function (event) {
+	  var _this = this;
+
+	  if (!this.ticking) {
+
+	    window.requestAnimationFrame(function () {
+
+	      // Get current scroll position
+	      var currentScroll = getScrollTop();
+
+	      // If user has scrolled down and more than threshold
+	      if (currentScroll - _this.lastScroll >= _this.threshold) {
+
+	        // Execute callback
+	        _this.cb.call();
+
+	        // Keep new milestone
+	        _this.lastScroll = currentScroll;
+	      }
+
+	      _this.ticking = false;
+	    });
+	  }
+
+	  this.ticking = true;
+	};
+
+	function getScrollTop() {
+	  return window.pageYOffset || document.documentElement.scrollTop;
+	}
+
+/***/ }),
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -15677,7 +15792,50 @@
 	    staticClass: "content animated fadeIn"
 	  }, [_c('div', {
 	    staticClass: "block"
-	  }, [_vm._m(0), _vm._v(" "), _c('div', {
+	  }, [_c('div', {
+	    staticClass: "block-header"
+	  }, [_c('form', {
+	    staticClass: "form-horizontal",
+	    attrs: {
+	      "method": "post"
+	    },
+	    on: {
+	      "submit": function($event) {
+	        $event.preventDefault();
+	        _vm.search($event)
+	      }
+	    }
+	  }, [_c('div', {
+	    staticClass: "form-material form-material-primary input-group remove-margin-t remove-margin-b"
+	  }, [_c('input', {
+	    directives: [{
+	      name: "model",
+	      rawName: "v-model",
+	      value: (_vm.query),
+	      expression: "query"
+	    }],
+	    staticClass: "form-control",
+	    attrs: {
+	      "type": "text",
+	      "placeholder": "Rechercher.."
+	    },
+	    domProps: {
+	      "value": (_vm.query)
+	    },
+	    on: {
+	      "input": function($event) {
+	        if ($event.target.composing) { return; }
+	        _vm.query = $event.target.value
+	      }
+	    }
+	  }), _vm._v(" "), _c('span', {
+	    staticClass: "input-group-addon",
+	    on: {
+	      "click": _vm.search
+	    }
+	  }, [_c('i', {
+	    staticClass: "si si-magnifier"
+	  })])])])]), _vm._v(" "), _c('div', {
 	    staticClass: "block-content"
 	  }, [_c('div', {
 	    staticClass: "row"
@@ -15732,31 +15890,7 @@
 	      }
 	    }, [_vm._v("Supprimer")])], 1)])])])
 	  }))])])])
-	},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-	  return _c('div', {
-	    staticClass: "block-header"
-	  }, [_c('form', {
-	    staticClass: "form-horizontal",
-	    attrs: {
-	      "action": "base_pages_search.php",
-	      "method": "post"
-	    }
-	  }, [_c('div', {
-	    staticClass: "form-material form-material-primary input-group remove-margin-t remove-margin-b"
-	  }, [_c('input', {
-	    staticClass: "form-control",
-	    attrs: {
-	      "type": "text",
-	      "id": "base-material-text",
-	      "name": "base-material-text",
-	      "placeholder": "Search.."
-	    }
-	  }), _vm._v(" "), _c('span', {
-	    staticClass: "input-group-addon"
-	  }, [_c('i', {
-	    staticClass: "si si-magnifier"
-	  })])])])])
-	}]}
+	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 	if (false) {
 	  module.hot.accept()
@@ -15766,19 +15900,19 @@
 	}
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var disposed = false
 	function injectStyle (ssrContext) {
 	  if (disposed) return
-	  __webpack_require__(48)
+	  __webpack_require__(49)
 	}
 	var Component = __webpack_require__(38)(
 	  /* script */
-	  __webpack_require__(50),
+	  __webpack_require__(51),
 	  /* template */
-	  __webpack_require__(62),
+	  __webpack_require__(63),
 	  /* styles */
 	  injectStyle,
 	  /* scopeId */
@@ -15810,13 +15944,13 @@
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(49);
+	var content = __webpack_require__(50);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	if(content.locals) module.exports = content.locals;
 	// add the styles to the DOM
@@ -15836,7 +15970,7 @@
 	}
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(35)(undefined);
@@ -15850,7 +15984,7 @@
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -15859,87 +15993,91 @@
 	  value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
 	var _vuex = __webpack_require__(44);
 
 	var _imageInsertButton = __webpack_require__(40);
 
 	var _imageInsertButton2 = _interopRequireDefault(_imageInsertButton);
 
-	var _imageUpload = __webpack_require__(51);
+	var _imageUpload = __webpack_require__(52);
 
 	var _imageUpload2 = _interopRequireDefault(_imageUpload);
 
-	var _imageTagSelector = __webpack_require__(57);
+	var _imageTagSelector = __webpack_require__(58);
 
 	var _imageTagSelector2 = _interopRequireDefault(_imageTagSelector);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
 
 	exports.default = {
 	  components: { imageInsertButton: _imageInsertButton2.default, imageUpload: _imageUpload2.default, imageTagSelector: _imageTagSelector2.default },
@@ -15962,14 +16100,8 @@
 	      this.$store.dispatch('mediasStore/saveCurrentImg');
 	    }
 	  },
-	  mounted: function mounted() {
-	    console.log('mounted');
-	  },
-	  beforeRouteUpdate: function beforeRouteUpdate() {
-	    console.log('route update');
-	  },
+	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['errors'])),
 	  created: function created() {
-	    console.log('created');
 	    this.currentImgTitle = this.$store.state.mediasStore.currentImgTitle;
 	    this.currentImgCopyright = this.$store.state.mediasStore.currentImgCopyright;
 	    this.currentImgDescription = this.$store.state.mediasStore.currentImgDescription;
@@ -15977,19 +16109,19 @@
 	};
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var disposed = false
 	function injectStyle (ssrContext) {
 	  if (disposed) return
-	  __webpack_require__(52)
+	  __webpack_require__(53)
 	}
 	var Component = __webpack_require__(38)(
 	  /* script */
-	  __webpack_require__(54),
+	  __webpack_require__(55),
 	  /* template */
-	  __webpack_require__(56),
+	  __webpack_require__(57),
 	  /* styles */
 	  injectStyle,
 	  /* scopeId */
@@ -16021,13 +16153,13 @@
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(53);
+	var content = __webpack_require__(54);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	if(content.locals) module.exports = content.locals;
 	// add the styles to the DOM
@@ -16047,7 +16179,7 @@
 	}
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(35)(undefined);
@@ -16055,13 +16187,13 @@
 
 
 	// module
-	exports.push([module.id, "\n.image-upload {\n  position: relative;\n}\n.image-upload__img {\n  width: 100%;\n}\n.image-upload__file-input {\n  position: absolute;\n  top: 0;\n  left: 0;\n  bottom: 0;\n  right: 0;\n  width: 100%;\n  opacity: 0;\n  cursor: pointer;\n}\n.image-upload__content {\n  position: relative;\n  border: 6px dashed #fcfcfc;\n  transition: all 200ms linear;\n}\n.image-upload__content:hover {\n    border-color: #c9c9c9;\n}\n.image-upload__placeholder {\n  width: 100%;\n  padding: 30px 0;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  cursor: pointer;\n  opacity: 0.8;\n}\n.image-upload__placeholder i {\n    font-size: 70px;\n}\n", ""]);
+	exports.push([module.id, "\n.image-upload {\n  position: relative;\n}\n.image-upload__img {\n  width: 100%;\n}\n.image-upload__file-input {\n  position: absolute;\n  top: 0;\n  left: 0;\n  bottom: 0;\n  right: 0;\n  width: 100%;\n  opacity: 0;\n  cursor: pointer;\n}\n.image-upload__content {\n  position: relative;\n  border: 6px dashed #fcfcfc;\n  transition: all 200ms linear;\n}\n.has-error .image-upload__content {\n    border-color: #d26a5c;\n}\n.image-upload__content:hover {\n    border-color: #c9c9c9;\n}\n.image-upload__placeholder {\n  width: 100%;\n  padding: 30px 0;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  cursor: pointer;\n  opacity: 0.8;\n}\n.image-upload__placeholder i {\n    font-size: 70px;\n}\n", ""]);
 
 	// exports
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -16084,8 +16216,10 @@
 	//
 	//
 	//
+	//
+	//
 
-	var _helpers = __webpack_require__(55);
+	var _helpers = __webpack_require__(56);
 
 	var _vuex = __webpack_require__(44);
 
@@ -16097,7 +16231,13 @@
 	    };
 	  },
 
-	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['currentImgSrc'])),
+	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['currentImgSrc', 'errors']), {
+	    imageError: function imageError() {
+	      if (this.errors.hasOwnProperty('image')) {
+	        return this.errors.image[0];
+	      }
+	    }
+	  }),
 	  created: function created() {
 	    this.originalSrc = this.currentImgSrc;
 	  },
@@ -16107,7 +16247,7 @@
 	      var _this = this;
 
 	      (0, _helpers.encodeImageFileAsURL)(e.target).then(function (src) {
-	        _this.showOriginal = true;
+	        if (_this.originalSrc != '') _this.showOriginal = true;
 	        _this.$store.dispatch('mediasStore/updateSrc', src);
 	      });
 	    },
@@ -16119,7 +16259,7 @@
 	};
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -16140,12 +16280,14 @@
 	}
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
 	  return _c('div', {
-	    staticClass: "image-upload"
+	    class: [{
+	      'has-error': _vm.imageError
+	    }, 'image-upload']
 	  }, [_c('div', {
 	    staticClass: "image-upload__content"
 	  }, [(_vm.currentImgSrc) ? _c('img', {
@@ -16168,7 +16310,12 @@
 	        _vm.encode($event)
 	      }
 	    }
-	  })]), _vm._v(" "), (_vm.showOriginal) ? _c('button', {
+	  })]), _vm._v(" "), _c('span', {
+	    staticClass: "help-block",
+	    attrs: {
+	      "if": _vm.imageError
+	    }
+	  }, [_vm._v(_vm._s(_vm.imageError))]), _vm._v(" "), (_vm.showOriginal) ? _c('button', {
 	    staticClass: "btn btn-default push-20-t",
 	    attrs: {
 	      "type": "button",
@@ -16190,19 +16337,19 @@
 	}
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var disposed = false
 	function injectStyle (ssrContext) {
 	  if (disposed) return
-	  __webpack_require__(58)
+	  __webpack_require__(59)
 	}
 	var Component = __webpack_require__(38)(
 	  /* script */
-	  __webpack_require__(60),
-	  /* template */
 	  __webpack_require__(61),
+	  /* template */
+	  __webpack_require__(62),
 	  /* styles */
 	  injectStyle,
 	  /* scopeId */
@@ -16234,13 +16381,13 @@
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(59);
+	var content = __webpack_require__(60);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	if(content.locals) module.exports = content.locals;
 	// add the styles to the DOM
@@ -16260,7 +16407,7 @@
 	}
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(35)(undefined);
@@ -16274,7 +16421,7 @@
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -16341,7 +16488,7 @@
 	};
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -16408,7 +16555,7 @@
 	}
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -16434,7 +16581,9 @@
 	      }
 	    }
 	  }, [_c('div', {
-	    staticClass: "form-group"
+	    class: [{
+	      'has-error': _vm.errors.name
+	    }, 'form-group']
 	  }, [_c('div', {
 	    staticClass: "col-sm-12"
 	  }, [_c('div', {
@@ -16465,8 +16614,12 @@
 	    attrs: {
 	      "for": "image-title"
 	    }
-	  }, [_vm._v("Titre")])])])]), _vm._v(" "), _c('div', {
-	    staticClass: "form-group"
+	  }, [_vm._v("Titre")]), _vm._v(" "), (_vm.errors.name) ? _c('span', {
+	    staticClass: "help-block"
+	  }, [_vm._v(_vm._s(_vm.errors.name[0]))]) : _vm._e()])])]), _vm._v(" "), _c('div', {
+	    class: [{
+	      'has-error': _vm.errors.copyright
+	    }, 'form-group']
 	  }, [_c('div', {
 	    staticClass: "col-sm-12"
 	  }, [_c('div', {
@@ -16497,8 +16650,12 @@
 	    attrs: {
 	      "for": "image-copyright"
 	    }
-	  }, [_vm._v("Copyright")])])])]), _vm._v(" "), _c('div', {
-	    staticClass: "form-group"
+	  }, [_vm._v("Copyright")]), _vm._v(" "), (_vm.errors.copyright) ? _c('span', {
+	    staticClass: "help-block"
+	  }, [_vm._v(_vm._s(_vm.errors.copyright[0]))]) : _vm._e()])])]), _vm._v(" "), _c('div', {
+	    class: [{
+	      'has-error': _vm.errors.description
+	    }, 'form-group']
 	  }, [_c('div', {
 	    staticClass: "col-sm-12"
 	  }, [_c('div', {
@@ -16529,7 +16686,9 @@
 	    attrs: {
 	      "for": "material-textarea-large"
 	    }
-	  }, [_vm._v("Description")])])])]), _vm._v(" "), _c('div', {
+	  }, [_vm._v("Description")]), _vm._v(" "), (_vm.errors.description) ? _c('span', {
+	    staticClass: "help-block"
+	  }, [_vm._v(_vm._s(_vm.errors.description[0]))]) : _vm._e()])])]), _vm._v(" "), _c('div', {
 	    staticClass: "form-group"
 	  }, [_c('div', {
 	    staticClass: "col-sm-12"
@@ -16577,7 +16736,7 @@
 	}
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -16586,15 +16745,15 @@
 	  value: true
 	});
 
-	var _medias = __webpack_require__(64);
+	var _medias = __webpack_require__(65);
 
 	var _medias2 = _interopRequireDefault(_medias);
 
-	var _overlay = __webpack_require__(65);
+	var _overlay = __webpack_require__(66);
 
 	var _overlay2 = _interopRequireDefault(_overlay);
 
-	var _ckeditor = __webpack_require__(66);
+	var _ckeditor = __webpack_require__(67);
 
 	var _ckeditor2 = _interopRequireDefault(_ckeditor);
 
@@ -16618,10 +16777,10 @@
 	});
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -16630,6 +16789,10 @@
 	var _axios = __webpack_require__(2);
 
 	var _axios2 = _interopRequireDefault(_axios);
+
+	var _router = __webpack_require__(30);
+
+	var _router2 = _interopRequireDefault(_router);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16642,7 +16805,9 @@
 	    currentImgDescription: "",
 	    currentImgSrc: "",
 	    currentImgTags: [],
-	    imageListItems: []
+	    imageListItems: [],
+	    maxImageListItems: -1,
+	    errors: {}
 	  },
 	  mutations: {
 	    UPDATE_CURRENT_IMG_ID: function UPDATE_CURRENT_IMG_ID(state, id) {
@@ -16684,6 +16849,12 @@
 	      if (index >= 0) {
 	        state.currentImgTags.splice(index, 1);
 	      }
+	    },
+	    SET_ERRORS: function SET_ERRORS(state, errorObject) {
+	      state.errors = errorObject;
+	    },
+	    SET_MAX_IMAGE_LIST_ITEMS: function SET_MAX_IMAGE_LIST_ITEMS(state, value) {
+	      state.maxImageListItems = value;
 	    }
 	  },
 	  getters: {
@@ -16708,9 +16879,8 @@
 	          rootState = _ref.rootState;
 
 	      dispatch('overlayStore/showProgressOverlay', true, { root: true });
-
 	      // Generating new dynamic image size before sending it back to CKEDITOR
-	      _axios2.default.get("/images/" + state.currentImgId + "?width=" + data[0] + "&height=" + data[1]).then(function (response) {
+	      _axios2.default.get('/images/' + state.currentImgId + '?width=' + data[0] + '&height=' + data[1]).then(function (response) {
 	        dispatch('overlayStore/showProgressOverlay', false, { root: true });
 	        window.opener.CKEDITOR.tools.callFunction(rootState.ckEditorStore.ckId, response.data.src_for_wysiwyg, state.currentImgId, state.currentImgTitle);
 	        window.close();
@@ -16726,25 +16896,54 @@
 	      if (imgData.description != undefined) commit('UPDATE_CURRENT_IMG_DESC', imgData.description);
 	      if (imgData.src != undefined) commit('UPDATE_CURRENT_IMG_SRC', imgData.src);
 	      if (imgData.tags_list != undefined) commit('UPDATE_CURRENT_IMG_TAGS', imgData.tags_list);
+	      if (imgData.errors != undefined) commit('SET_ERRORS', imgData.errors);
 	    },
 	    saveCurrentImg: function saveCurrentImg(_ref3) {
-	      var commit = _ref3.commit,
+	      var dispatch = _ref3.dispatch,
+	          commit = _ref3.commit,
 	          state = _ref3.state,
 	          getters = _ref3.getters;
 
-	      console.log(state.currentImgId);
+	      // Loading bar
+	      dispatch('overlayStore/showProgressOverlay', true, { root: true });
+
 	      if (state.currentImgId != '') {
-	        console.log('in if');
 	        _axios2.default.put('/images', getters.imageObject).then(function (response) {
-	          console.log(response);
-	        }).catch(function (response) {
-	          console.log(response);
+
+	          // Notificating
+	          dispatch('overlayStore/pushNotification', { success: true, msg: 'Image mise à jour avec succès' }, { root: true });
+
+	          // Clearing errors object
+	          commit('SET_ERRORS', {});
+
+	          // hiding loading bar
+	          dispatch('overlayStore/showProgressOverlay', false, { root: true });
+	        }).catch(function (error) {
+	          // hiding loading bar
+	          dispatch('overlayStore/showProgressOverlay', false, { root: true });
+
+	          // Error notification
+	          dispatch('overlayStore/pushNotification', { error: true, msg: 'Erreur lors de la mise à jour' }, { root: true });
+
+	          commit('SET_ERRORS', error.response.data);
 	        });
 	      } else {
 	        _axios2.default.post('/images', getters.imageObject).then(function (response) {
-	          console.log(response);
-	        }).catch(function (response) {
-	          console.log(response);
+
+	          // Notificating
+	          dispatch('overlayStore/pushNotification', { success: true, msg: 'Image créé avec succès' }, { root: true });
+
+	          // Clearing errors object
+	          commit('SET_ERRORS', {});
+
+	          // Redirect
+	          _router2.default.push({ name: 'root' });
+	        }).catch(function (error) {
+	          // hiding loading bar
+	          dispatch('overlayStore/showProgressOverlay', false, { root: true });
+
+	          dispatch('overlayStore/pushNotification', { error: true, msg: 'Erreur lors de la création' }, { root: true });
+	          commit('SET_ERRORS', error.response.data);
 	        });
 	      }
 	    },
@@ -16753,11 +16952,38 @@
 
 	      _axios2.default.delete({ params: { id: id } });
 	    },
-	    fetchImageForPage: function fetchImageForPage(_ref5, pageNumber) {
-	      var commit = _ref5.commit;
+	    fetchImageWithParams: function fetchImageWithParams(_ref5, params) {
+	      var commit = _ref5.commit,
+	          dispatch = _ref5.dispatch,
+	          state = _ref5.state;
 
-	      _axios2.default.get('images.json', { page: pageNumber }).then(function (response) {
-	        commit('ADD_TO_LIST_ITEMS', response.data.items);
+	      return new Promise(function (resolve, reject) {
+
+	        // Showing progress bar
+	        dispatch('overlayStore/showProgressOverlay', true, { root: true });
+
+	        // GET WITH PARAMS
+	        _axios2.default.get('images.json', { params: params })
+	        // SUCCESS
+	        .then(function (response) {
+	          if (state.maxImageListItems == -1) commit('SET_MAX_IMAGE_LIST_ITEMS', response.data.total_count);
+	          // Calling mutation
+	          commit('ADD_TO_LIST_ITEMS', response.data.items);
+
+	          // Hiding progess bar
+	          dispatch('overlayStore/showProgressOverlay', false, { root: true });
+	          resolve();
+	        })
+	        // ERROR
+	        .catch(function (error) {
+
+	          // hiding loading bar
+	          dispatch('overlayStore/showProgressOverlay', false, { root: true });
+
+	          // Notificating
+	          dispatch('overlayStore/pushNotification', { success: true, msg: 'Problème lors du fetch' }, { root: true });
+	          reject();
+	        });
 	      });
 	    },
 	    fetchSingleImage: function fetchSingleImage(_ref6, id) {
@@ -16766,7 +16992,7 @@
 
 	      dispatch('overlayStore/showProgressOverlay', true, { root: true });
 	      return new Promise(function (resolve, reject) {
-	        _axios2.default.get("/images/" + id).then(function (response) {
+	        _axios2.default.get('/images/' + id).then(function (response) {
 	          dispatch('setCurrentImg', response.data);
 	          dispatch('overlayStore/showProgressOverlay', false, { root: true });
 	          resolve();
@@ -16785,7 +17011,8 @@
 	        copyright: '',
 	        description: '',
 	        src: '',
-	        tags_list: []
+	        tags_list: [],
+	        errors: {}
 	      };
 	      dispatch('setCurrentImg', clearObject);
 	    },
@@ -16816,7 +17043,7 @@
 	exports.default = mediasStore;
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -16828,7 +17055,8 @@
 	  namespaced: true,
 	  state: {
 	    showInsertOverlay: false,
-	    showProgress: false
+	    showProgress: false,
+	    notifications: []
 	  },
 	  mutations: {
 	    SET_SHOW_INSERT_OVERLAY: function SET_SHOW_INSERT_OVERLAY(state, value) {
@@ -16836,6 +17064,12 @@
 	    },
 	    SET_SHOW_PROGRESS_OVERLAY: function SET_SHOW_PROGRESS_OVERLAY(state, value) {
 	      state.showProgress = value;
+	    },
+	    PUSH_NOTIFICATION: function PUSH_NOTIFICATION(state, object) {
+	      state.notifications.push(object);
+	    },
+	    POP_NOTIFICATION: function POP_NOTIFICATION(state) {
+	      state.notifications.pop();
 	    }
 	  },
 	  actions: {
@@ -16850,6 +17084,15 @@
 	          state = _ref2.state;
 
 	      commit('SET_SHOW_PROGRESS_OVERLAY', value);
+	    },
+	    pushNotification: function pushNotification(_ref3, notificationObject) {
+	      var commit = _ref3.commit,
+	          state = _ref3.state;
+
+	      commit('PUSH_NOTIFICATION', notificationObject);
+	      var t = setTimeout(function () {
+	        commit('POP_NOTIFICATION');
+	      }, 2000);
 	    }
 	  }
 	};
@@ -16857,7 +17100,7 @@
 	exports.default = overlayStore;
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -16896,19 +17139,19 @@
 	exports.default = ckEditor;
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var disposed = false
 	function injectStyle (ssrContext) {
 	  if (disposed) return
-	  __webpack_require__(68)
+	  __webpack_require__(69)
 	}
 	var Component = __webpack_require__(38)(
 	  /* script */
-	  __webpack_require__(70),
-	  /* template */
 	  __webpack_require__(71),
+	  /* template */
+	  __webpack_require__(72),
 	  /* styles */
 	  injectStyle,
 	  /* scopeId */
@@ -16940,13 +17183,13 @@
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(69);
+	var content = __webpack_require__(70);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	if(content.locals) module.exports = content.locals;
 	// add the styles to the DOM
@@ -16966,7 +17209,7 @@
 	}
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(35)(undefined);
@@ -16980,7 +17223,7 @@
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17052,7 +17295,7 @@
 	};
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -17187,19 +17430,19 @@
 	}
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var disposed = false
 	function injectStyle (ssrContext) {
 	  if (disposed) return
-	  __webpack_require__(73)
+	  __webpack_require__(74)
 	}
 	var Component = __webpack_require__(38)(
 	  /* script */
-	  __webpack_require__(75),
-	  /* template */
 	  __webpack_require__(76),
+	  /* template */
+	  __webpack_require__(77),
 	  /* styles */
 	  injectStyle,
 	  /* scopeId */
@@ -17231,13 +17474,13 @@
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(74);
+	var content = __webpack_require__(75);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	if(content.locals) module.exports = content.locals;
 	// add the styles to the DOM
@@ -17257,7 +17500,7 @@
 	}
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(35)(undefined);
@@ -17271,7 +17514,7 @@
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17296,7 +17539,7 @@
 	};
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -17327,6 +17570,146 @@
 	  module.hot.accept()
 	  if (module.hot.data) {
 	     require("vue-hot-reload-api").rerender("data-v-3ae986b3", module.exports)
+	  }
+	}
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var disposed = false
+	function injectStyle (ssrContext) {
+	  if (disposed) return
+	  __webpack_require__(79)
+	}
+	var Component = __webpack_require__(38)(
+	  /* script */
+	  __webpack_require__(81),
+	  /* template */
+	  __webpack_require__(82),
+	  /* styles */
+	  injectStyle,
+	  /* scopeId */
+	  null,
+	  /* moduleIdentifier (server only) */
+	  null
+	)
+	Component.options.__file = "/Users/lpdumas/vm/www/rails_admin_image_manager/app/assets/javascripts/rails_admin_image_manager/components/notificationOverlay.vue"
+	if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+	if (Component.options.functional) {console.error("[vue-loader] notificationOverlay.vue: functional components are not supported with templates, they should use render functions.")}
+
+	/* hot reload */
+	if (false) {(function () {
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  module.hot.accept()
+	  if (!module.hot.data) {
+	    hotAPI.createRecord("data-v-29b9e135", Component.options)
+	  } else {
+	    hotAPI.reload("data-v-29b9e135", Component.options)
+	  }
+	  module.hot.dispose(function (data) {
+	    disposed = true
+	  })
+	})()}
+
+	module.exports = Component.exports
+
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(80);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	if(content.locals) module.exports = content.locals;
+	// add the styles to the DOM
+	var update = __webpack_require__(36)("466644da", content, false);
+	// Hot Module Replacement
+	if(false) {
+	 // When the styles change, update the <style> tags
+	 if(!content.locals) {
+	   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-29b9e135\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/sass-loader/lib/loader.js?indentedSyntax!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./notificationOverlay.vue", function() {
+	     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-29b9e135\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/sass-loader/lib/loader.js?indentedSyntax!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./notificationOverlay.vue");
+	     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+	     update(newContent);
+	   });
+	 }
+	 // When the module is disposed, remove the <style> tags
+	 module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(35)(undefined);
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n.notif-overlay {\n  position: fixed;\n  bottom: 20px;\n  right: 20px;\n}\n.notification-item {\n  width: 300px;\n  height: 100px;\n  margin: 5px;\n}\n.notification-item.error {\n    background-color: red;\n    color: white;\n}\n.notification-item.success {\n    background-color: #c3f0cc;\n    color: #3daa41;\n}\n.fade-top-enter-active, .fade-top-leave-active {\n  transition: all 400ms;\n}\n.fade-top-enter, .fade-top-leave-to {\n  opacity: 0;\n}\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	var _vuex = __webpack_require__(44);
+
+	exports.default = {
+	  computed: _extends({}, (0, _vuex.mapState)('overlayStore', ['notifications']))
+	};
+
+/***/ }),
+/* 82 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _c('div', {
+	    staticClass: "notif-overlay"
+	  }, [_c('transition-group', {
+	    attrs: {
+	      "name": "fade-top"
+	    }
+	  }, _vm._l((_vm.notifications), function(notification) {
+	    return _c('div', {
+	      key: notification,
+	      class: [{
+	        'alert-success': notification.success,
+	        'alert-danger': notification.error
+	      }, 'alert', 'notification-item']
+	    }, [_c('p', [_vm._v(_vm._s(notification.msg))])])
+	  }))], 1)
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+	if (false) {
+	  module.hot.accept()
+	  if (module.hot.data) {
+	     require("vue-hot-reload-api").rerender("data-v-29b9e135", module.exports)
 	  }
 	}
 

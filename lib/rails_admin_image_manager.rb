@@ -21,7 +21,7 @@ module RailsAdminImageManager
   # End configuration defaults
 
   mattr_accessor :paginates_per
-  @@paginates_per = 34
+  @@paginates_per = 15
 
   def self.options(overrides={})
     # merge in editor settings configured elsewhere

@@ -1,5 +1,5 @@
 <template>
-  <div class="image-upload">
+  <div :class="[{'has-error': imageError}, 'image-upload']">
     <div class="image-upload__content">
       <img :src="currentImgSrc" class="image-upload__img" v-if="currentImgSrc" alt="">
       <div class="image-upload__placeholder" v-if="currentImgSrc == ''">
@@ -8,6 +8,8 @@
       </div>
       <input class="image-upload__file-input" type="file" @change="encode($event)">
     </div>
+    <span class="help-block"  :if="imageError">{{imageError}}</span>
+
     <button type="button" class="btn btn-default push-20-t" v-if="showOriginal" @click="undo" alt=""><i class="fa fa-undo"></i> Annuler</button>
   </div>
 </template>
@@ -24,7 +26,12 @@ export default {
     }
   },
   computed: {
-    ...mapState('mediasStore', ['currentImgSrc'])
+    ...mapState('mediasStore', ['currentImgSrc', 'errors']),
+    imageError() {
+      if(this.errors.hasOwnProperty('image')) {
+        return this.errors.image[0]
+      }
+    }
   },
   created () {
     this.originalSrc = this.currentImgSrc
@@ -33,7 +40,7 @@ export default {
     encode(e) {
       encodeImageFileAsURL(e.target)
       .then((src) => {
-        this.showOriginal = true
+        if (this.originalSrc != '') this.showOriginal = true
         this.$store.dispatch('mediasStore/updateSrc', src)
       })
     },
@@ -66,6 +73,8 @@ export default {
   position: relative
   border: 6px dashed #fcfcfc
   transition: all 200ms linear
+  .has-error &
+    border-color: #d26a5c
 
   &:hover
     border-color: #c9c9c9

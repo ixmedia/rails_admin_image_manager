@@ -2,10 +2,10 @@
   <div class="content animated fadeIn">
     <div class="block">
       <div class="block-header">
-        <form class="form-horizontal" action="base_pages_search.php" method="post">
+        <form class="form-horizontal" @submit.prevent="search" method="post">
           <div class="form-material form-material-primary input-group remove-margin-t remove-margin-b">
-            <input class="form-control" type="text" id="base-material-text" name="base-material-text" placeholder="Search..">
-            <span class="input-group-addon"><i class="si si-magnifier"></i></span>
+            <input class="form-control" v-model="query" type="text"  placeholder="Rechercher..">
+            <span @click="search" class="input-group-addon"><i class="si si-magnifier"></i></span>
           </div>
         </form>
       </div>
@@ -43,19 +43,48 @@
 
 <script>
 import imageInsertButton from './imageInsertButton.vue'
+import Lazyload from '../libs/lazyload.js'
 import {mapState} from 'vuex'
 export default {
   components: {imageInsertButton},
   data () {
     return {
-      images: [0, 1, 3, 4, 5, 6, 7, 8, 9]
+      images: [0, 1, 3, 4, 5, 6, 7, 8, 9],
+      lazyload: new Lazyload(()=> {
+        this.fetchImage()
+      }),
+      page: 1,
+      isFetching: false,
+      query: ''
     }
   },
   computed: {
-    ...mapState('mediasStore', ['imageListItems'])
+    ...mapState('mediasStore', ['imageListItems', 'maxImageListItems'])
   },
   created() {
-    this.$store.dispatch('mediasStore/fetchImageForPage', 1)
+    this.$store.dispatch('mediasStore/fetchImageWithParams', {page: this.page})
+  },
+  methods:{
+    fetchImage() {
+      if (!this.isFetching && (this.maxImageListItems == -1 || this.imageListItems.length < this.maxImageListItems) ) {
+        this.isFetching = true
+        this.$store.dispatch('mediasStore/fetchImageWithParams', {page: this.page + 1}).then(()=> {
+          this.isFetching = false
+          this.page ++
+        })
+      }
+    },
+    search() {
+      this.page = 1;
+      this.$store.dispatch('mediasStore/clearImgListing')
+      this.$store.dispatch('mediasStore/fetchImageWithParams', { search: this.query })
+    },
+    filter() {
+
+    }
+  },
+  mounted() {
+    this.lazyload.start()
   }
 }
 </script>

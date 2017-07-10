@@ -1,5 +1,5 @@
 <template>
-  <button typ="button" class="btn btn-sm btn-default" @click.prevent="insert()">Insérer l'image</button>
+  <button typ="button" class="btn btn-sm btn-default" @click.prevent="insert()">Utiliser l'image</button>
 </template>
 
 <script>
