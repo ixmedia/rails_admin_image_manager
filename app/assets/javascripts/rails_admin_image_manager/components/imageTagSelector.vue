@@ -18,8 +18,8 @@ export default {
   props: ['label'],
   data () {
     return {
-      tagsPool: ["oiseau", "belier", "soleil", "cocou"],
-      searchText: ''
+      searchText: '',
+      tagsPool: []
     }
   },
   computed: {
@@ -32,7 +32,7 @@ export default {
       }
       return filtreTexte(this.searchText)
     },
-    ...mapState('mediasStore', ['currentImgTags'])
+    ...mapState('mediasStore', ['currentImgTags', 'tags'])
   },
   methods: {
     selectTag(string) {
@@ -50,6 +50,14 @@ export default {
         this.searchText = ''
       }
     }
+  },
+  mounted () {
+    this.$store.dispatch('mediasStore/fetchTags').then(()=> {
+      for (var i = 0; i < this.tags.length; i++) {
+        let tag = this.tags[i]
+        this.tagsPool.push(tag.name)
+      }
+    })
   }
 }
 </script>

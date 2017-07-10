@@ -2,12 +2,24 @@
   <div class="content animated fadeIn">
     <div class="block">
       <div class="block-header">
-        <form class="form-horizontal" @submit.prevent="search" method="post">
-          <div class="form-material form-material-primary input-group remove-margin-t remove-margin-b">
-            <input class="form-control" v-model="query" type="text"  placeholder="Rechercher..">
-            <span @click="search" class="input-group-addon"><i class="si si-magnifier"></i></span>
-          </div>
-        </form>
+        <ul class="nav-header pull-left">
+          <li>
+            <form class="form-horizontal" @submit.prevent="search" method="post" style="width: 450px">
+              <div class="form-material form-material-primary input-group remove-margin-t remove-margin-b">
+                <input class="form-control" v-model="query" type="text"  placeholder="Rechercher..">
+                <span @click="search" class="input-group-addon"><i class="si si-magnifier"></i></span>
+              </div>
+            </form>
+          </li>
+        </ul>
+        <ul class="nav-header pull-right">
+          <li>
+            <select v-model="selectedFilter" @change="filter">
+              <option value="">Filtre</option>
+              <option :value="tag.id" v-for="tag in tags">{{ tag.name }}</option>
+            </select>
+          </li>
+        </ul>
       </div>
       <div class="block-content">
 
@@ -18,6 +30,9 @@
               <i class="fa fa-plus"></i> Ajouter une image
             </router-link>
             </p>
+
+            <p v-if="searchedQuery ">Recherche: {{ searchedQuery }}</p>
+
           </div>
         </div>
         <div class="row items-push">
@@ -55,11 +70,13 @@ export default {
       }),
       page: 1,
       isFetching: false,
-      query: ''
+      query: '',
+      searchedQuery: '',
+      selectedFilter: ''
     }
   },
   computed: {
-    ...mapState('mediasStore', ['imageListItems', 'maxImageListItems'])
+    ...mapState('mediasStore', ['imageListItems', 'maxImageListItems', 'tags'])
   },
   created() {
     this.$store.dispatch('mediasStore/fetchImageWithParams', {page: this.page})
@@ -75,16 +92,20 @@ export default {
       }
     },
     search() {
-      this.page = 1;
+      this.page = 1
+      this.searchedQuery = (this.query == '') ? '' : this.query
       this.$store.dispatch('mediasStore/clearImgListing')
       this.$store.dispatch('mediasStore/fetchImageWithParams', { search: this.query })
     },
     filter() {
-
+      this.page = 1;
+      this.$store.dispatch('mediasStore/clearImgListing')
+      this.$store.dispatch('mediasStore/fetchImageWithParams', { tags: this.selectedFilter })
     }
   },
   mounted() {
     this.lazyload.start()
+    this.$store.dispatch('mediasStore/fetchTags')
   }
 }
 </script>

@@ -11,6 +11,7 @@ module RailsAdminImageManager
           images  = RailsAdminImageManager::File.select(:id, :name, :image_file_name).page(params[:page])
           images  = images.filter_by_text(params[:search]) if filter_by?(:search)
           images  = images.filter_by_tags(params[:tags].split(',').map{|i| i.to_i }) if filter_by?(:tags)
+          p params[:tags].split(',').map{|i| i.to_i } if filter_by?(:tags)
           images.each do |image|
               image.src = image.image.url(:index)
           end
@@ -18,6 +19,14 @@ module RailsAdminImageManager
           data    = { items: images, total_count: images.total_count, limit_value: images.limit_value }
 
           render json: data, methods: [:src, :tags_list], status: :ok
+        }
+      end
+    end
+    def tags
+      respond_to do |format|
+        format.json {
+          tags = RailsAdminImageManager::Tag.with_files
+          render json: tags, status: :ok
         }
       end
     end

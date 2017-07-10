@@ -12,5 +12,6 @@
 //
 
 
+//= require underscore.min.js
 //= require oneui.min.js
 //= require rails_admin_image_manager/app-compiled.js

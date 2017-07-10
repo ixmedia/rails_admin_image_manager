@@ -12,6 +12,7 @@ const mediasStore = {
     currentImgTags: [],
     imageListItems: [],
     maxImageListItems: -1,
+    tags: [],
     errors: {}
   },
   mutations: {
@@ -60,6 +61,13 @@ const mediasStore = {
     },
     SET_MAX_IMAGE_LIST_ITEMS(state, value) {
       state.maxImageListItems = value
+    },
+    SET_TAGS_LIST(state, tags) {
+      state.tags = []
+      for (var i = 0; i < tags.length; i++) {
+        let tag = tags[i]
+        state.tags.push(tag)
+      }
     }
   },
   getters: {
@@ -202,6 +210,19 @@ const mediasStore = {
         errors: {}
       }
       dispatch('setCurrentImg', clearObject)
+    },
+    fetchTags({commit, dispatch}){
+      return new Promise((resolve, reject) => {
+        axios.get(`/tags.json`).then((response)=>{
+          commit('SET_TAGS_LIST', response.data)
+          resolve()
+        })
+        .catch((error) => {
+          dispatch('overlayStore/pushNotification', {error: true, msg: 'Problème avec les tags'}, {root:true})
+          reject()
+        })
+
+    })
     },
     clearImgListing({ commit }){
       commit('CLEAR_IMG_LISTING')

@@ -14688,6 +14688,21 @@
 	//
 	//
 	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
 
 	var _imageInsertButton = __webpack_require__(40);
 
@@ -14713,11 +14728,13 @@
 	      }),
 	      page: 1,
 	      isFetching: false,
-	      query: ''
+	      query: '',
+	      searchedQuery: '',
+	      selectedFilter: ''
 	    };
 	  },
 
-	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['imageListItems', 'maxImageListItems'])),
+	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['imageListItems', 'maxImageListItems', 'tags'])),
 	  created: function created() {
 	    this.$store.dispatch('mediasStore/fetchImageWithParams', { page: this.page });
 	  },
@@ -14736,13 +14753,19 @@
 	    },
 	    search: function search() {
 	      this.page = 1;
+	      this.searchedQuery = this.query == '' ? '' : this.query;
 	      this.$store.dispatch('mediasStore/clearImgListing');
 	      this.$store.dispatch('mediasStore/fetchImageWithParams', { search: this.query });
 	    },
-	    filter: function filter() {}
+	    filter: function filter() {
+	      this.page = 1;
+	      this.$store.dispatch('mediasStore/clearImgListing');
+	      this.$store.dispatch('mediasStore/fetchImageWithParams', { tags: this.selectedFilter });
+	    }
 	  },
 	  mounted: function mounted() {
 	    this.lazyload.start();
+	    this.$store.dispatch('mediasStore/fetchTags');
 	  }
 	};
 
@@ -15794,8 +15817,13 @@
 	    staticClass: "block"
 	  }, [_c('div', {
 	    staticClass: "block-header"
-	  }, [_c('form', {
+	  }, [_c('ul', {
+	    staticClass: "nav-header pull-left"
+	  }, [_c('li', [_c('form', {
 	    staticClass: "form-horizontal",
+	    staticStyle: {
+	      "width": "450px"
+	    },
 	    attrs: {
 	      "method": "post"
 	    },
@@ -15835,7 +15863,37 @@
 	    }
 	  }, [_c('i', {
 	    staticClass: "si si-magnifier"
-	  })])])])]), _vm._v(" "), _c('div', {
+	  })])])])])]), _vm._v(" "), _c('ul', {
+	    staticClass: "nav-header pull-right"
+	  }, [_c('li', [_c('select', {
+	    directives: [{
+	      name: "model",
+	      rawName: "v-model",
+	      value: (_vm.selectedFilter),
+	      expression: "selectedFilter"
+	    }],
+	    on: {
+	      "change": [function($event) {
+	        var $$selectedVal = Array.prototype.filter.call($event.target.options, function(o) {
+	          return o.selected
+	        }).map(function(o) {
+	          var val = "_value" in o ? o._value : o.value;
+	          return val
+	        });
+	        _vm.selectedFilter = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+	      }, _vm.filter]
+	    }
+	  }, [_c('option', {
+	    attrs: {
+	      "value": ""
+	    }
+	  }, [_vm._v("Filtre")]), _vm._v(" "), _vm._l((_vm.tags), function(tag) {
+	    return _c('option', {
+	      domProps: {
+	        "value": tag.id
+	      }
+	    }, [_vm._v(_vm._s(tag.name))])
+	  })], 2)])])]), _vm._v(" "), _c('div', {
 	    staticClass: "block-content"
 	  }, [_c('div', {
 	    staticClass: "row"
@@ -15850,7 +15908,7 @@
 	    }
 	  }, [_c('i', {
 	    staticClass: "fa fa-plus"
-	  }), _vm._v(" Ajouter une image\n          ")])], 1)])]), _vm._v(" "), _c('div', {
+	  }), _vm._v(" Ajouter une image\n          ")])], 1), _vm._v(" "), (_vm.searchedQuery) ? _c('p', [_vm._v("Recherche: " + _vm._s(_vm.searchedQuery))]) : _vm._e()])]), _vm._v(" "), _c('div', {
 	    staticClass: "row items-push"
 	  }, _vm._l((_vm.imageListItems), function(image, key) {
 	    return _c('div', {
@@ -16450,8 +16508,8 @@
 	  props: ['label'],
 	  data: function data() {
 	    return {
-	      tagsPool: ["oiseau", "belier", "soleil", "cocou"],
-	      searchText: ''
+	      searchText: '',
+	      tagsPool: []
 	    };
 	  },
 
@@ -16467,7 +16525,7 @@
 	      };
 	      return filtreTexte(this.searchText);
 	    }
-	  }, (0, _vuex.mapState)('mediasStore', ['currentImgTags'])),
+	  }, (0, _vuex.mapState)('mediasStore', ['currentImgTags', 'tags'])),
 	  methods: {
 	    selectTag: function selectTag(string) {
 	      if (this.currentImgTags.indexOf(string) < 0) {
@@ -16484,6 +16542,16 @@
 	        this.searchText = '';
 	      }
 	    }
+	  },
+	  mounted: function mounted() {
+	    var _this2 = this;
+
+	    this.$store.dispatch('mediasStore/fetchTags').then(function () {
+	      for (var i = 0; i < _this2.tags.length; i++) {
+	        var tag = _this2.tags[i];
+	        _this2.tagsPool.push(tag.name);
+	      }
+	    });
 	  }
 	};
 
@@ -16807,6 +16875,7 @@
 	    currentImgTags: [],
 	    imageListItems: [],
 	    maxImageListItems: -1,
+	    tags: [],
 	    errors: {}
 	  },
 	  mutations: {
@@ -16855,6 +16924,13 @@
 	    },
 	    SET_MAX_IMAGE_LIST_ITEMS: function SET_MAX_IMAGE_LIST_ITEMS(state, value) {
 	      state.maxImageListItems = value;
+	    },
+	    SET_TAGS_LIST: function SET_TAGS_LIST(state, tags) {
+	      state.tags = [];
+	      for (var i = 0; i < tags.length; i++) {
+	        var tag = tags[i];
+	        state.tags.push(tag);
+	      }
 	    }
 	  },
 	  getters: {
@@ -17016,24 +17092,38 @@
 	      };
 	      dispatch('setCurrentImg', clearObject);
 	    },
-	    clearImgListing: function clearImgListing(_ref8) {
-	      var commit = _ref8.commit;
+	    fetchTags: function fetchTags(_ref8) {
+	      var commit = _ref8.commit,
+	          dispatch = _ref8.dispatch;
+
+	      return new Promise(function (resolve, reject) {
+	        _axios2.default.get('/tags.json').then(function (response) {
+	          commit('SET_TAGS_LIST', response.data);
+	          resolve();
+	        }).catch(function (error) {
+	          dispatch('overlayStore/pushNotification', { error: true, msg: 'Problème avec les tags' }, { root: true });
+	          reject();
+	        });
+	      });
+	    },
+	    clearImgListing: function clearImgListing(_ref9) {
+	      var commit = _ref9.commit;
 
 	      commit('CLEAR_IMG_LISTING');
 	    },
-	    updateSrc: function updateSrc(_ref9, src) {
-	      var commit = _ref9.commit,
-	          state = _ref9.state;
+	    updateSrc: function updateSrc(_ref10, src) {
+	      var commit = _ref10.commit,
+	          state = _ref10.state;
 
 	      commit('UPDATE_CURRENT_IMG_SRC', src);
 	    },
-	    addTag: function addTag(_ref10, string) {
-	      var commit = _ref10.commit;
+	    addTag: function addTag(_ref11, string) {
+	      var commit = _ref11.commit;
 
 	      commit('ADD_CURRENT_IMG_TAG', string);
 	    },
-	    removeTag: function removeTag(_ref11, string) {
-	      var commit = _ref11.commit;
+	    removeTag: function removeTag(_ref12, string) {
+	      var commit = _ref12.commit;
 
 	      commit('REMOVE_CURRENT_IMG_TAG', string);
 	    }
