@@ -9,6 +9,7 @@ import store from './stores'
 import imageInsertOverlay from './components/imageInsertOverlay.vue'
 import progressOverlay from './components/progressOverlay.vue'
 import notificationOverlay from './components/notificationOverlay.vue'
+import confirmationOverlay from './components/confirmationOverlay.vue'
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -22,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
   Vue.config.productionTip = false
   const imageManager = new Vue({
     el: '#vue-image-manager',
-    components: {imageInsertOverlay, progressOverlay, notificationOverlay},
+    components: {imageInsertOverlay, progressOverlay, notificationOverlay, confirmationOverlay},
     store: store,
     router,
     computed: {

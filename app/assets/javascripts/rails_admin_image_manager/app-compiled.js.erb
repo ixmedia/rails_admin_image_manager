@@ -82,6 +82,10 @@
 
 	var _notificationOverlay2 = _interopRequireDefault(_notificationOverlay);
 
+	var _confirmationOverlay = __webpack_require__(83);
+
+	var _confirmationOverlay2 = _interopRequireDefault(_confirmationOverlay);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	document.addEventListener("DOMContentLoaded", function () {
@@ -96,7 +100,7 @@
 	  _vue2.default.config.productionTip = false;
 	  var imageManager = new _vue2.default({
 	    el: '#vue-image-manager',
-	    components: { imageInsertOverlay: _imageInsertOverlay2.default, progressOverlay: _progressOverlay2.default, notificationOverlay: _notificationOverlay2.default },
+	    components: { imageInsertOverlay: _imageInsertOverlay2.default, progressOverlay: _progressOverlay2.default, notificationOverlay: _notificationOverlay2.default, confirmationOverlay: _confirmationOverlay2.default },
 	    store: _stores2.default,
 	    router: _router2.default,
 	    computed: _extends({}, (0, _vuex.mapState)('overlayStore', ['showProgress'])),
@@ -17146,7 +17150,8 @@
 	  state: {
 	    showInsertOverlay: false,
 	    showProgress: false,
-	    notifications: []
+	    notifications: [],
+	    confirmation: {}
 	  },
 	  mutations: {
 	    SET_SHOW_INSERT_OVERLAY: function SET_SHOW_INSERT_OVERLAY(state, value) {
@@ -17800,6 +17805,140 @@
 	  module.hot.accept()
 	  if (module.hot.data) {
 	     require("vue-hot-reload-api").rerender("data-v-29b9e135", module.exports)
+	  }
+	}
+
+/***/ }),
+/* 83 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var disposed = false
+	function injectStyle (ssrContext) {
+	  if (disposed) return
+	  __webpack_require__(84)
+	}
+	var Component = __webpack_require__(38)(
+	  /* script */
+	  __webpack_require__(86),
+	  /* template */
+	  __webpack_require__(87),
+	  /* styles */
+	  injectStyle,
+	  /* scopeId */
+	  null,
+	  /* moduleIdentifier (server only) */
+	  null
+	)
+	Component.options.__file = "/Users/lpdumas/vm/www/rails_admin_image_manager/app/assets/javascripts/rails_admin_image_manager/components/confirmationOverlay.vue"
+	if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+	if (Component.options.functional) {console.error("[vue-loader] confirmationOverlay.vue: functional components are not supported with templates, they should use render functions.")}
+
+	/* hot reload */
+	if (false) {(function () {
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  module.hot.accept()
+	  if (!module.hot.data) {
+	    hotAPI.createRecord("data-v-6fdfcbab", Component.options)
+	  } else {
+	    hotAPI.reload("data-v-6fdfcbab", Component.options)
+	  }
+	  module.hot.dispose(function (data) {
+	    disposed = true
+	  })
+	})()}
+
+	module.exports = Component.exports
+
+
+/***/ }),
+/* 84 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(85);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	if(content.locals) module.exports = content.locals;
+	// add the styles to the DOM
+	var update = __webpack_require__(36)("498743c4", content, false);
+	// Hot Module Replacement
+	if(false) {
+	 // When the styles change, update the <style> tags
+	 if(!content.locals) {
+	   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6fdfcbab\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/sass-loader/lib/loader.js?indentedSyntax!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./confirmationOverlay.vue", function() {
+	     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6fdfcbab\",\"scoped\":false,\"hasInlineConfig\":false}!../../../../../node_modules/sass-loader/lib/loader.js?indentedSyntax!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./confirmationOverlay.vue");
+	     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+	     update(newContent);
+	   });
+	 }
+	 // When the module is disposed, remove the <style> tags
+	 module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 85 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(35)(undefined);
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n.confirmation-overlay::after {\n  position: fixed;\n  content: \"\";\n  display: block;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: rgba(0, 0, 0, 0.5);\n  z-index: 10;\n}\n.confirmation-overlay__box {\n  max-width: 500px;\n  width: 100%;\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%, -50%);\n          transform: translate(-50%, -50%);\n  background-color: white;\n  z-index: 15;\n}\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	var _vuex = __webpack_require__(44);
+
+	exports.default = {
+	  computed: _extends({}, (0, _vuex.mapState)('overlayStore', ['confirmation']))
+	};
+
+/***/ }),
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _c('transition', {
+	    attrs: {
+	      "name": "fade"
+	    }
+	  }, [(_vm.confirmation.msg) ? _c('div', {
+	    staticClass: "confirmation-overlay"
+	  }, [_c('div', {
+	    staticClass: "confirmation-overlay__box"
+	  }, [_c('p', [_vm._v("Contenu de la box")])])]) : _vm._e()])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+	if (false) {
+	  module.hot.accept()
+	  if (module.hot.data) {
+	     require("vue-hot-reload-api").rerender("data-v-6fdfcbab", module.exports)
 	  }
 	}
 

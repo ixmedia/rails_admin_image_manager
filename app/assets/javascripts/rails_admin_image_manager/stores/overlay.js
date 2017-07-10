@@ -3,7 +3,8 @@ const overlayStore = {
   state: {
     showInsertOverlay: false,
     showProgress: false,
-    notifications: []
+    notifications: [],
+    confirmation: {}
   },
   mutations: {
     SET_SHOW_INSERT_OVERLAY (state, value) {
