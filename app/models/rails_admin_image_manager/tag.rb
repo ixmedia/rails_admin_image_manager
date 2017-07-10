@@ -29,5 +29,13 @@ module RailsAdminImageManager
 
     self.table_name = 'image_manager_tags'
 
+    def self.retrieve_or_create_tag(tag_string)
+      tag = RailsAdminImageManager::Tag.find_by({name: tag_string})
+      if tag.present?
+        return tag
+      else
+        return RailsAdminImageManager::Tag.new({name: tag_string})
+      end
+    end
   end
 end

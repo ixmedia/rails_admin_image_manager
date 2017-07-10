@@ -62,7 +62,7 @@ const mediasStore = {
           copyright: state.currentImgCopyright,
           description: state.currentImgDescription,
           src: state.currentImgSrc,
-          tags_list: state.currentImgTags
+          tags: state.currentImgTags
         }
       }
     }

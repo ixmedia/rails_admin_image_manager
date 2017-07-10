@@ -32,6 +32,18 @@ module RailsAdminImageManager
     end
 
     def update
+      my_params = images_params
+      image = RailsAdminImageManager::File.find(my_params[:id])
+      tags = []
+      images_params[:tags].each do |tag_string|
+       tags << RailsAdminImageManager::Tag.retrieve_or_create_tag(tag_string)
+      end
+      my_params[:tags] = tags
+      if image.present? && image.update_attributes(my_params)
+        render json: image, status: :ok
+      else
+        render json: image, status: :unprocessable_entity
+      end
     end
 
     def create
@@ -39,7 +51,6 @@ module RailsAdminImageManager
       if image.save()
         render json: image, status: :ok
       else
-        p image.errors
         render json: image, status: :unprocessable_entity
       end
     end
@@ -48,7 +59,7 @@ module RailsAdminImageManager
     end
 
     def images_params
-      params.require(:image).permit(:id, :name, :description, :copyright, :src)
+      params.require(:image).permit(:id, :name, :description, :copyright, :src, tags: [])
     end
   end
 end

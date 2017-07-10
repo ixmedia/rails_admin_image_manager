@@ -16,12 +16,15 @@ module RailsAdminImageManager
     attr_accessor :src
     attr_accessor :src_for_wysiwyg
 
+
     # == Callbacks ============================================================
     before_validation :decode_base64_image
+
     # == Relationships ========================================================
 
     has_and_belongs_to_many :tags, class_name: 'RailsAdminImageManager::Tag', join_table: 'image_manager_files_tags', foreign_key: :image_manager_file_id, association_foreign_key: :image_manager_tag_id
 
+    accepts_nested_attributes_for :tags
     # == Validations ==========================================================
 
     validates_presence_of :name
@@ -61,6 +64,7 @@ module RailsAdminImageManager
     def tags_list
       tags.collect { |t| t.name }
     end
+
 
     # == Class Methods ========================================================
 
