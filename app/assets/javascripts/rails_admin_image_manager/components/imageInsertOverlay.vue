@@ -71,7 +71,7 @@ export default {
   left: 50%;
   transform: translate(-50%,-50%);
   width: 100%;
-  max-width: 640px;
+  max-width: 475px;
   z-index: 20;
 }
 .fade-enter-active, .fade-leave-active {

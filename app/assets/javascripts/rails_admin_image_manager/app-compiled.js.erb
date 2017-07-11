@@ -14709,7 +14709,6 @@
 	//
 	//
 	//
-	//
 
 	var _imageInsertButton = __webpack_require__(40);
 
@@ -14768,6 +14767,13 @@
 	      this.page = 1;
 	      this.$store.dispatch('mediasStore/clearImgListing');
 	      this.$store.dispatch('mediasStore/fetchImageWithParams', { tags: this.selectedFilter });
+	    },
+	    resetSearchAndFilters: function resetSearchAndFilters() {
+	      this.page = 1;
+	      this.query = '';
+	      this.selectedFilter = '';
+	      this.search();
+	      this.filter();
 	    },
 	    deleteImage: function deleteImage(image) {
 	      var _this3 = this;
@@ -15926,7 +15932,14 @@
 	    }
 	  }, [_c('i', {
 	    staticClass: "fa fa-plus"
-	  }), _vm._v(" Ajouter une image\n          ")])], 1), _vm._v(" "), (_vm.searchedQuery) ? _c('p', [_vm._v("Recherche: " + _vm._s(_vm.searchedQuery))]) : _vm._e()])]), _vm._v(" "), _c('div', {
+	  }), _vm._v(" Ajouter une image")]), _vm._v(" "), (_vm.searchedQuery || _vm.selectedFilter) ? _c('button', {
+	    staticClass: "btn btn-default",
+	    on: {
+	      "click": _vm.resetSearchAndFilters
+	    }
+	  }, [_c('i', {
+	    staticClass: "fa fa-undo"
+	  }), _vm._v(" Annuler la recherche")]) : _vm._e()], 1), _vm._v(" "), (_vm.searchedQuery) ? _c('p', [_vm._v("Recherche: " + _vm._s(_vm.searchedQuery))]) : _vm._e()])]), _vm._v(" "), _c('div', {
 	    staticClass: "row items-push"
 	  }, _vm._l((_vm.imageListItems), function(image, key) {
 	    return _c('div', {
@@ -17436,7 +17449,7 @@
 
 
 	// module
-	exports.push([module.id, "\n.image-insert-overlay {\n  box-shadow: 0 0 200px rgba(0, 0, 0, 0.5);\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%,-50%);\n          transform: translate(-50%,-50%);\n  width: 100%;\n  max-width: 640px;\n  z-index: 20;\n}\n.fade-enter-active, .fade-leave-active {\n  transition: opacity .5s\n}\n.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {\n  opacity: 0\n}\n.image-insert-overlay__close {\n  position: absolute;\n  top: 0;\n  right: 0;\n  background-color: transparent;\n  border: none;\n}\n", ""]);
+	exports.push([module.id, "\n.image-insert-overlay {\n  box-shadow: 0 0 200px rgba(0, 0, 0, 0.5);\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%,-50%);\n          transform: translate(-50%,-50%);\n  width: 100%;\n  max-width: 475px;\n  z-index: 20;\n}\n.fade-enter-active, .fade-leave-active {\n  transition: opacity .5s\n}\n.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {\n  opacity: 0\n}\n.image-insert-overlay__close {\n  position: absolute;\n  top: 0;\n  right: 0;\n  background-color: transparent;\n  border: none;\n}\n", ""]);
 
 	// exports
 

@@ -26,12 +26,11 @@
         <div class="row">
           <div class="col-sm-6">
             <p>
-              <router-link class="btn btn-primary" :to="{ name: 'createImage'}">
-              <i class="fa fa-plus"></i> Ajouter une image
-            </router-link>
+              <router-link class="btn btn-primary" :to="{ name: 'createImage'}"><i class="fa fa-plus"></i> Ajouter une image</router-link>
+              <button v-if="searchedQuery || selectedFilter" @click="resetSearchAndFilters" class="btn btn-default" ><i class="fa fa-undo"></i> Annuler la recherche</button>
             </p>
 
-            <p v-if="searchedQuery ">Recherche: {{ searchedQuery }}</p>
+            <p v-if="searchedQuery">Recherche: {{ searchedQuery }}</p>
 
           </div>
         </div>
@@ -101,6 +100,13 @@ export default {
       this.page = 1;
       this.$store.dispatch('mediasStore/clearImgListing')
       this.$store.dispatch('mediasStore/fetchImageWithParams', { tags: this.selectedFilter })
+    },
+    resetSearchAndFilters() {
+      this.page = 1
+      this.query = ''
+      this.selectedFilter = ''
+      this.search()
+      this.filter()
     },
     deleteImage(image){
       this.$store.dispatch('overlayStore/pushConfirmation', { msg: 'Voulez vous supprimer l\'image définitivement?', callback: () => {
