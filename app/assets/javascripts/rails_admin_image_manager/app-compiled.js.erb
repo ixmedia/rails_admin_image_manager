@@ -14765,6 +14765,13 @@
 	      this.page = 1;
 	      this.$store.dispatch('mediasStore/clearImgListing');
 	      this.$store.dispatch('mediasStore/fetchImageWithParams', { tags: this.selectedFilter });
+	    },
+	    deleteImage: function deleteImage(image) {
+	      var _this3 = this;
+
+	      this.$store.dispatch('overlayStore/pushConfirmation', { msg: 'Voulez vous supprimer l\'image définitivement?', callback: function callback() {
+	          _this3.$store.dispatch('mediasStore/deleteImg', image.id);
+	        } });
 	    }
 	  },
 	  mounted: function mounted() {
@@ -15949,6 +15956,11 @@
 	      staticClass: "btn btn-sm btn-default",
 	      attrs: {
 	        "href": "javascript:void(0)"
+	      },
+	      on: {
+	        "click": function($event) {
+	          _vm.deleteImage(image)
+	        }
 	      }
 	    }, [_vm._v("Supprimer")])], 1)])])])
 	  }))])])])
@@ -16858,6 +16870,8 @@
 	  value: true
 	});
 
+	var _actions;
+
 	var _axios = __webpack_require__(2);
 
 	var _axios2 = _interopRequireDefault(_axios);
@@ -16867,6 +16881,8 @@
 	var _router2 = _interopRequireDefault(_router);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	var mediasStore = {
 	  namespaced: true,
@@ -16911,11 +16927,18 @@
 	        state.imageListItems.push(item);
 	      }
 	    },
-	    ADD_CURRENT_IMG_TAG: function ADD_CURRENT_IMG_TAG(state, string) {
-	      state.currentImgTags.push(string);
-	    },
 	    CLEAR_IMG_LISTING: function CLEAR_IMG_LISTING(state) {
 	      state.imageListItems = [];
+	    },
+	    SPLICE_IMG_LISTING: function SPLICE_IMG_LISTING(state, id) {
+	      state.imageListItems.forEach(function (image, index) {
+	        if (image.id == id) {
+	          state.imageListItems.splice(index, 1);
+	        }
+	      });
+	    },
+	    ADD_CURRENT_IMG_TAG: function ADD_CURRENT_IMG_TAG(state, string) {
+	      state.currentImgTags.push(string);
 	    },
 	    REMOVE_CURRENT_IMG_TAG: function REMOVE_CURRENT_IMG_TAG(state, string) {
 	      var index = state.currentImgTags.indexOf(string);
@@ -16951,7 +16974,7 @@
 	      };
 	    }
 	  },
-	  actions: {
+	  actions: (_actions = {
 	    useImage: function useImage(_ref, data) {
 	      var commit = _ref.commit,
 	          state = _ref.state,
@@ -17109,29 +17132,40 @@
 	          reject();
 	        });
 	      });
-	    },
-	    clearImgListing: function clearImgListing(_ref9) {
-	      var commit = _ref9.commit;
-
-	      commit('CLEAR_IMG_LISTING');
-	    },
-	    updateSrc: function updateSrc(_ref10, src) {
-	      var commit = _ref10.commit,
-	          state = _ref10.state;
-
-	      commit('UPDATE_CURRENT_IMG_SRC', src);
-	    },
-	    addTag: function addTag(_ref11, string) {
-	      var commit = _ref11.commit;
-
-	      commit('ADD_CURRENT_IMG_TAG', string);
-	    },
-	    removeTag: function removeTag(_ref12, string) {
-	      var commit = _ref12.commit;
-
-	      commit('REMOVE_CURRENT_IMG_TAG', string);
 	    }
-	  }
+	  }, _defineProperty(_actions, 'deleteImg', function deleteImg(_ref9, idImage) {
+	    var commit = _ref9.commit,
+	        dispatch = _ref9.dispatch;
+
+	    dispatch('overlayStore/showProgressOverlay', true, { root: true });
+	    return new Promise(function (resolve, reject) {
+	      _axios2.default.delete('/images', { params: { id: idImage } }).then(function (response) {
+	        dispatch('overlayStore/showProgressOverlay', false, { root: true });
+	        dispatch('overlayStore/pushNotification', { success: true, msg: 'Image supprimé avec succès' }, { root: true });
+	        commit('SPLICE_IMG_LISTING', idImage);
+	      }).catch(function (error) {
+	        dispatch('overlayStore/showProgressOverlay', false, { root: true });
+	        dispatch('overlayStore/pushNotification', { error: true, msg: 'Problème lors de la supression de l\'image' }, { root: true });
+	      });
+	    });
+	  }), _defineProperty(_actions, 'clearImgListing', function clearImgListing(_ref10) {
+	    var commit = _ref10.commit;
+
+	    commit('CLEAR_IMG_LISTING');
+	  }), _defineProperty(_actions, 'updateSrc', function updateSrc(_ref11, src) {
+	    var commit = _ref11.commit,
+	        state = _ref11.state;
+
+	    commit('UPDATE_CURRENT_IMG_SRC', src);
+	  }), _defineProperty(_actions, 'addTag', function addTag(_ref12, string) {
+	    var commit = _ref12.commit;
+
+	    commit('ADD_CURRENT_IMG_TAG', string);
+	  }), _defineProperty(_actions, 'removeTag', function removeTag(_ref13, string) {
+	    var commit = _ref13.commit;
+
+	    commit('REMOVE_CURRENT_IMG_TAG', string);
+	  }), _actions)
 	};
 
 	exports.default = mediasStore;
@@ -17151,7 +17185,10 @@
 	    showInsertOverlay: false,
 	    showProgress: false,
 	    notifications: [],
-	    confirmation: {}
+	    confirmation: {
+	      msg: '',
+	      callback: null
+	    }
 	  },
 	  mutations: {
 	    SET_SHOW_INSERT_OVERLAY: function SET_SHOW_INSERT_OVERLAY(state, value) {
@@ -17159,6 +17196,14 @@
 	    },
 	    SET_SHOW_PROGRESS_OVERLAY: function SET_SHOW_PROGRESS_OVERLAY(state, value) {
 	      state.showProgress = value;
+	    },
+	    PUSH_CONFIRMATION: function PUSH_CONFIRMATION(state, object) {
+	      if (object.hasOwnProperty('msg')) state.confirmation.msg = object.msg;
+	      if (object.hasOwnProperty('callback')) state.confirmation.callback = object.callback;
+	    },
+	    CLEAR_CONFIRMATION: function CLEAR_CONFIRMATION(state) {
+	      state.confirmation.msg = '';
+	      state.confirmation.callback = null;
 	    },
 	    PUSH_NOTIFICATION: function PUSH_NOTIFICATION(state, object) {
 	      state.notifications.push(object);
@@ -17188,6 +17233,17 @@
 	      var t = setTimeout(function () {
 	        commit('POP_NOTIFICATION');
 	      }, 2000);
+	    },
+	    pushConfirmation: function pushConfirmation(_ref4, confirmationObject) {
+	      var commit = _ref4.commit,
+	          state = _ref4.state;
+
+	      commit('PUSH_CONFIRMATION', confirmationObject);
+	    },
+	    clearConfirmation: function clearConfirmation(_ref5) {
+	      var commit = _ref5.commit;
+
+	      commit('CLEAR_CONFIRMATION');
 	    }
 	  }
 	};
@@ -17887,7 +17943,7 @@
 
 
 	// module
-	exports.push([module.id, "\n.confirmation-overlay::after {\n  position: fixed;\n  content: \"\";\n  display: block;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: rgba(0, 0, 0, 0.5);\n  z-index: 10;\n}\n.confirmation-overlay__box {\n  max-width: 500px;\n  width: 100%;\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%, -50%);\n          transform: translate(-50%, -50%);\n  background-color: white;\n  z-index: 15;\n}\n", ""]);
+	exports.push([module.id, "\n.confirmation-overlay::after {\n  position: fixed;\n  content: \"\";\n  display: block;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: rgba(255, 255, 255, 0.5);\n  z-index: 10;\n}\n.confirmation-overlay__box {\n  box-shadow: 0 0 200px rgba(0, 0, 0, 0.5);\n  position: fixed;\n  background-color: white;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%, -50%);\n          transform: translate(-50%, -50%);\n  width: 100%;\n  max-width: 640px;\n  z-index: 20;\n}\n", ""]);
 
 	// exports
 
@@ -17912,11 +17968,36 @@
 	//
 	//
 	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
 
 	var _vuex = __webpack_require__(44);
 
 	exports.default = {
-	  computed: _extends({}, (0, _vuex.mapState)('overlayStore', ['confirmation']))
+	  computed: _extends({}, (0, _vuex.mapState)('overlayStore', ['confirmation'])),
+	  methods: {
+	    close: function close() {
+	      this.$store.dispatch('overlayStore/clearConfirmation');
+	    },
+	    callCallback: function callCallback() {
+	      this.confirmation.callback();
+	      this.close();
+	    }
+	  }
 	};
 
 /***/ }),
@@ -17931,8 +18012,49 @@
 	  }, [(_vm.confirmation.msg) ? _c('div', {
 	    staticClass: "confirmation-overlay"
 	  }, [_c('div', {
-	    staticClass: "confirmation-overlay__box"
-	  }, [_c('p', [_vm._v("Contenu de la box")])])]) : _vm._e()])
+	    staticClass: "confirmation-overlay__box block"
+	  }, [_c('div', {
+	    staticClass: "block-header"
+	  }, [_c('ul', {
+	    staticClass: "block-options"
+	  }, [_c('li', [_c('button', {
+	    attrs: {
+	      "type": "button"
+	    },
+	    on: {
+	      "click": _vm.close
+	    }
+	  }, [_c('i', {
+	    staticClass: "fa fa-times"
+	  })])])]), _vm._v(" "), _c('h2', {
+	    staticClass: "block-title"
+	  }, [_vm._v("Confirmation")])]), _vm._v(" "), _c('div', {
+	    staticClass: "block-content"
+	  }, [_c('div', {
+	    staticClass: "row items-push"
+	  }, [_c('div', {
+	    staticClass: "col-sm-12"
+	  }, [_c('p', [_vm._v(_vm._s(_vm.confirmation.msg))]), _vm._v(" "), _c('div', {
+	    staticClass: "btn-group"
+	  }, [_c('button', {
+	    staticClass: "btn btn-default",
+	    attrs: {
+	      "type": "button",
+	      "name": "button"
+	    },
+	    on: {
+	      "click": _vm.close
+	    }
+	  }, [_vm._v("Annuler")]), _vm._v(" "), _c('button', {
+	    staticClass: "btn btn-danger",
+	    attrs: {
+	      "type": "button",
+	      "name": "button"
+	    },
+	    on: {
+	      "click": _vm.callCallback
+	    }
+	  }, [_vm._v("Supprimer")])])])])])])]) : _vm._e()])
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 	if (false) {

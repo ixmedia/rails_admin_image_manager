@@ -44,7 +44,7 @@
                   <h4 class="h6 font-w400 text-white-op push-15">{{ image.name }}</h4>
                   <router-link class="btn btn-sm btn-default" :to="{ name: 'showImage', params: { id: image.id }}">Modifier</router-link>
                   <image-insert-button :id="image.id"/>
-                  <a class="btn btn-sm btn-default" href="javascript:void(0)">Supprimer</a>
+                  <a class="btn btn-sm btn-default" @click="deleteImage(image)" href="javascript:void(0)">Supprimer</a>
                 </div>
               </div>
             </div>
@@ -101,6 +101,11 @@ export default {
       this.page = 1;
       this.$store.dispatch('mediasStore/clearImgListing')
       this.$store.dispatch('mediasStore/fetchImageWithParams', { tags: this.selectedFilter })
+    },
+    deleteImage(image){
+      this.$store.dispatch('overlayStore/pushConfirmation', { msg: 'Voulez vous supprimer l\'image définitivement?', callback: () => {
+        this.$store.dispatch('mediasStore/deleteImg', image.id)
+      }})
     }
   },
   mounted() {

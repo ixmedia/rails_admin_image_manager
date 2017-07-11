@@ -4,7 +4,10 @@ const overlayStore = {
     showInsertOverlay: false,
     showProgress: false,
     notifications: [],
-    confirmation: {}
+    confirmation: {
+      msg: '',
+      callback: null
+    }
   },
   mutations: {
     SET_SHOW_INSERT_OVERLAY (state, value) {
@@ -12,6 +15,14 @@ const overlayStore = {
     },
     SET_SHOW_PROGRESS_OVERLAY (state, value) {
       state.showProgress = value
+    },
+    PUSH_CONFIRMATION (state, object) {
+      if(object.hasOwnProperty('msg')) state.confirmation.msg = object.msg
+      if(object.hasOwnProperty('callback')) state.confirmation.callback = object.callback
+    },
+    CLEAR_CONFIRMATION (state) {
+      state.confirmation.msg = ''
+      state.confirmation.callback = null
     },
     PUSH_NOTIFICATION (state, object) {
       state.notifications.push(object)
@@ -33,6 +44,12 @@ const overlayStore = {
         commit('POP_NOTIFICATION')
       }, 2000)
     },
+    pushConfirmation({ commit, state }, confirmationObject) {
+      commit('PUSH_CONFIRMATION', confirmationObject)
+    },
+    clearConfirmation({commit}) {
+      commit('CLEAR_CONFIRMATION')
+    }
 
   }
 }

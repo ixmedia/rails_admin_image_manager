@@ -68,6 +68,10 @@ module RailsAdminImageManager
     end
 
     def destroy
+      image = RailsAdminImageManager::File.find(params[:id])
+      image.destroy
+
+      render json: image, status: :ok
     end
 
     def images_params

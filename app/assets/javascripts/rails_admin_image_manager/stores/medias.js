@@ -44,11 +44,18 @@ const mediasStore = {
         state.imageListItems.push(item)
       }
     },
-    ADD_CURRENT_IMG_TAG(state, string) {
-      state.currentImgTags.push(string)
-    },
     CLEAR_IMG_LISTING(state){
       state.imageListItems = []
+    },
+    SPLICE_IMG_LISTING(state, id){
+      state.imageListItems.forEach((image, index) => {
+        if (image.id == id) {
+          state.imageListItems.splice(index, 1)
+        }
+      })
+    },
+    ADD_CURRENT_IMG_TAG(state, string) {
+      state.currentImgTags.push(string)
     },
     REMOVE_CURRENT_IMG_TAG(state, string) {
       let index = state.currentImgTags.indexOf(string)
@@ -223,6 +230,21 @@ const mediasStore = {
         })
 
     })
+    },
+    deleteImg({commit, dispatch}, idImage) {
+      dispatch('overlayStore/showProgressOverlay', true, {root:true})
+      return new Promise(function(resolve, reject) {
+        axios.delete(`/images`, {params: {id: idImage}})
+        .then((response)=>{
+          dispatch('overlayStore/showProgressOverlay', false, {root:true})
+          dispatch('overlayStore/pushNotification', {success: true, msg: 'Image supprimé avec succès'}, {root:true})
+          commit('SPLICE_IMG_LISTING', idImage)
+        })
+        .catch((error) => {
+          dispatch('overlayStore/showProgressOverlay', false, {root:true})
+          dispatch('overlayStore/pushNotification', {error: true, msg: 'Problème lors de la supression de l\'image'}, {root:true})
+        })
+      })
     },
     clearImgListing({ commit }){
       commit('CLEAR_IMG_LISTING')
