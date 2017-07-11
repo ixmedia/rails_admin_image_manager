@@ -58,7 +58,11 @@ module RailsAdminImageManager
     def src_for_wysiwyg=(params)
       width   = params[:width].to_i
       height  = params[:height].to_i
-      @src_for_wysiwyg = image.dynamic_url("#{width}x#{height}") if width > 0 && height > 0
+      if width > 0 && height > 0
+        @src_for_wysiwyg = image.dynamic_url("#{width}x#{height}")
+      else
+        @src_for_wysiwyg = image(:rails_admin)
+      end
     end
 
     def tags_list

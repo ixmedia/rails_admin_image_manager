@@ -17341,8 +17341,8 @@
 	          dispatch = _ref2.dispatch;
 
 	      dispatch('overlayStore/showProgressOverlay', true, { root: true });
-	      // Generating new dynamic image size before sending it back to CKEDITOR
-	      _axios2.default.get('/images/' + idImage + '?width=250&height=250').then(function (response) {
+	      // Generating new dynamic image size before sending it back
+	      _axios2.default.get('/images/' + idImage + '?width=0&height=0').then(function (response) {
 	        dispatch('overlayStore/showProgressOverlay', false, { root: true });
 	        window.opener.insertImageManagerMedia(idImage, state.inputId, response.data.src_for_wysiwyg);
 	        window.close();
