@@ -14862,7 +14862,7 @@
 
 
 	// module
-	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 	// exports
 
@@ -14889,9 +14889,7 @@
 	    insert: function insert() {
 	      var _this = this;
 
-	      console.log(this.$store.state);
 	      if (this.$store.state.ckEditorStore.ckId != "") {
-
 	        if (this.id) {
 	          this.$store.dispatch('mediasStore/fetchSingleImage', this.id).then(function () {
 	            _this.$store.dispatch('overlayStore/showInsertOverlay', true);
@@ -16061,7 +16059,7 @@
 
 
 	// module
-	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 	// exports
 
@@ -16168,7 +16166,8 @@
 	    return {
 	      currentImgTitle: '',
 	      currentImgCopyright: '',
-	      currentImgDescription: ''
+	      currentImgDescription: '',
+	      currentImgId: ''
 	    };
 	  },
 
@@ -16185,6 +16184,7 @@
 	  },
 	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['errors'])),
 	  created: function created() {
+	    this.currentImgId = this.$store.state.mediasStore.currentImgId;
 	    this.currentImgTitle = this.$store.state.mediasStore.currentImgTitle;
 	    this.currentImgCopyright = this.$store.state.mediasStore.currentImgCopyright;
 	    this.currentImgDescription = this.$store.state.mediasStore.currentImgDescription;
@@ -16798,7 +16798,11 @@
 	    attrs: {
 	      "type": "submit"
 	    }
-	  }, [_vm._v("Enregistrer")]), _vm._v(" "), _c('image-insert-button')], 1)])])]), _vm._v(" "), _c('div', {
+	  }, [_vm._v("Enregistrer")]), _vm._v(" "), _c('image-insert-button', {
+	    attrs: {
+	      "id": _vm.currentImgId
+	    }
+	  })], 1)])])]), _vm._v(" "), _c('div', {
 	    staticClass: "col-sm-6"
 	  }, [_c('p', [_c('image-upload')], 1)])])])])])
 	},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -17432,7 +17436,7 @@
 
 
 	// module
-	exports.push([module.id, "\n.image-insert-overlay {\n  box-shadow: 0 0 200px rgba(0, 0, 0, 0.5);\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%,-50%);\n          transform: translate(-50%,-50%);\n  width: 100%;\n  max-width: 640px;\n  z-index: 20;\n}\n.fade-enter-active, .fade-leave-active {\n  transition: opacity .5s\n}\n.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {\n  opacity: 0\n}\n.image-insert-overlay__close {\n  position: absolute;\n  top: 0;\n  right: 0;\n  background-color: transparent;\n  border: none;\n}\n", ""]);
+	exports.push([module.id, "\n.image-insert-overlay {\n  box-shadow: 0 0 200px rgba(0, 0, 0, 0.5);\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%,-50%);\n          transform: translate(-50%,-50%);\n  width: 100%;\n  max-width: 640px;\n  z-index: 20;\n}\n.fade-enter-active, .fade-leave-active {\n  transition: opacity .5s\n}\n.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {\n  opacity: 0\n}\n.image-insert-overlay__close {\n  position: absolute;\n  top: 0;\n  right: 0;\n  background-color: transparent;\n  border: none;\n}\n", ""]);
 
 	// exports
 

@@ -12,9 +12,7 @@ export default {
   },
   methods: {
     insert () {
-      console.log(this.$store.state);
       if (this.$store.state.ckEditorStore.ckId != "") {
-
         if (this.id) {
           this.$store.dispatch('mediasStore/fetchSingleImage', this.id).then(()=> {
             this.$store.dispatch('overlayStore/showInsertOverlay', true)

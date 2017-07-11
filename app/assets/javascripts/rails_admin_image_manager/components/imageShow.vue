@@ -53,7 +53,7 @@
               <div class="form-group">
                 <div class="col-sm-10">
                   <button class="btn btn-sm btn-primary" type="submit">Enregistrer</button>
-                  <image-insert-button/>
+                  <image-insert-button :id="currentImgId"/>
                 </div>
               </div>
             </form>
@@ -79,7 +79,8 @@ export default {
     return {
       currentImgTitle: '',
       currentImgCopyright: '',
-      currentImgDescription: ''
+      currentImgDescription: '',
+      currentImgId: ''
     }
   },
   methods: {
@@ -97,6 +98,7 @@ export default {
     ...mapState('mediasStore', ['errors'])
   },
   created () {
+    this.currentImgId = this.$store.state.mediasStore.currentImgId
     this.currentImgTitle = this.$store.state.mediasStore.currentImgTitle
     this.currentImgCopyright = this.$store.state.mediasStore.currentImgCopyright
     this.currentImgDescription = this.$store.state.mediasStore.currentImgDescription
