@@ -70,19 +70,19 @@
 
 	var _stores2 = _interopRequireDefault(_stores);
 
-	var _imageInsertOverlay = __webpack_require__(68);
+	var _imageInsertOverlay = __webpack_require__(69);
 
 	var _imageInsertOverlay2 = _interopRequireDefault(_imageInsertOverlay);
 
-	var _progressOverlay = __webpack_require__(73);
+	var _progressOverlay = __webpack_require__(74);
 
 	var _progressOverlay2 = _interopRequireDefault(_progressOverlay);
 
-	var _notificationOverlay = __webpack_require__(78);
+	var _notificationOverlay = __webpack_require__(79);
 
 	var _notificationOverlay2 = _interopRequireDefault(_notificationOverlay);
 
-	var _confirmationOverlay = __webpack_require__(83);
+	var _confirmationOverlay = __webpack_require__(84);
 
 	var _confirmationOverlay2 = _interopRequireDefault(_confirmationOverlay);
 
@@ -108,6 +108,9 @@
 	      var _this = this;
 
 	      // Checking if we are from CKEDITOR
+	      if (this.$el.attributes['input-id'] !== undefined && this.$el.attributes['input-id'] !== undefined) {
+	        this.$store.dispatch('railsAdmin/setInputId', this.$el.attributes['input-id'].value);
+	      }
 	      if (this.$el.attributes['ck-fn'] !== undefined && this.$el.attributes['ck-id'] !== undefined) {
 	        this.$store.dispatch('ckEditorStore/setCkId', this.$el.attributes['ck-fn'].value);
 	        this.$store.dispatch('ckEditorStore/setCkFun', this.$el.attributes['ck-id'].value);
@@ -14859,7 +14862,7 @@
 
 
 	// module
-	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 	// exports
 
@@ -14886,12 +14889,18 @@
 	    insert: function insert() {
 	      var _this = this;
 
-	      if (this.id) {
-	        this.$store.dispatch('mediasStore/fetchSingleImage', this.id).then(function () {
-	          _this.$store.dispatch('overlayStore/showInsertOverlay', true);
-	        });
+	      console.log(this.$store.state);
+	      if (this.$store.state.ckEditorStore.ckId != "") {
+
+	        if (this.id) {
+	          this.$store.dispatch('mediasStore/fetchSingleImage', this.id).then(function () {
+	            _this.$store.dispatch('overlayStore/showInsertOverlay', true);
+	          });
+	        } else {
+	          this.$store.dispatch('overlayStore/showInsertOverlay', true);
+	        }
 	      } else {
-	        this.$store.dispatch('overlayStore/showInsertOverlay', true);
+	        this.$store.dispatch('railsAdmin/insertImage', this.id);
 	      }
 	    }
 	  }
@@ -16841,6 +16850,10 @@
 
 	var _ckeditor2 = _interopRequireDefault(_ckeditor);
 
+	var _railsAdmin = __webpack_require__(68);
+
+	var _railsAdmin2 = _interopRequireDefault(_railsAdmin);
+
 	var _vue = __webpack_require__(1);
 
 	var _vue2 = _interopRequireDefault(_vue);
@@ -16856,7 +16869,8 @@
 	  modules: {
 	    mediasStore: _medias2.default,
 	    overlayStore: _overlay2.default,
-	    ckEditorStore: _ckeditor2.default
+	    ckEditorStore: _ckeditor2.default,
+	    railsAdmin: _railsAdmin2.default
 	  }
 	});
 
@@ -17293,16 +17307,66 @@
 /* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _axios = __webpack_require__(2);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var railsAdmin = {
+	  namespaced: true,
+	  state: {
+	    inputId: ''
+	  },
+	  mutations: {
+	    SET_INPUT_ID: function SET_INPUT_ID(state, id) {
+	      state.inputId = id;
+	    }
+	  },
+	  actions: {
+	    setInputId: function setInputId(_ref, id) {
+	      var commit = _ref.commit;
+
+	      commit('SET_INPUT_ID', id);
+	    },
+	    insertImage: function insertImage(_ref2, idImage) {
+	      var commit = _ref2.commit,
+	          state = _ref2.state,
+	          dispatch = _ref2.dispatch;
+
+	      dispatch('overlayStore/showProgressOverlay', true, { root: true });
+	      // Generating new dynamic image size before sending it back to CKEDITOR
+	      _axios2.default.get('/images/' + idImage + '?width=250&height=250').then(function (response) {
+	        dispatch('overlayStore/showProgressOverlay', false, { root: true });
+	        window.opener.insertImageManagerMedia(idImage, state.inputId, response.data.src_for_wysiwyg);
+	        window.close();
+	      });
+	    }
+	  }
+	};
+
+	exports.default = railsAdmin;
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
 	var disposed = false
 	function injectStyle (ssrContext) {
 	  if (disposed) return
-	  __webpack_require__(69)
+	  __webpack_require__(70)
 	}
 	var Component = __webpack_require__(38)(
 	  /* script */
-	  __webpack_require__(71),
-	  /* template */
 	  __webpack_require__(72),
+	  /* template */
+	  __webpack_require__(73),
 	  /* styles */
 	  injectStyle,
 	  /* scopeId */
@@ -17334,13 +17398,13 @@
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(70);
+	var content = __webpack_require__(71);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	if(content.locals) module.exports = content.locals;
 	// add the styles to the DOM
@@ -17360,7 +17424,7 @@
 	}
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(35)(undefined);
@@ -17374,7 +17438,7 @@
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17446,7 +17510,7 @@
 	};
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -17581,19 +17645,19 @@
 	}
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var disposed = false
 	function injectStyle (ssrContext) {
 	  if (disposed) return
-	  __webpack_require__(74)
+	  __webpack_require__(75)
 	}
 	var Component = __webpack_require__(38)(
 	  /* script */
-	  __webpack_require__(76),
-	  /* template */
 	  __webpack_require__(77),
+	  /* template */
+	  __webpack_require__(78),
 	  /* styles */
 	  injectStyle,
 	  /* scopeId */
@@ -17625,13 +17689,13 @@
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(75);
+	var content = __webpack_require__(76);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	if(content.locals) module.exports = content.locals;
 	// add the styles to the DOM
@@ -17651,7 +17715,7 @@
 	}
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(35)(undefined);
@@ -17665,7 +17729,7 @@
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17690,7 +17754,7 @@
 	};
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -17725,19 +17789,19 @@
 	}
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var disposed = false
 	function injectStyle (ssrContext) {
 	  if (disposed) return
-	  __webpack_require__(79)
+	  __webpack_require__(80)
 	}
 	var Component = __webpack_require__(38)(
 	  /* script */
-	  __webpack_require__(81),
-	  /* template */
 	  __webpack_require__(82),
+	  /* template */
+	  __webpack_require__(83),
 	  /* styles */
 	  injectStyle,
 	  /* scopeId */
@@ -17769,13 +17833,13 @@
 
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(80);
+	var content = __webpack_require__(81);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	if(content.locals) module.exports = content.locals;
 	// add the styles to the DOM
@@ -17795,7 +17859,7 @@
 	}
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(35)(undefined);
@@ -17809,7 +17873,7 @@
 
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17836,7 +17900,7 @@
 	};
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -17865,19 +17929,19 @@
 	}
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var disposed = false
 	function injectStyle (ssrContext) {
 	  if (disposed) return
-	  __webpack_require__(84)
+	  __webpack_require__(85)
 	}
 	var Component = __webpack_require__(38)(
 	  /* script */
-	  __webpack_require__(86),
-	  /* template */
 	  __webpack_require__(87),
+	  /* template */
+	  __webpack_require__(88),
 	  /* styles */
 	  injectStyle,
 	  /* scopeId */
@@ -17909,13 +17973,13 @@
 
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(85);
+	var content = __webpack_require__(86);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	if(content.locals) module.exports = content.locals;
 	// add the styles to the DOM
@@ -17935,7 +17999,7 @@
 	}
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(35)(undefined);
@@ -17949,7 +18013,7 @@
 
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18001,7 +18065,7 @@
 	};
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;

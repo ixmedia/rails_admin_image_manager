@@ -13,6 +13,7 @@
 <div id="vue-image-manager" data-default-path="<%= images_path %>"
   <%== (params["CKEditor"].present?) ? "ck-id=\"#{params["CKEditor"]}\" ck-fn=\"#{params["CKEditorFuncNum"]}\"" : '' %>
   <%== (params["selectImage"].present?) ? " ck-selected-image-id=\"#{params["selectImage"]}\"" : '' %>
+  <%== (params["inputId"].present?) ? " input-id=\"#{params["inputId"]}\"" : '' %>
   >
   <%= yield %>
   <progress-overlay></progress-overlay>

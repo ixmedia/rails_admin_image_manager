@@ -12,12 +12,18 @@ export default {
   },
   methods: {
     insert () {
-      if (this.id) {
-        this.$store.dispatch('mediasStore/fetchSingleImage', this.id).then(()=> {
+      console.log(this.$store.state);
+      if (this.$store.state.ckEditorStore.ckId != "") {
+
+        if (this.id) {
+          this.$store.dispatch('mediasStore/fetchSingleImage', this.id).then(()=> {
+            this.$store.dispatch('overlayStore/showInsertOverlay', true)
+          })
+        } else {
           this.$store.dispatch('overlayStore/showInsertOverlay', true)
-        })
+        }
       } else {
-        this.$store.dispatch('overlayStore/showInsertOverlay', true)
+        this.$store.dispatch('railsAdmin/insertImage', this.id)
       }
     }
   }

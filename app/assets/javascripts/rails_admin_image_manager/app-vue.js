@@ -31,6 +31,9 @@ document.addEventListener("DOMContentLoaded", function() {
     },
     mounted: function () {
       // Checking if we are from CKEDITOR
+      if (this.$el.attributes['input-id'] !== undefined && this.$el.attributes['input-id'] !== undefined) {
+        this.$store.dispatch('railsAdmin/setInputId', this.$el.attributes['input-id'].value)
+      }
       if (this.$el.attributes['ck-fn'] !== undefined && this.$el.attributes['ck-id'] !== undefined) {
         this.$store.dispatch('ckEditorStore/setCkId', this.$el.attributes['ck-fn'].value)
         this.$store.dispatch('ckEditorStore/setCkFun', this.$el.attributes['ck-id'].value)

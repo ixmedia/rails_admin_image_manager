@@ -1,6 +1,7 @@
 import mediasStore from './medias'
 import overlayStore from './overlay'
 import ckEditorStore from './ckeditor'
+import railsAdmin from './railsAdmin'
 import Vue from 'vue'
 import Vuex from 'vuex'
 
@@ -9,6 +10,7 @@ export default new Vuex.Store({
   modules: {
     mediasStore: mediasStore,
     overlayStore: overlayStore,
-    ckEditorStore: ckEditorStore
+    ckEditorStore: ckEditorStore,
+    railsAdmin: railsAdmin
   }
 })
