@@ -1,10 +1,10 @@
 <%= javascript_include_tag 'rails_admin_image_manager/base' %>
 
 <%= form.send field.view_helper, field.method_name, field.html_attributes.merge({style: (field.editor_options[:hidden_input]==true ? "visibility:hidden;position:absolute" : "")}) %>
+<%= image_tag field.preview_image_path, style: "padding: 10px 0; display: block;", data: {'manager-preview': form.dom_id(field)} %>
 
 <%= link_to t(field.value.present? ? 'admin.image_manager_picker.edit' : 'admin.image_manager_picker.browse').capitalize, RailsAdminImageManager.editor[:imageManagerBrowserUrl], class: "btn btn-default" %>
 
-<%= image_tag field.preview_image_path, style: "padding: 10px 0; display: block;", data: {'manager-preview': form.dom_id(field)} %>
 
 <% if field.value.present? && !form.object.class.managed_file_is_mandatory?(field.method_name) %>
   <a class="btn btn-default" data-toggle="button" href="#" onclick="$(this).siblings('[type=checkbox]').click(); $(this).siblings('.toggle').toggle('slow'); jQuery(this).toggleClass('btn-danger btn-info'); return false">
@@ -22,7 +22,7 @@
       var params = {}
       params.inputId = "<%= form.dom_id(field) %>"
       var url = addQueryString('/admin/image-manager/images', params);
-      popup(url, 1024, 475);
+      popup(url, 1200, 500);
       // assetPicker.showFinder('#<%=form.dom_id(field)%>', <%=field.editor_options.to_json.html_safe%>, <%= field.value.to_i %>)
     })
   })

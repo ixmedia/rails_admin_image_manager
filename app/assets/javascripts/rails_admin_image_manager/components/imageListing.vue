@@ -34,7 +34,7 @@
 
           </div>
         </div>
-        <div class="row items-push">
+        <div class="row items-push" v-if="grid">
           <div class="image-element col-lg-2 col-md-3 col-sm-4 col-xs-6" v-for="(image, key) in imageListItems">
             <div class="img-container">
               <img class="img-responsive" :src="image.src" alt="">
@@ -49,6 +49,20 @@
             </div>
           </div>
         </div>
+        <div class="row items-push" v-if="!grid">
+          <div class="table-responsive">
+            <table class="table table-striped table-vcenter">
+              <tbody>
+                <tr v-for="(image, key) in imageListItems">
+                  <td>
+                    <img width="100px" :src="image.src" alt="">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -63,7 +77,7 @@ export default {
   components: {imageInsertButton},
   data () {
     return {
-      images: [0, 1, 3, 4, 5, 6, 7, 8, 9],
+      grid: true,
       lazyload: new Lazyload(()=> {
         this.fetchImage()
       }),
