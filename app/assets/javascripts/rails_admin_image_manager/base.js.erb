@@ -2,8 +2,6 @@
 
 window.insertImageManagerMedia = function(idImage, idInput, url) {
   $('#'+idInput).val(idImage)
-  console.log($('#'+idInput));
-  console.log(url);
   $("[data-manager-preview='"+idInput+"']").attr('src',url)
 }
 

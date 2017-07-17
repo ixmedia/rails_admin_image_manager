@@ -10,17 +10,17 @@
   <script type="text/javascript">
     window.AJAX_ENDPOINT = "<%= root_path %>"
   </script>
-<div id="vue-image-manager" data-default-path="<%= images_path %>"
-  <%== (params["CKEditor"].present?) ? "ck-id=\"#{params["CKEditor"]}\" ck-fn=\"#{params["CKEditorFuncNum"]}\"" : '' %>
-  <%== (params["selectImage"].present?) ? " ck-selected-image-id=\"#{params["selectImage"]}\"" : '' %>
-  <%== (params["inputId"].present?) ? " input-id=\"#{params["inputId"]}\"" : '' %>
-  >
-  <%= yield %>
-  <progress-overlay></progress-overlay>
-  <image-insert-overlay></image-insert-overlay>
-  <notification-overlay></notification-overlay>
-  <confirmation-overlay></confirmation-overlay>
-</div>
+  <div id="vue-image-manager" data-default-path="<%= images_path %>"
+    <%== (params["CKEditor"].present?) ? "ck-id=\"#{params["CKEditor"]}\" ck-fn=\"#{params["CKEditorFuncNum"]}\"" : '' %>
+    <%== (params["selectImage"].present?) ? " ck-selected-image-id=\"#{params["selectImage"]}\"" : '' %>
+    <%== (params["inputId"].present?) ? " input-id=\"#{params["inputId"]}\"" : '' %>
+    >
+    <%= yield %>
+    <progress-overlay></progress-overlay>
+    <image-insert-overlay></image-insert-overlay>
+    <notification-overlay></notification-overlay>
+    <confirmation-overlay></confirmation-overlay>
+  </div>
 
 </body>
 </html>

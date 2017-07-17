@@ -13,7 +13,7 @@
         <div class="row">
 
           <div class="col-sm-6">
-            <form class="form-horizontal" v-on:submit.prevent="save" method="post">
+            <div class="form-horizontal">
 
               <div :class="[{ 'has-error': errors.name },'form-group']">
                 <div class="col-sm-12">
@@ -52,11 +52,11 @@
 
               <div class="form-group">
                 <div class="col-sm-10">
-                  <button class="btn btn-sm btn-primary" type="submit">Enregistrer</button>
+                  <button class="btn btn-sm btn-primary" type="button" @click="save">Enregistrer</button>
                   <image-insert-button :id="currentImgId"/>
                 </div>
               </div>
-            </form>
+            </div>
           </div>
           <div class="col-sm-6">
             <p><image-upload></image-upload></p>

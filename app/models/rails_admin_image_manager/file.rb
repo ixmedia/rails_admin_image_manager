@@ -48,7 +48,7 @@ module RailsAdminImageManager
     end
 
     def decode_base64_image
-      if src.include? 'data:image'
+      if src.present? && src.include?('data:image')
         new_image = Paperclip.io_adapters.for(src)
         new_image.original_filename = "base64.png"
         self.image = new_image
