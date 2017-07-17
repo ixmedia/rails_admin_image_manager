@@ -1,6 +1,6 @@
 <% self.class.include RailsAdminImageManager::Engine.routes.url_helpers %>
 
-function addQueryString( url, params ) {
+window.addQueryString = function ( url, params ) {
 	var queryString = [];
 	if (!params) return url;
 	else {
