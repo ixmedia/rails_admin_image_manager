@@ -12,6 +12,6 @@
 //
 
 
-//= require underscore.min.js
-//= require oneui.min.js
+//= require rails_admin_image_manager/vendors/underscore.min.js
+//= require rails_admin_image_manager/vendors/oneui.min.js
 //= require rails_admin_image_manager/app-compiled.js
