@@ -35,7 +35,7 @@
           </div>
         </div>
         <div class="row items-push" v-if="grid">
-          <div class="image-element col-lg-2 col-md-3 col-sm-4 col-xs-6" v-for="(image, key) in imageListItems">
+          <div class="listing-element" v-for="(image, key) in imageListItems">
             <div class="img-container">
               <img class="img-responsive" :src="image.src" alt="">
               <div class="img-options">
@@ -91,9 +91,6 @@ export default {
   computed: {
     ...mapState('mediasStore', ['imageListItems', 'maxImageListItems', 'tags'])
   },
-  created() {
-    this.$store.dispatch('mediasStore/fetchImageWithParams', {page: this.page})
-  },
   methods:{
     fetchImage() {
       if (!this.isFetching && (this.maxImageListItems == -1 || this.imageListItems.length < this.maxImageListItems) ) {
@@ -119,14 +116,18 @@ export default {
       this.page = 1
       this.query = ''
       this.selectedFilter = ''
-      this.search()
-      this.filter()
+      this.searchedQuery = ''
+      this.$store.dispatch('mediasStore/clearImgListing')
+      this.$store.dispatch('mediasStore/fetchImageWithParams', {page: this.page})
     },
     deleteImage(image){
       this.$store.dispatch('overlayStore/pushConfirmation', { msg: 'Voulez vous supprimer l\'image définitivement?', callback: () => {
         this.$store.dispatch('mediasStore/deleteImg', image.id)
       }})
     }
+  },
+  created() {
+    this.$store.dispatch('mediasStore/fetchImageWithParams', {page: this.page})
   },
   mounted() {
     this.lazyload.start()
@@ -150,4 +151,13 @@ export default {
     font-size: 50px
     // width: 250px
     // height: 250px
+
+  .listing-element
+    margin: 10px
+    float: left
+    width: 150px
+
+    .btn-sm.btn
+      padding: 0 5px
+      font-size: 11px
 </style>
