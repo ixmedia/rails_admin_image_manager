@@ -49,6 +49,11 @@
             </div>
           </div>
         </div>
+        <div class="row text-center items-push">
+          <div class="col-sm-12">  
+            <button type="button" v-if="maxImageListItems > imageListItems.length" class="btn btn-default" @click="fetchImage">Plus d'image</button>
+          </div>
+        </div>
         <div class="row items-push" v-if="!grid">
           <div class="table-responsive">
             <table class="table table-striped table-vcenter">
