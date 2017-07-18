@@ -14723,6 +14723,11 @@
 	//
 	//
 	//
+	//
+	//
+	//
+	//
+	//
 
 	var _imageInsertButton = __webpack_require__(40);
 
@@ -15997,7 +16002,19 @@
 	        }
 	      }
 	    }, [_vm._v("Supprimer")])], 1)])])])
-	  })) : _vm._e(), _vm._v(" "), (!_vm.grid) ? _c('div', {
+	  })) : _vm._e(), _vm._v(" "), _c('div', {
+	    staticClass: "row text-center items-push"
+	  }, [_c('div', {
+	    staticClass: "col-sm-12"
+	  }, [(_vm.maxImageListItems > _vm.imageListItems.length) ? _c('button', {
+	    staticClass: "btn btn-default",
+	    attrs: {
+	      "type": "button"
+	    },
+	    on: {
+	      "click": _vm.fetchImage
+	    }
+	  }, [_vm._v("Plus d'image")]) : _vm._e()])]), _vm._v(" "), (!_vm.grid) ? _c('div', {
 	    staticClass: "row items-push"
 	  }, [_c('div', {
 	    staticClass: "table-responsive"
