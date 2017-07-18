@@ -11,7 +11,7 @@ module RailsAdminImageManager
 
     # == Attributes ===========================================================
 
-    has_dynamic_attached_file :image, styles: { show: '680x480', index: '250x250#', rails_admin: '75x75' }
+    has_dynamic_attached_file :image, styles: { show: '680x480', index: '250x250#', rails_admin: '75x75' }, url: '/images/:id/:style_:filename'
 
     attr_accessor :src
     attr_accessor :src_for_wysiwyg
