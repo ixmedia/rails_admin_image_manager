@@ -1,5 +1,15 @@
 //= require rails_admin_image_manager/editor/image_manager_picker
 
+
+window.addQueryString = function ( url, params ) {
+	var queryString = [];
+	if (!params) return url;
+	else {
+		for (var i in params) queryString.push(i + "=" + encodeURIComponent( params[i]));
+	}
+	return url + ( ( url.indexOf( "?" ) != -1 ) ? "&" : "?" ) + queryString.join( "&" );
+}
+
 window.insertImageManagerMedia = function(idImage, idInput, url) {
   $('#'+idInput).val(idImage)
   $("[data-manager-preview='"+idInput+"']").attr('src',url)
