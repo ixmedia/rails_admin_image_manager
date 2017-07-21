@@ -58,7 +58,16 @@ module RailsAdminImageManager
     end
 
     def create
-      image = RailsAdminImageManager::File.new(images_params)
+      my_params = images_params
+
+      # Handling dynamic tag creating when receiving a string
+      tags = []
+      images_params[:tags].each do |tag_string|
+       tags << RailsAdminImageManager::Tag.retrieve_or_create_tag(tag_string)
+      end
+      my_params[:tags] = tags
+
+      image = RailsAdminImageManager::File.new(my_params)
       if image.save()
         render json: image, status: :ok
       else
