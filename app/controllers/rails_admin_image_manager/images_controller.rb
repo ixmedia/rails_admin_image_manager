@@ -77,9 +77,12 @@ module RailsAdminImageManager
 
     def destroy
       image = RailsAdminImageManager::File.find(params[:id])
-      image.destroy
+      if image.destroy
+        render json: image, status: :ok
+      else
+        render json: image.errors, status: :unprocessable_entity
+      end
 
-      render json: image, status: :ok
     end
 
     def images_params
