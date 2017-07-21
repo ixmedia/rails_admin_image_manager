@@ -3,7 +3,7 @@
     <div class="image-tag-selector__choices">
       <p><span class="label label-primary" @click="removeSelected(tag)" v-for="tag in currentImgTags">{{tag}}</span></p>
     </div>
-    <input type="text" placeholder="Choisir une étiquette" class="form-control" v-model="searchText" @keyup="addCusttom">
+    <input type="text" placeholder="Saisir une étiquette et faire enter" class="form-control" v-model="searchText" @keyup="addCusttom">
     <label for="example-select2-multiple">{{label}}</label>
     <ul class="image-tag-selector__pool-list">
       <li v-for="tag in filteredTags" @click="selectTag(tag)"><button type="button">{{ tag }}</button></li>
