@@ -18,18 +18,23 @@ $ bundle install
 $ rails generate rails_admin_image_manager:install
 ```
 
-4. Run migrations
+4. Add the upload filepath to your .gitignore file
+```
+/public/rails_admin_image_manager
+```
+
+5. Run migrations
 ```bash
 $ rails db:migrate SCOPE=rails_admin_image_manager
 ```
 
-5. Install the image manager CKEditor plugin
+6. Install the image manager CKEditor plugin
 ```bash
 touch app/assets/javascripts/ckeditor/config.js.erb
 echo "//= require 'rails_admin_image_manager/ckeditor_plugin'" | cat - app/assets/javascripts/ckeditor/config.js.erb > temp && mv temp app/assets/javascripts/ckeditor/config.js.erb
 ```
 
-6. If you need to add the image manager button in a custom CKEditor config
+7. If you need to add the image manager button in a custom CKEditor config
 ```js
 CKEDITOR.editorConfig = function( config )
 {

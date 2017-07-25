@@ -11,11 +11,10 @@ module RailsAdminImageManager
 
     # == Attributes ===========================================================
 
-    has_dynamic_attached_file :image, styles: { show: '680x480', index: '250x250#', rails_admin: '75x75' }, url: '/images/:id/:style_:filename'
+    has_dynamic_attached_file :image, styles: { show: '680x480', index: '250x250#', rails_admin: '75x75' }, url: '/rails_admin_image_manager/:id/:style_:filename'
 
     attr_accessor :src
     attr_accessor :src_for_wysiwyg
-
 
     # == Callbacks ============================================================
     before_validation :decode_base64_image
@@ -68,7 +67,6 @@ module RailsAdminImageManager
     def tags_list
       tags.collect { |t| t.name }
     end
-
 
     # == Class Methods ========================================================
 
