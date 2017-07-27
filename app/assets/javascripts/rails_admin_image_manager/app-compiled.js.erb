@@ -14887,7 +14887,7 @@
 
 
 	// module
-	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 	// exports
 
@@ -14905,7 +14905,7 @@
 	var _vuex = __webpack_require__(44);
 
 	exports.default = {
-	  props: ['id'],
+	  props: ['id', 'saveMethod'],
 	  data: function data() {
 	    return {};
 	  },
@@ -14914,16 +14914,26 @@
 	    insert: function insert() {
 	      var _this = this;
 
-	      if (this.$store.state.ckEditorStore.ckId != "") {
-	        if (this.id) {
-	          this.$store.dispatch('mediasStore/fetchSingleImage', this.id).then(function () {
+	      var doIt = function doIt(response) {
+	        var id = _this.id || response.data.id;
+	        if (_this.$store.state.ckEditorStore.ckId != "") {
+	          if (id) {
+	            _this.$store.dispatch('mediasStore/fetchSingleImage', _this.id).then(function () {
+	              _this.$store.dispatch('overlayStore/showInsertOverlay', true);
+	            });
+	          } else {
 	            _this.$store.dispatch('overlayStore/showInsertOverlay', true);
-	          });
+	          }
 	        } else {
-	          this.$store.dispatch('overlayStore/showInsertOverlay', true);
+	          _this.$store.dispatch('railsAdmin/insertImage', id);
 	        }
+	      };
+	      if (typeof this.saveMethod == "function") {
+	        this.saveMethod().then(doIt).catch(function () {
+	          console.log('Erreur lors de la sauvegarde');
+	        });
 	      } else {
-	        this.$store.dispatch('railsAdmin/insertImage', this.id);
+	        doIt();
 	      }
 	    }
 	  }
@@ -16117,7 +16127,7 @@
 
 
 	// module
-	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 	// exports
 
@@ -16231,13 +16241,17 @@
 
 	  methods: {
 	    save: function save() {
+	      var _this = this;
+
 	      var imgData = {
 	        name: this.currentImgTitle,
 	        description: this.currentImgDescription,
 	        copyright: this.currentImgCopyright
 	      };
-	      this.$store.dispatch('mediasStore/setCurrentImg', imgData);
-	      this.$store.dispatch('mediasStore/saveCurrentImg');
+	      return new Promise(function (resolve, reject) {
+	        _this.$store.dispatch('mediasStore/setCurrentImg', imgData);
+	        _this.$store.dispatch('mediasStore/saveCurrentImg').then(resolve).catch(reject);
+	      });
 	    }
 	  },
 	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['errors'])),
@@ -16853,6 +16867,7 @@
 	    }
 	  }, [_vm._v("Enregistrer")]), _vm._v(" "), _c('image-insert-button', {
 	    attrs: {
+	      "save-method": _vm.save,
 	      "id": _vm.currentImgId
 	    }
 	  })], 1)])])]), _vm._v(" "), _c('div', {
@@ -17082,6 +17097,18 @@
 	      dispatch('overlayStore/showProgressOverlay', true, { root: true });
 
 	      if (state.currentImgId != '') {
+	        return dispatch('updateImg');
+	      } else {
+	        return dispatch('createImg');
+	      }
+	    },
+	    updateImg: function updateImg(_ref4) {
+	      var dispatch = _ref4.dispatch,
+	          commit = _ref4.commit,
+	          state = _ref4.state,
+	          getters = _ref4.getters;
+
+	      return new Promise(function (resolve, reject) {
 	        _axios2.default.put('/images', getters.imageObject).then(function (response) {
 
 	          // Notificating
@@ -17092,6 +17119,7 @@
 
 	          // hiding loading bar
 	          dispatch('overlayStore/showProgressOverlay', false, { root: true });
+	          resolve(response);
 	        }).catch(function (error) {
 	          // hiding loading bar
 	          dispatch('overlayStore/showProgressOverlay', false, { root: true });
@@ -17100,10 +17128,18 @@
 	          dispatch('overlayStore/pushNotification', { error: true, msg: 'Erreur lors de la mise à jour' }, { root: true });
 
 	          commit('SET_ERRORS', error.response.data);
+	          reject();
 	        });
-	      } else {
-	        _axios2.default.post('/images', getters.imageObject).then(function (response) {
+	      });
+	    },
+	    createImg: function createImg(_ref5) {
+	      var dispatch = _ref5.dispatch,
+	          commit = _ref5.commit,
+	          state = _ref5.state,
+	          getters = _ref5.getters;
 
+	      return new Promise(function (resolve, reject) {
+	        _axios2.default.post('/images', getters.imageObject).then(function (response) {
 	          // Notificating
 	          dispatch('overlayStore/pushNotification', { success: true, msg: 'Image créé avec succès' }, { root: true });
 
@@ -17111,25 +17147,28 @@
 	          commit('SET_ERRORS', {});
 
 	          // Redirect
+	          dispatch('setCurrentImg', response.data);
 	          _router2.default.push({ name: 'root' });
+	          resolve(response);
 	        }).catch(function (error) {
 	          // hiding loading bar
 	          dispatch('overlayStore/showProgressOverlay', false, { root: true });
 
 	          dispatch('overlayStore/pushNotification', { error: true, msg: 'Erreur lors de la création' }, { root: true });
 	          commit('SET_ERRORS', error.response.data);
+	          reject();
 	        });
-	      }
+	      });
 	    },
-	    deleteImg: function deleteImg(_ref4, id) {
-	      var commit = _ref4.commit;
+	    deleteImg: function deleteImg(_ref6, id) {
+	      var commit = _ref6.commit;
 
 	      _axios2.default.delete({ params: { id: id } });
 	    },
-	    fetchImageWithParams: function fetchImageWithParams(_ref5, params) {
-	      var commit = _ref5.commit,
-	          dispatch = _ref5.dispatch,
-	          state = _ref5.state;
+	    fetchImageWithParams: function fetchImageWithParams(_ref7, params) {
+	      var commit = _ref7.commit,
+	          dispatch = _ref7.dispatch,
+	          state = _ref7.state;
 
 	      return new Promise(function (resolve, reject) {
 
@@ -17160,9 +17199,9 @@
 	        });
 	      });
 	    },
-	    fetchSingleImage: function fetchSingleImage(_ref6, id) {
-	      var dispatch = _ref6.dispatch,
-	          rootDispatch = _ref6.rootDispatch;
+	    fetchSingleImage: function fetchSingleImage(_ref8, id) {
+	      var dispatch = _ref8.dispatch,
+	          rootDispatch = _ref8.rootDispatch;
 
 	      dispatch('overlayStore/showProgressOverlay', true, { root: true });
 	      return new Promise(function (resolve, reject) {
@@ -17176,8 +17215,8 @@
 	        });
 	      });
 	    },
-	    clearCurrentImg: function clearCurrentImg(_ref7) {
-	      var dispatch = _ref7.dispatch;
+	    clearCurrentImg: function clearCurrentImg(_ref9) {
+	      var dispatch = _ref9.dispatch;
 
 	      var clearObject = {
 	        id: '',
@@ -17190,9 +17229,9 @@
 	      };
 	      dispatch('setCurrentImg', clearObject);
 	    },
-	    fetchTags: function fetchTags(_ref8) {
-	      var commit = _ref8.commit,
-	          dispatch = _ref8.dispatch;
+	    fetchTags: function fetchTags(_ref10) {
+	      var commit = _ref10.commit,
+	          dispatch = _ref10.dispatch;
 
 	      return new Promise(function (resolve, reject) {
 	        _axios2.default.get('/tags.json').then(function (response) {
@@ -17204,9 +17243,9 @@
 	        });
 	      });
 	    }
-	  }, _defineProperty(_actions, 'deleteImg', function deleteImg(_ref9, idImage) {
-	    var commit = _ref9.commit,
-	        dispatch = _ref9.dispatch;
+	  }, _defineProperty(_actions, 'deleteImg', function deleteImg(_ref11, idImage) {
+	    var commit = _ref11.commit,
+	        dispatch = _ref11.dispatch;
 
 	    dispatch('overlayStore/showProgressOverlay', true, { root: true });
 	    return new Promise(function (resolve, reject) {
@@ -17219,21 +17258,21 @@
 	        dispatch('overlayStore/pushNotification', { error: true, msg: 'Problème lors de la supression de l\'image' }, { root: true });
 	      });
 	    });
-	  }), _defineProperty(_actions, 'clearImgListing', function clearImgListing(_ref10) {
-	    var commit = _ref10.commit;
-
-	    commit('CLEAR_IMG_LISTING');
-	  }), _defineProperty(_actions, 'updateSrc', function updateSrc(_ref11, src) {
-	    var commit = _ref11.commit,
-	        state = _ref11.state;
-
-	    commit('UPDATE_CURRENT_IMG_SRC', src);
-	  }), _defineProperty(_actions, 'addTag', function addTag(_ref12, string) {
+	  }), _defineProperty(_actions, 'clearImgListing', function clearImgListing(_ref12) {
 	    var commit = _ref12.commit;
 
+	    commit('CLEAR_IMG_LISTING');
+	  }), _defineProperty(_actions, 'updateSrc', function updateSrc(_ref13, src) {
+	    var commit = _ref13.commit,
+	        state = _ref13.state;
+
+	    commit('UPDATE_CURRENT_IMG_SRC', src);
+	  }), _defineProperty(_actions, 'addTag', function addTag(_ref14, string) {
+	    var commit = _ref14.commit;
+
 	    commit('ADD_CURRENT_IMG_TAG', string);
-	  }), _defineProperty(_actions, 'removeTag', function removeTag(_ref13, string) {
-	    var commit = _ref13.commit;
+	  }), _defineProperty(_actions, 'removeTag', function removeTag(_ref15, string) {
+	    var commit = _ref15.commit;
 
 	    commit('REMOVE_CURRENT_IMG_TAG', string);
 	  }), _actions)

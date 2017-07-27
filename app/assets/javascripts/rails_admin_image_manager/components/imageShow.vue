@@ -53,7 +53,7 @@
               <div class="form-group">
                 <div class="col-sm-10">
                   <button class="btn btn-sm btn-primary" type="button" @click="save">Enregistrer</button>
-                  <image-insert-button :id="currentImgId"/>
+                  <image-insert-button :save-method="save" :id="currentImgId"/>
                 </div>
               </div>
             </div>
@@ -90,8 +90,10 @@ export default {
         description: this.currentImgDescription,
         copyright: this.currentImgCopyright,
       }
-      this.$store.dispatch('mediasStore/setCurrentImg', imgData)
-      this.$store.dispatch('mediasStore/saveCurrentImg')
+      return new Promise((resolve, reject) => {
+        this.$store.dispatch('mediasStore/setCurrentImg', imgData)
+        this.$store.dispatch('mediasStore/saveCurrentImg').then(resolve).catch(reject)
+      });
     },
   },
   computed: {

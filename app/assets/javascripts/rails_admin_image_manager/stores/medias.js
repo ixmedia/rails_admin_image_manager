@@ -116,6 +116,13 @@ const mediasStore = {
       dispatch('overlayStore/showProgressOverlay', true, {root:true})
 
       if (state.currentImgId != '') {
+        return dispatch('updateImg')
+      } else {
+        return dispatch('createImg')
+      }
+    },
+    updateImg ({dispatch, commit, state, getters}) {
+      return new Promise((resolve, reject) => {
         axios.put('/images', getters.imageObject).then((response)=> {
 
           // Notificating
@@ -126,7 +133,7 @@ const mediasStore = {
 
           // hiding loading bar
           dispatch('overlayStore/showProgressOverlay', false, {root:true})
-
+          resolve(response)
         }).catch((error) => {
           // hiding loading bar
           dispatch('overlayStore/showProgressOverlay', false, {root:true})
@@ -135,11 +142,13 @@ const mediasStore = {
           dispatch('overlayStore/pushNotification', {error: true, msg: 'Erreur lors de la mise à jour'}, {root:true})
 
           commit('SET_ERRORS', error.response.data)
-
+          reject()
         })
-      } else {
+      })
+    },
+    createImg ({dispatch, commit, state, getters}) {
+      return new Promise((resolve, reject) => {
         axios.post('/images',getters.imageObject).then((response)=> {
-
           // Notificating
           dispatch('overlayStore/pushNotification', {success: true, msg: 'Image créé avec succès'}, {root:true})
 
@@ -147,15 +156,18 @@ const mediasStore = {
           commit('SET_ERRORS', {})
 
           // Redirect
+          dispatch('setCurrentImg', response.data)
           router.push({ name: 'root'})
+          resolve(response)
         }).catch((error) => {
           // hiding loading bar
           dispatch('overlayStore/showProgressOverlay', false, {root:true})
 
           dispatch('overlayStore/pushNotification', {error: true, msg: 'Erreur lors de la création'}, {root:true})
           commit('SET_ERRORS', error.response.data)
+          reject()
         })
-      }
+      })
     },
     deleteImg ({ commit }, id) {
       axios.delete({params: {id: id}})
