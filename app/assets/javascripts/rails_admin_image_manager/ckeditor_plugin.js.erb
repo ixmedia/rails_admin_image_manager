@@ -1,5 +1,5 @@
 <% self.class.include RailsAdminImageManager::Engine.routes.url_helpers %>
-
+console.log('marche paasdas');
 window.addQueryString = function ( url, params ) {
 	var queryString = [];
 	if (!params) return url;
@@ -9,7 +9,6 @@ window.addQueryString = function ( url, params ) {
 	return url + ( ( url.indexOf( "?" ) != -1 ) ? "&" : "?" ) + queryString.join( "&" );
 }
 CKEDITOR.plugins.add( 'imageManager', {
-  icons: 'abbr',
   init: function( editor ) {
 
     editor._.insertImagefn = CKEDITOR.tools.addFunction(function(src, id, title){
@@ -20,7 +19,7 @@ CKEDITOR.plugins.add( 'imageManager', {
     editor.ui.addButton( 'imageManager', {
       label: 'Ajouter une image',
       command: 'insertImage',
-      icon: "<%= asset_path 'rails_admin_image_manager/icon.png' %>"
+      icon: "<%= asset_path 'rails_admin_image_manager/image.png' %>"
     });
 
     editor.addCommand( 'insertImage', {
