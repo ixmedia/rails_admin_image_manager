@@ -2,19 +2,11 @@
   <div class="content animated fadeIn">
     <div class="block">
       <div class="block-header">
-        <ul class="nav-header pull-left">
-          <li>
-            <form class="form-horizontal" @submit.prevent="search" method="post" style="width: 450px">
-              <div class="form-material form-material-primary input-group remove-margin-t remove-margin-b">
-                <input class="form-control" v-model="query" type="text"  placeholder="Rechercher..">
-                <span @click="search" class="input-group-addon"><i class="si si-magnifier"></i></span>
-              </div>
-            </form>
-          </li>
-        </ul>
+        <search-autocomplete></search-autocomplete>
+
         <ul class="nav-header pull-right">
           <li>
-            <select v-model="selectedFilter" @change="filter">
+             <select v-model="selectedFilter" @change="filter">
               <option value="">Filtre</option>
               <option :value="tag.id" v-for="tag in tags">{{ tag.name }}</option>
             </select>
@@ -50,7 +42,7 @@
           </div>
         </div>
         <div class="row text-center items-push">
-          <div class="col-sm-12">  
+          <div class="col-sm-12">
             <button type="button" v-if="maxImageListItems > imageListItems.length" class="btn btn-default" @click="fetchImage">Plus d'image</button>
           </div>
         </div>
@@ -76,10 +68,12 @@
 
 <script>
 import imageInsertButton from './imageInsertButton.vue'
+import imageTagSelector from './imageTagSelector.vue'
+import searchAutocomplete from './searchAutocomplete.vue'
 import Lazyload from '../libs/lazyload.js'
 import {mapState} from 'vuex'
 export default {
-  components: {imageInsertButton},
+  components: {imageInsertButton, imageTagSelector, searchAutocomplete},
   data () {
     return {
       grid: true,
@@ -100,22 +94,22 @@ export default {
     fetchImage() {
       if (!this.isFetching && (this.maxImageListItems == -1 || this.imageListItems.length < this.maxImageListItems) ) {
         this.isFetching = true
-        this.$store.dispatch('mediasStore/fetchImageWithParams', {page: this.page + 1}).then(()=> {
+        this.$store.dispatch('mediasStore/setSearchPage', this.page + 1)
+        this.$store.dispatch('mediasStore/fetchImage').then(()=> {
           this.isFetching = false
           this.page ++
         })
       }
     },
+    filter() {
+      console.log('filter');
+    },
     search() {
       this.page = 1
       this.searchedQuery = (this.query == '') ? '' : this.query
       this.$store.dispatch('mediasStore/clearImgListing')
-      this.$store.dispatch('mediasStore/fetchImageWithParams', { search: this.query })
-    },
-    filter() {
-      this.page = 1;
-      this.$store.dispatch('mediasStore/clearImgListing')
-      this.$store.dispatch('mediasStore/fetchImageWithParams', { tags: this.selectedFilter })
+      this.$store.dispatch('mediasStore/setSearchQuery', this.query)
+      this.$store.dispatch('mediasStore/fetchImage')
     },
     resetSearchAndFilters() {
       this.page = 1
@@ -123,7 +117,8 @@ export default {
       this.selectedFilter = ''
       this.searchedQuery = ''
       this.$store.dispatch('mediasStore/clearImgListing')
-      this.$store.dispatch('mediasStore/fetchImageWithParams', {page: this.page})
+      this.$store.dispatch('mediasStore/setSearchPage', this.page)
+      this.$store.dispatch('mediasStore/fetchImage')
     },
     deleteImage(image){
       this.$store.dispatch('overlayStore/pushConfirmation', { msg: 'Voulez vous supprimer l\'image définitivement?', callback: () => {
@@ -132,7 +127,8 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('mediasStore/fetchImageWithParams', {page: this.page})
+    this.$store.dispatch('mediasStore/setSearchPage', this.page)
+    this.$store.dispatch('mediasStore/fetchImage')
   },
   mounted() {
     this.lazyload.start()

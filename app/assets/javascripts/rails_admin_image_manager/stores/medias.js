@@ -12,6 +12,11 @@ const mediasStore = {
     currentImgTags: [],
     imageListItems: [],
     maxImageListItems: -1,
+    activeFilters: {
+      tags: [],
+      search: '',
+      page: 1
+    },
     tags: [],
     errors: {}
   },
@@ -75,6 +80,20 @@ const mediasStore = {
         let tag = tags[i]
         state.tags.push(tag)
       }
+    },
+    // tag is an id
+    REMOVE_FROM_TAG_FILTERS(state, tag) {
+      state.activeFilters.tags = _.without(state.activeFilters.tags, [tag])
+    },
+    // tag is an id
+    ADD_TO_TAG_FILTERS(state, tag) {
+      state.activeFilters.tags.push(tag)
+    },
+    SET_PAGE(state, page) {
+      state.activeFilters.page = page
+    },
+    SET_QUERY(state, query){
+      state.activeFilters.search = query
     }
   },
   getters: {
@@ -173,14 +192,15 @@ const mediasStore = {
       axios.delete({params: {id: id}})
     },
 
-    fetchImageWithParams({commit, dispatch, state}, params) {
+    fetchImage({commit, dispatch, state}) {
       return new Promise((resolve, reject) => {
 
         // Showing progress bar
         dispatch('overlayStore/showProgressOverlay', true, {root:true})
 
+        console.log(state.activeFilters);
         // GET WITH PARAMS
-        axios.get('images.json', {params: params})
+        axios.get('images.json', {params: state.activeFilters})
         // SUCCESS
         .then((response) => {
           if(state.maxImageListItems == -1) commit('SET_MAX_IMAGE_LIST_ITEMS', response.data.total_count)
@@ -258,11 +278,23 @@ const mediasStore = {
         })
       })
     },
+    setSearchPage({commit}, page) {
+      commit('SET_PAGE', page)
+    },
+    setSearchQuery({commit}, query) {
+      commit('SET_QUERY', query)
+    },
     clearImgListing({ commit }){
       commit('CLEAR_IMG_LISTING')
     },
     updateSrc ({commit, state}, src) {
       commit('UPDATE_CURRENT_IMG_SRC', src)
+    },
+    addToTagFilter({commit, state}, id) {
+      commit('ADD_TO_TAG_FILTERS', id)
+    },
+    removeFromTagFilter({commit, state}, id) {
+      commit('REMOVE_FROM_TAG_FILTERS', id)
     },
     addTag ({ commit }, string) {
       commit('ADD_CURRENT_IMG_TAG', string)

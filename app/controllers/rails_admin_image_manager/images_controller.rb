@@ -10,7 +10,7 @@ module RailsAdminImageManager
         format.json {
           images  = RailsAdminImageManager::File.select(:id, :name, :image_file_name).page(params[:page])
           images  = images.filter_by_text(params[:search]) if filter_by?(:search)
-          images  = images.filter_by_tags(params[:tags].split(',').map{|i| i.to_i }) if filter_by?(:tags)
+          images  = images.filter_by_tags(params[:tags].map{|i| i.to_i }) if filter_by?(:tags)
           images.each do |image|
               image.src = image.image.url(:index)
           end
