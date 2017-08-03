@@ -34,7 +34,7 @@
         </div>
         <div class="row text-center items-push">
           <div class="col-sm-12">
-            <button type="button" v-if="maxImageListItems > imageListItems.length" class="btn btn-default" @click="fetchImage">Plus d'image</button>
+            <button type="button" v-if="showMoreButton()" class="btn btn-default" @click="fetchImage">Plus d'image</button>
           </div>
         </div>
         <div class="row items-push" v-if="!grid">
@@ -79,7 +79,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('mediasStore', ['imageListItems', 'maxImageListItems', 'tags'])
+    ...mapState('mediasStore', ['imageListItems', 'maxImageListItems', 'tags', 'activeFilters'])
   },
   methods:{
     fetchImage() {
@@ -101,6 +101,9 @@ export default {
       this.$store.dispatch('mediasStore/clearImgListing')
       this.$store.dispatch('mediasStore/setSearchQuery', this.query)
       this.$store.dispatch('mediasStore/fetchImage')
+    },
+    showMoreButton() {
+      return (this.maxImageListItems > this.imageListItems.length && this.activeFilters.tags.length <= 0 && this.activeFilters.search == '')
     },
     resetSearchAndFilters() {
       this.page = 1

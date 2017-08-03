@@ -200,7 +200,6 @@ const mediasStore = {
         // Showing progress bar
         dispatch('overlayStore/showProgressOverlay', true, {root:true})
 
-        console.log(state.activeFilters);
         // GET WITH PARAMS
         axios.get('images.json', {params: state.activeFilters})
         // SUCCESS

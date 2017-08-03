@@ -14750,7 +14750,7 @@
 	    };
 	  },
 
-	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['imageListItems', 'maxImageListItems', 'tags'])),
+	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['imageListItems', 'maxImageListItems', 'tags', 'activeFilters'])),
 	  methods: {
 	    fetchImage: function fetchImage() {
 	      var _this2 = this;
@@ -14773,6 +14773,9 @@
 	      this.$store.dispatch('mediasStore/clearImgListing');
 	      this.$store.dispatch('mediasStore/setSearchQuery', this.query);
 	      this.$store.dispatch('mediasStore/fetchImage');
+	    },
+	    showMoreButton: function showMoreButton() {
+	      return this.maxImageListItems > this.imageListItems.length && this.activeFilters.tags.length <= 0 && this.activeFilters.search == '';
 	    },
 	    resetSearchAndFilters: function resetSearchAndFilters() {
 	      this.page = 1;
@@ -16154,7 +16157,7 @@
 	        this.$store.dispatch('mediasStore/setSearchQuery', this.query);
 	        this.$store.dispatch('mediasStore/clearImgListing');
 	        this.$store.dispatch('mediasStore/fetchImage');
-	      } else if (this.query == '') {
+	      } else if ((e.key == 'Backspace' || e.key == 'Meta') && this.query == '' && this.activeFilters.search != '') {
 	        this.clearSearch();
 	      }
 	    },
@@ -16764,7 +16767,7 @@
 	    staticClass: "row text-center items-push"
 	  }, [_c('div', {
 	    staticClass: "col-sm-12"
-	  }, [(_vm.maxImageListItems > _vm.imageListItems.length) ? _c('button', {
+	  }, [(_vm.showMoreButton()) ? _c('button', {
 	    staticClass: "btn btn-default",
 	    attrs: {
 	      "type": "button"
@@ -17717,7 +17720,6 @@
 	        // Showing progress bar
 	        dispatch('overlayStore/showProgressOverlay', true, { root: true });
 
-	        console.log(state.activeFilters);
 	        // GET WITH PARAMS
 	        _axios2.default.get('images.json', { params: state.activeFilters })
 	        // SUCCESS

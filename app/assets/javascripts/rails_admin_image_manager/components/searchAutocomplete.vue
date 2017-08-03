@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 import Fuse from '../vendors/fuse.min.js'
 export default {
   data () {
@@ -48,8 +48,8 @@ export default {
         this.$store.dispatch('mediasStore/setSearchQuery', this.query)
         this.$store.dispatch('mediasStore/clearImgListing')
         this.$store.dispatch('mediasStore/fetchImage')
-      } else if(this.query == '') {
-        this.clearSearch() 
+      } else if((e.key == 'Backspace' || e.key == 'Meta') && this.query == '' && this.activeFilters.search != '') {
+        this.clearSearch()
       }
     },
     clearSearch() {
