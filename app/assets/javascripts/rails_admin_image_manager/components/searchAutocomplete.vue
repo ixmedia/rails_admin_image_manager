@@ -48,9 +48,9 @@ export default {
         this.$store.dispatch('mediasStore/setSearchQuery', this.query)
         this.$store.dispatch('mediasStore/clearImgListing')
         this.$store.dispatch('mediasStore/fetchImage')
+      } else if(this.query == '') {
+        this.clearSearch() 
       }
-
-      if(this.query == '') { this.clearSearch() }
     },
     clearSearch() {
       this.$store.dispatch('mediasStore/setSearchQuery', '')

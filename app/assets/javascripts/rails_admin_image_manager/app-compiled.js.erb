@@ -16154,9 +16154,7 @@
 	        this.$store.dispatch('mediasStore/setSearchQuery', this.query);
 	        this.$store.dispatch('mediasStore/clearImgListing');
 	        this.$store.dispatch('mediasStore/fetchImage');
-	      }
-
-	      if (this.query == '') {
+	      } else if (this.query == '') {
 	        this.clearSearch();
 	      }
 	    },
