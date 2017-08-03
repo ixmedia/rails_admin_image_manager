@@ -30,18 +30,25 @@ RailsAdmin.config do |config|
         label I18n.t('activerecord.models.rails_admin_image_manager/tag.other')
         searchable [{image_manager_tags: :name}]
         queryable true
-        filterable false
-      end
-
-      field :image_manager_tag_id, :enum do
-        label I18n.t('activerecord.models.rails_admin_image_manager/tag.other')
-        visible false
-        enum do
-          RailsAdminImageManager::Tag.all.order(:name).map { |c| [c.name, c.id] }
-        end
-        searchable [{image_manager_tags: :id}]
+        #filterable false
         filterable true
       end
+
+      # This filter has been commented because there is a bug in Rails Admin when using an enum filterable
+      # and a custom searchable param. The search field is treated has a string instead has an enum,
+      # which cause RailsAdmin to crash with the following error when selecting multiple tags:
+      # undefined method `downcase' for ["27", "24"]:Array
+      # rails_admin (1.1.1) lib/rails_admin/adapters/active_record.rb:229:in `build_statement_for_string_or_text'
+      #
+      # field :image_manager_tag_id, :enum do
+      #   label I18n.t('activerecord.models.rails_admin_image_manager/tag.other')
+      #   visible false
+      #   enum do
+      #     RailsAdminImageManager::Tag.all.order(:name).map { |c| [c.name, c.id] }
+      #   end
+      #   searchable [{image_manager_tags: :id}]
+      #   filterable true
+      # end
     end
 
     edit do
