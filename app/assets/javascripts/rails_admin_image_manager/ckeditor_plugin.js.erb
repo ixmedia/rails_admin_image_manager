@@ -23,7 +23,7 @@ CKEDITOR.plugins.add( 'imageManager', {
     }
 
     editor._.insertImagefn = CKEDITOR.tools.addFunction(function(src, id, title){
-        this.insertHtml('<img src="' + src + '" data-image-id="' + id + '" />');
+        this.insertHtml('<img src="' + src + '" data-image-id="' + id + '" alt="'+title+'" />');
       }, editor);
 
 
