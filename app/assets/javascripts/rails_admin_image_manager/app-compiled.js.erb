@@ -14711,15 +14711,6 @@
 	//
 	//
 	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
 
 	var _imageInsertButton = __webpack_require__(40);
 
@@ -16093,7 +16084,7 @@
 
 
 	// module
-	exports.push([module.id, "\n.search-autocomplete__selected-tag {\n  display: -webkit-inline-box;\n  display: -ms-inline-flexbox;\n  display: inline-flex;\n  padding: 5px 10px;\n  background-color: #5c90d2;\n  color: white;\n  border-radius: 10px;\n}\n.search-autocomplete {\n  width: 100%;\n  position: relative;\n}\n.search-autocomplete__tags-list {\n  position: absolute;\n  top: 100%;\n  width: 100%;\n  z-index: 100;\n  background-color: white;\n}\n.search-autocomplete__tag {\n  display: block;\n  padding: 5px;\n}\n.search-autocomplete__tag.active {\n    background-color: red;\n    color: white;\n}\n", ""]);
+	exports.push([module.id, "\n.search-autocomplete__selected-tag {\n  display: -webkit-inline-box;\n  display: -ms-inline-flexbox;\n  display: inline-flex;\n  margin: 3px;\n  position: relative;\n  cursor: pointer;\n}\n.search-autocomplete__selected-tag:first-of-type {\n    margin-left: 0;\n}\n.search-autocomplete__input {\n  position: relative;\n}\n.search-autocomplete {\n  width: 100%;\n  position: relative;\n}\n.search-autocomplete__tags-list {\n  position: absolute;\n  top: 100%;\n  width: 100%;\n  z-index: 100;\n  background-color: white;\n  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);\n}\n.search-autocomplete__tag {\n  display: block;\n  padding: 5px;\n  transition: all 200ms linear;\n  cursor: pointer;\n}\n.search-autocomplete__tag:hover {\n    background-color: #ededed;\n}\n.search-autocomplete__tag.active {\n    background-color: #5c90d2;\n    color: white;\n}\n", ""]);
 
 	// exports
 
@@ -16109,6 +16100,8 @@
 	});
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
+	//
+	//
 	//
 	//
 	//
@@ -16158,9 +16151,19 @@
 	      } else if (e.key == 'Enter' && this.selectedTagIndex >= 0) {
 	        this.selectTag();
 	      } else if (e.key == 'Enter') {
+	        this.$store.dispatch('mediasStore/setSearchQuery', this.query);
 	        this.$store.dispatch('mediasStore/clearImgListing');
 	        this.$store.dispatch('mediasStore/fetchImage');
 	      }
+
+	      if (this.query == '') {
+	        this.clearSearch();
+	      }
+	    },
+	    clearSearch: function clearSearch() {
+	      this.$store.dispatch('mediasStore/setSearchQuery', '');
+	      this.$store.dispatch('mediasStore/clearImgListing');
+	      this.$store.dispatch('mediasStore/fetchImage');
 	    },
 	    navigatesTags: function navigatesTags(key) {
 	      if (key == 'ArrowUp') {
@@ -16174,11 +16177,17 @@
 	      var queryArray = query.split(' ').reverse();
 	      queryArray[0] = this.filteredTags[this.selectedTagIndex].name;
 	      var newQuery = queryArray.reverse().join(' ');
+	      this.$store.dispatch('mediasStore/setSearchQuery', '');
 	      this.$store.dispatch('mediasStore/clearImgListing');
 	      this.$store.dispatch('mediasStore/addToTagFilter', this.filteredTags[this.selectedTagIndex].id);
 	      this.$store.dispatch('mediasStore/fetchImage');
 	      this.selectedTagIndex = -1;
 	      this.query = "";
+	    },
+	    deselectTag: function deselectTag(id) {
+	      this.$store.dispatch('mediasStore/clearImgListing');
+	      this.$store.dispatch('mediasStore/removeFromTagFilter', id);
+	      this.$store.dispatch('mediasStore/fetchImage');
 	    },
 	    isActive: function isActive(index) {
 	      return index == this.selectedTagIndex;
@@ -16187,7 +16196,6 @@
 	      var myTag = _.find(this.tags, function (tag) {
 	        return tag.id == id;
 	      });
-	      console.log(myTag);
 	      return myTag.name;
 	    }
 	  },
@@ -16541,6 +16549,8 @@
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
 	  return _c('div', {
 	    staticClass: "search-autocomplete"
+	  }, [_c('div', {
+	    staticClass: "search-autocomplete__input"
 	  }, [_c('input', {
 	    directives: [{
 	      name: "model",
@@ -16551,7 +16561,7 @@
 	    staticClass: "form-control",
 	    attrs: {
 	      "type": "text",
-	      "placeholder": "Rechercher.."
+	      "placeholder": "Rechercher par titre ou étiquette ..."
 	    },
 	    domProps: {
 	      "value": (_vm.query)
@@ -16566,19 +16576,30 @@
 	        _vm.query = $event.target.value
 	      }
 	    }
-	  }), _vm._v(" "), _vm._l((_vm.activeFilters.tags), function(activeTag) {
-	    return _c('span', {
-	      staticClass: "search-autocomplete__selected-tag"
-	    }, [_vm._v(_vm._s(_vm.getTagFromId(activeTag)))])
 	  }), _vm._v(" "), _c('div', {
 	    staticClass: "search-autocomplete__tags-list"
 	  }, _vm._l((_vm.filteredTags), function(tag, index) {
 	    return _c('span', {
 	      class: [{
 	        'active': _vm.isActive(index)
-	      }, 'search-autocomplete__tag']
+	      }, 'search-autocomplete__tag'],
+	      on: {
+	        "click": function($event) {
+	          _vm.selectedTagIndex = index;
+	          _vm.selectTag()
+	        }
+	      }
 	    }, [_vm._v(_vm._s(tag.name))])
-	  }))], 2)
+	  }))]), _vm._v(" "), _vm._l((_vm.activeFilters.tags), function(activeTag) {
+	    return _c('span', {
+	      staticClass: "label label-primary search-autocomplete__selected-tag",
+	      on: {
+	        "click": function($event) {
+	          _vm.deselectTag(activeTag)
+	        }
+	      }
+	    }, [_vm._v(_vm._s(_vm.getTagFromId(activeTag)))])
+	  })], 2)
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 	if (false) {
@@ -16675,37 +16696,7 @@
 	    staticClass: "block"
 	  }, [_c('div', {
 	    staticClass: "block-header"
-	  }, [_c('search-autocomplete'), _vm._v(" "), _c('ul', {
-	    staticClass: "nav-header pull-right"
-	  }, [_c('li', [_c('select', {
-	    directives: [{
-	      name: "model",
-	      rawName: "v-model",
-	      value: (_vm.selectedFilter),
-	      expression: "selectedFilter"
-	    }],
-	    on: {
-	      "change": [function($event) {
-	        var $$selectedVal = Array.prototype.filter.call($event.target.options, function(o) {
-	          return o.selected
-	        }).map(function(o) {
-	          var val = "_value" in o ? o._value : o.value;
-	          return val
-	        });
-	        _vm.selectedFilter = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-	      }, _vm.filter]
-	    }
-	  }, [_c('option', {
-	    attrs: {
-	      "value": ""
-	    }
-	  }, [_vm._v("Filtre")]), _vm._v(" "), _vm._l((_vm.tags), function(tag) {
-	    return _c('option', {
-	      domProps: {
-	        "value": tag.id
-	      }
-	    }, [_vm._v(_vm._s(tag.name))])
-	  })], 2)])])], 1), _vm._v(" "), _c('div', {
+	  }, [_c('search-autocomplete')], 1), _vm._v(" "), _c('div', {
 	    staticClass: "block-content"
 	  }, [_c('div', {
 	    staticClass: "row"
@@ -17583,12 +17574,14 @@
 
 	    // tag is an id
 	    REMOVE_FROM_TAG_FILTERS: function REMOVE_FROM_TAG_FILTERS(state, tag) {
-	      state.activeFilters.tags = _.without(state.activeFilters.tags, [tag]);
+	      state.activeFilters.tags = _.without(state.activeFilters.tags, tag);
 	    },
 
 	    // tag is an id
 	    ADD_TO_TAG_FILTERS: function ADD_TO_TAG_FILTERS(state, tag) {
-	      state.activeFilters.tags.push(tag);
+	      if (!_.contains(state.activeFilters.tags, tag)) {
+	        state.activeFilters.tags.push(tag);
+	      }
 	    },
 	    SET_PAGE: function SET_PAGE(state, page) {
 	      state.activeFilters.page = page;

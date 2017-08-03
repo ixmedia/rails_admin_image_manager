@@ -83,11 +83,13 @@ const mediasStore = {
     },
     // tag is an id
     REMOVE_FROM_TAG_FILTERS(state, tag) {
-      state.activeFilters.tags = _.without(state.activeFilters.tags, [tag])
+      state.activeFilters.tags = _.without(state.activeFilters.tags, tag)
     },
     // tag is an id
     ADD_TO_TAG_FILTERS(state, tag) {
-      state.activeFilters.tags.push(tag)
+      if (!_.contains(state.activeFilters.tags, tag)) {
+        state.activeFilters.tags.push(tag)
+      }
     },
     SET_PAGE(state, page) {
       state.activeFilters.page = page

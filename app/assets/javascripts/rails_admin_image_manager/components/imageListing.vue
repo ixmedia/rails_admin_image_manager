@@ -3,15 +3,6 @@
     <div class="block">
       <div class="block-header">
         <search-autocomplete></search-autocomplete>
-
-        <ul class="nav-header pull-right">
-          <li>
-             <select v-model="selectedFilter" @change="filter">
-              <option value="">Filtre</option>
-              <option :value="tag.id" v-for="tag in tags">{{ tag.name }}</option>
-            </select>
-          </li>
-        </ul>
       </div>
       <div class="block-content">
 

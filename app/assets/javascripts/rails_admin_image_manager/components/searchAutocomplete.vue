@@ -1,10 +1,12 @@
 <template>
   <div class="search-autocomplete">
-    <input @keyup.prevent="fuzzySearch" class="form-control" v-model="query" type="text"  placeholder="Rechercher..">
-    <span class="search-autocomplete__selected-tag" v-for="activeTag in activeFilters.tags">{{getTagFromId(activeTag)}}</span>
-    <div class="search-autocomplete__tags-list">
-      <span :class="[{'active': isActive(index)}, 'search-autocomplete__tag']" v-for="(tag,index) in filteredTags">{{tag.name}}</span>
+    <div class="search-autocomplete__input">
+      <input @keyup.prevent="fuzzySearch" class="form-control" v-model="query" type="text"  placeholder="Rechercher par titre ou étiquette ...">
+      <div class="search-autocomplete__tags-list">
+        <span @click="selectedTagIndex = index; selectTag()" :class="[{'active': isActive(index)}, 'search-autocomplete__tag']" v-for="(tag,index) in filteredTags">{{tag.name}}</span>
+      </div>
     </div>
+    <span @click="deselectTag(activeTag)" class="label label-primary search-autocomplete__selected-tag" v-for="activeTag in activeFilters.tags">{{getTagFromId(activeTag)}}</span>
   </div>
 
 </template>
@@ -43,10 +45,17 @@ export default {
       } else if (e.key == 'Enter' && this.selectedTagIndex >= 0) {
         this.selectTag()
       } else if (e.key == 'Enter') {
+        this.$store.dispatch('mediasStore/setSearchQuery', this.query)
         this.$store.dispatch('mediasStore/clearImgListing')
         this.$store.dispatch('mediasStore/fetchImage')
       }
 
+      if(this.query == '') { this.clearSearch() }
+    },
+    clearSearch() {
+      this.$store.dispatch('mediasStore/setSearchQuery', '')
+      this.$store.dispatch('mediasStore/clearImgListing')
+      this.$store.dispatch('mediasStore/fetchImage')
     },
     navigatesTags(key) {
       if (key == 'ArrowUp') {
@@ -60,18 +69,23 @@ export default {
       let queryArray = query.split(' ').reverse()
       queryArray[0] = this.filteredTags[this.selectedTagIndex].name
       let newQuery = queryArray.reverse().join(' ')
+      this.$store.dispatch('mediasStore/setSearchQuery', '')
       this.$store.dispatch('mediasStore/clearImgListing')
       this.$store.dispatch('mediasStore/addToTagFilter', this.filteredTags[this.selectedTagIndex].id)
       this.$store.dispatch('mediasStore/fetchImage')
       this.selectedTagIndex = -1
       this.query = ""
     },
+    deselectTag(id){
+      this.$store.dispatch('mediasStore/clearImgListing')
+      this.$store.dispatch('mediasStore/removeFromTagFilter', id)
+      this.$store.dispatch('mediasStore/fetchImage')
+    },
     isActive(index) {
       return index == this.selectedTagIndex;
     },
     getTagFromId(id) {
       let myTag = _.find(this.tags,(tag) => {return tag.id == id})
-      console.log(myTag);
       return myTag.name
     }
 
@@ -87,10 +101,14 @@ export default {
 <style media="screen" lang="sass">
   .search-autocomplete__selected-tag
     display: inline-flex
-    padding: 5px 10px
-    background-color: #5c90d2
-    color: white
-    border-radius: 10px
+    margin: 3px
+    position: relative
+    cursor: pointer
+    &:first-of-type
+      margin-left: 0
+
+  .search-autocomplete__input
+    position: relative
 
   .search-autocomplete
     width: 100%
@@ -102,11 +120,17 @@ export default {
     width: 100%
     z-index: 100
     background-color: white
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1)
+
   .search-autocomplete__tag
     display: block
     padding: 5px
+    transition: all 200ms linear
+    cursor: pointer
+    &:hover
+      background-color: #ededed
 
     &.active
-      background-color: red
+      background-color: #5c90d2
       color: white
 </style>
