@@ -35,7 +35,7 @@ module DynamicPaperclip
           # Fix to avoid error: uninitialized constant ActionController::DataStreaming::FileBody
           # When the filename is wrong
           # Return a 404 instead
-          if attachment.original_filename != URI.unescape(match[:filename])
+          if !attachment.exists? || attachment.original_filename != URI.unescape(match[:filename])
             return [404, {}, []]
           end
 
