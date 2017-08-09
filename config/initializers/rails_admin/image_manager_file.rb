@@ -68,7 +68,9 @@ RailsAdmin.config do |config|
       end
       field :description
       field :copyright
-      field :tags
+      field :tags do
+        nested_form false
+      end
     end
 
     show do
