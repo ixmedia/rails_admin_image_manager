@@ -1,3 +1,5 @@
+require 'paperclip'
+require 'paperclip_patch'
 require 'dynamic_paperclip'
 require 'dynamic_paperclip_patch'
 
