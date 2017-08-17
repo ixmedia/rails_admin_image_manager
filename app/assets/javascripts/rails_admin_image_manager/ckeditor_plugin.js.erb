@@ -1,5 +1,4 @@
 <% self.class.include RailsAdminImageManager::Engine.routes.url_helpers %>
-console.log('marche paasdas');
 window.addQueryString = function ( url, params ) {
   var queryString = [];
   if (!params) return url;
@@ -8,49 +7,60 @@ window.addQueryString = function ( url, params ) {
   }
   return url + ( ( url.indexOf( "?" ) != -1 ) ? "&" : "?" ) + queryString.join( "&" );
 }
-CKEDITOR.plugins.add( 'imageManager', {
-  init: function( editor ) {
-    var openManager = function(ele){
-      var params = {};
-      if (ele != null && ele.$.getAttribute('data-image-id')) {
-        params.selectImage = ele.$.getAttribute('data-image-id');
-      }
-      params.CKEditor = editor.name;
-      params.CKEditorFuncNum = editor._.insertImagefn;
 
-      var url = addQueryString('<%= image_manager_index_path %>', params);
-      editor.popup(url, 1105, 500);
-    }
-
-    editor._.insertImagefn = CKEDITOR.tools.addFunction(function(src, id, title){
-        this.insertHtml('<img src="' + src + '" data-image-id="' + id + '" alt="'+title+'" />');
-      }, editor);
-
-
-    editor.ui.addButton( 'imageManager', {
-      label: 'Ajouter une image',
-      command: 'insertManagerImage',
-      icon: "<%= asset_path 'rails_admin_image_manager/image.png' %>"
-    });
-
-    editor.on( 'doubleclick', function(evt) {
-      var element = evt.data.element;
-      if (element.is('img') && !element.data('cke-realelement') && !element.isReadOnly()) {
-        editor.execCommand('insertManagerImage');
-      }
-      evt.preventDefault();
-    });
-
-    editor.addCommand( 'insertManagerImage', {
-      exec: function(editor) {
-        var sel = editor.getSelection();
-        openManager(sel.getSelectedElement())
-      }
-    });
-
+// Wait till ckeditor is defined before initializing image manager plugin
+var ckready = setInterval(function() {
+  if (typeof CKEDITOR != 'undefined') {
+    initImageManagerCKPlugin()
+    clearInterval(ckready)
   }
-});
+}, 200)
 
-// CKEDITOR.plugins.contextMenu.removeAll()
-CKEDITOR.config.removePlugins = 'liststyle,tabletools,contextmenu';
-CKEDITOR.config.extraPlugins = 'imageManager';
+function initImageManagerCKPlugin() {
+  CKEDITOR.plugins.add( 'imageManager', {
+    init: function( editor ) {
+      var openManager = function(ele){
+        var params = {};
+        if (ele != null && ele.$.getAttribute('data-image-id')) {
+          params.selectImage = ele.$.getAttribute('data-image-id');
+        }
+        params.CKEditor = editor.name;
+        params.CKEditorFuncNum = editor._.insertImagefn;
+
+        var url = addQueryString('<%= image_manager_index_path %>', params);
+        editor.popup(url, 1105, 500);
+      }
+
+      editor._.insertImagefn = CKEDITOR.tools.addFunction(function(src, id, title){
+          this.insertHtml('<img src="' + src + '" data-image-id="' + id + '" alt="'+title+'" />');
+        }, editor);
+
+
+      editor.ui.addButton( 'imageManager', {
+        label: 'Ajouter une image',
+        command: 'insertManagerImage',
+        icon: "<%= asset_path 'rails_admin_image_manager/image.png' %>"
+      });
+
+      editor.on( 'doubleclick', function(evt) {
+        var element = evt.data.element;
+        if (element.is('img') && !element.data('cke-realelement') && !element.isReadOnly()) {
+          editor.execCommand('insertManagerImage');
+        }
+        evt.preventDefault();
+      });
+
+      editor.addCommand( 'insertManagerImage', {
+        exec: function(editor) {
+          var sel = editor.getSelection();
+          openManager(sel.getSelectedElement())
+        }
+      });
+
+    }
+  });
+
+  // CKEDITOR.plugins.contextMenu.removeAll()
+  CKEDITOR.config.removePlugins = 'liststyle,tabletools,contextmenu';
+  CKEDITOR.config.extraPlugins = 'imageManager';
+}
