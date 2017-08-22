@@ -10,7 +10,9 @@ window.addQueryString = function ( url, params ) {
 
 // Wait till ckeditor is defined before initializing image manager plugin
 var ckready = setInterval(function() {
+  console.log('in interval')
   if (typeof CKEDITOR != 'undefined') {
+    console.log('ckeditor', CKEDITOR)
     initImageManagerCKPlugin()
     clearInterval(ckready)
   }
