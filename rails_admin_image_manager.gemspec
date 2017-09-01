@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.name        = "rails_admin_image_manager"
   s.version     = RailsAdminImageManager::VERSION
   s.authors     = ["iXmedia"]
-  s.email       = ["info@ixmedia.com"]
-  s.homepage    = "https://pacman.ixmedia.com/ixmedia/rails_admin_image_manager"
+  s.email       = ["suivi@ixmedia.com"]
+  s.homepage    = "https://github.com/ixmedia/rails_admin_image_manager"
   s.summary     = "Image manager."
   s.description = "Image manager for RailsAdmin and CKEditor."
   s.license     = "MIT"
