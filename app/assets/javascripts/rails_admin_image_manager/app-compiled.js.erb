@@ -14757,33 +14757,21 @@
 
 	      if (!this.isFetching && (this.maxImageListItems == -1 || this.imageListItems.length < this.maxImageListItems)) {
 	        this.isFetching = true;
-	        this.$store.dispatch('mediasStore/setSearchPage', this.page + 1);
+	        this.$store.dispatch('mediasStore/setSearchPage', this.activeFilters.page + 1);
 	        this.$store.dispatch('mediasStore/fetchImage').then(function () {
 	          _this2.isFetching = false;
-	          _this2.page++;
 	        });
 	      }
-	    },
-	    filter: function filter() {
-	      console.log('filter');
-	    },
-	    search: function search() {
-	      this.page = 1;
-	      this.searchedQuery = this.query == '' ? '' : this.query;
-	      this.$store.dispatch('mediasStore/clearImgListing');
-	      this.$store.dispatch('mediasStore/setSearchQuery', this.query);
-	      this.$store.dispatch('mediasStore/fetchImage');
 	    },
 	    showMoreButton: function showMoreButton() {
 	      return this.maxImageListItems > this.imageListItems.length && this.activeFilters.tags.length <= 0 && this.activeFilters.search == '';
 	    },
 	    resetSearchAndFilters: function resetSearchAndFilters() {
-	      this.page = 1;
 	      this.query = '';
 	      this.selectedFilter = '';
 	      this.searchedQuery = '';
 	      this.$store.dispatch('mediasStore/clearImgListing');
-	      this.$store.dispatch('mediasStore/setSearchPage', this.page);
+	      this.$store.dispatch('mediasStore/setSearchPage', 1);
 	      this.$store.dispatch('mediasStore/fetchImage');
 	    },
 	    deleteImage: function deleteImage(image) {
@@ -16179,6 +16167,7 @@
 	      queryArray[0] = this.filteredTags[this.selectedTagIndex].name;
 	      var newQuery = queryArray.reverse().join(' ');
 	      this.$store.dispatch('mediasStore/setSearchQuery', '');
+	      this.$store.dispatch('mediasStore/setSearchPage', 1);
 	      this.$store.dispatch('mediasStore/clearImgListing');
 	      this.$store.dispatch('mediasStore/addToTagFilter', this.filteredTags[this.selectedTagIndex].id);
 	      this.$store.dispatch('mediasStore/fetchImage');

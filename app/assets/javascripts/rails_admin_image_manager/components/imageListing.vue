@@ -85,33 +85,21 @@ export default {
     fetchImage() {
       if (!this.isFetching && (this.maxImageListItems == -1 || this.imageListItems.length < this.maxImageListItems) ) {
         this.isFetching = true
-        this.$store.dispatch('mediasStore/setSearchPage', this.page + 1)
+        this.$store.dispatch('mediasStore/setSearchPage', this.activeFilters.page + 1)
         this.$store.dispatch('mediasStore/fetchImage').then(()=> {
           this.isFetching = false
-          this.page ++
         })
       }
-    },
-    filter() {
-      console.log('filter');
-    },
-    search() {
-      this.page = 1
-      this.searchedQuery = (this.query == '') ? '' : this.query
-      this.$store.dispatch('mediasStore/clearImgListing')
-      this.$store.dispatch('mediasStore/setSearchQuery', this.query)
-      this.$store.dispatch('mediasStore/fetchImage')
     },
     showMoreButton() {
       return (this.maxImageListItems > this.imageListItems.length && this.activeFilters.tags.length <= 0 && this.activeFilters.search == '')
     },
     resetSearchAndFilters() {
-      this.page = 1
       this.query = ''
       this.selectedFilter = ''
       this.searchedQuery = ''
       this.$store.dispatch('mediasStore/clearImgListing')
-      this.$store.dispatch('mediasStore/setSearchPage', this.page)
+      this.$store.dispatch('mediasStore/setSearchPage', 1)
       this.$store.dispatch('mediasStore/fetchImage')
     },
     deleteImage(image){

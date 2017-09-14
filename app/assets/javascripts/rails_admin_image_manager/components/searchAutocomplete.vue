@@ -70,6 +70,7 @@ export default {
       queryArray[0] = this.filteredTags[this.selectedTagIndex].name
       let newQuery = queryArray.reverse().join(' ')
       this.$store.dispatch('mediasStore/setSearchQuery', '')
+      this.$store.dispatch('mediasStore/setSearchPage', 1)
       this.$store.dispatch('mediasStore/clearImgListing')
       this.$store.dispatch('mediasStore/addToTagFilter', this.filteredTags[this.selectedTagIndex].id)
       this.$store.dispatch('mediasStore/fetchImage')
