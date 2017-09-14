@@ -32,22 +32,37 @@
             </div>
           </div>
         </div>
-        <div class="row text-center items-push">
-          <div class="col-sm-12">
-            <button type="button" v-if="showMoreButton()" class="btn btn-default" @click="fetchImage">Plus d'image</button>
-          </div>
-        </div>
-        <div class="row items-push" v-if="!grid">
+        <div class="row items-push" v-if="!grid && imageListItems.length">
           <div class="table-responsive">
             <table class="table table-striped table-vcenter">
+              <thead>
+                <tr>
+                  <td width="110px">Image</td>
+                  <td>Titre</td>
+                  <td width="150px" class="text-center">Actions</td>
+                </tr>
+              </thead>
               <tbody>
                 <tr v-for="(image, key) in imageListItems">
                   <td>
-                    <img width="100px" :src="image.src" alt="">
+                    <router-link :to="{ name: 'showImage', params: { id: image.id }}"><img width="100px" :src="image.src" alt=""></router-link>
+                  </td>
+                  <td>
+                    {{image.name}}
+                  </td>
+                  <td class="text-right">
+                    <image-insert-button :id="image.id"/>
+                    <router-link class="btn btn-xs btn-default" :to="{ name: 'showImage', params: { id: image.id }}"><i class="fa fa-edit"></i></router-link>
+                    <a class="btn btn-xs btn-default" @click="deleteImage(image)" href="javascript:void(0)"><i class="fa fa-trash-o"></i></a>
                   </td>
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+        <div class="row text-center items-push">
+          <div class="col-sm-12">
+            <button type="button" v-if="showMoreButton()" class="btn btn-default" @click="fetchImage">Plus d'image</button>
           </div>
         </div>
 
@@ -67,7 +82,7 @@ export default {
   components: {imageInsertButton, imageTagSelector, searchAutocomplete},
   data () {
     return {
-      grid: true,
+      grid: false,
       lazyload: new Lazyload(()=> {
         this.fetchImage()
       }),
@@ -120,6 +135,8 @@ export default {
 </script>
 
 <style media="screen" lang="sass">
+  .table > thead td
+    text-transform: uppercase
   .add-image-link
     margin-bottom: 15px
 
