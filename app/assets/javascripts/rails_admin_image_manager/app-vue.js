@@ -11,6 +11,8 @@ import progressOverlay from './components/progressOverlay.vue'
 import notificationOverlay from './components/notificationOverlay.vue'
 import confirmationOverlay from './components/confirmationOverlay.vue'
 
+import './filters'
+
 document.addEventListener("DOMContentLoaded", function() {
 
   let csrfElement = document.querySelectorAll('meta[name="csrf-token"]')[0]

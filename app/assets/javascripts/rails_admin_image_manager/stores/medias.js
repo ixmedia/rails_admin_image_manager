@@ -15,7 +15,9 @@ const mediasStore = {
     activeFilters: {
       tags: [],
       search: '',
-      page: 1
+      page: 1,
+      date: '',
+      title: ''
     },
     tags: [],
     errors: {}
@@ -96,6 +98,11 @@ const mediasStore = {
     },
     SET_QUERY(state, query){
       state.activeFilters.search = query
+    },
+    SET_FILTER(state, opts){
+      state.activeFilters.date = ''
+      state.activeFilters.title = ''
+      state.activeFilters[opts[1]] = opts[0]
     }
   },
   getters: {
@@ -284,6 +291,10 @@ const mediasStore = {
     },
     setSearchQuery({commit}, query) {
       commit('SET_QUERY', query)
+    },
+    toggleFilter({commit, state}, type) {
+      let term = (state.activeFilters[type] == 'ASC') ? 'DESC' : 'ASC'
+      commit('SET_FILTER', [term, type])
     },
     clearImgListing({ commit }){
       commit('CLEAR_IMG_LISTING')

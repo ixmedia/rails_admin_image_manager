@@ -32,13 +32,14 @@
             </div>
           </div>
         </div>
-        <div class="row items-push" v-if="!grid && imageListItems.length">
+        <div class="row items-push" v-if="!grid ">
           <div class="table-responsive">
             <table class="table table-striped table-vcenter">
               <thead>
                 <tr>
                   <td width="110px">Image</td>
-                  <td>Titre</td>
+                  <td><listing-filter label="Titre" type="title" ></listing-filter></td>
+                  <td width="140px"><listing-filter label="Ajouté le" type="date" ></listing-filter></td>
                   <td width="150px" class="text-center">Actions</td>
                 </tr>
               </thead>
@@ -50,6 +51,7 @@
                   <td>
                     {{image.name}}
                   </td>
+                  <td>{{ image.created_at | formatDate }}</td>
                   <td class="text-right">
                     <image-insert-button :id="image.id"/>
                     <router-link class="btn btn-xs btn-default" :to="{ name: 'showImage', params: { id: image.id }}"><i class="fa fa-edit"></i></router-link>
@@ -76,10 +78,12 @@
 import imageInsertButton from './imageInsertButton.vue'
 import imageTagSelector from './imageTagSelector.vue'
 import searchAutocomplete from './searchAutocomplete.vue'
+import listingFilter from './listingFilter.vue'
 import Lazyload from '../libs/lazyload.js'
+import { formatDate } from '../libs/helpers.js'
 import {mapState} from 'vuex'
 export default {
-  components: {imageInsertButton, imageTagSelector, searchAutocomplete},
+  components: {imageInsertButton, imageTagSelector, searchAutocomplete, listingFilter},
   data () {
     return {
       grid: false,

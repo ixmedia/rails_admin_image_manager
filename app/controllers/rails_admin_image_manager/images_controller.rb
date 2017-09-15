@@ -8,9 +8,12 @@ module RailsAdminImageManager
         }
 
         format.json {
-          images  = RailsAdminImageManager::File.select(:id, :name, :image_file_name).page(params[:page])
+          images  = RailsAdminImageManager::File.select(:id, :name, :image_file_name, :created_at).page(params[:page])
           images  = images.filter_by_text(params[:search]) if filter_by?(:search)
           images  = images.filter_by_tags(params[:tags].map{|i| i.to_i }) if filter_by?(:tags)
+          images  = images.order_by_date(params[:date]) if filter_by?(:date)
+          images  = images.order_by_title(params[:title]) if filter_by?(:title)
+
           images.each do |image|
               image.src = image.image.url(:index)
           end

@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 export function encodeImageFileAsURL(element) {
   return new Promise((resolve, reject) => {
     var file = element.files[0];

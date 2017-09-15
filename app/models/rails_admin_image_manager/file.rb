@@ -34,6 +34,8 @@ module RailsAdminImageManager
 
     scope :filter_by_text, -> (text) { where("image_manager_files.name LIKE ? OR image_manager_files.description LIKE ?", "%#{text}%", "%#{text}%") }
     scope :filter_by_tags, -> (tags) { joins(:tags).where('image_manager_files_tags.image_manager_tag_id IN (?)', tags).distinct }
+    scope :order_by_date, -> (term) { order("created_at #{term}") }
+    scope :order_by_title, -> (term) { order("name #{term}") }
 
     # == Instance Methods =====================================================
 
