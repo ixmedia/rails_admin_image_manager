@@ -1,5 +1,5 @@
 module RailsAdminImageManager
-  class ApplicationController < ActionController::Base
+  class ApplicationController < RailsAdmin::ApplicationController
 
     protect_from_forgery with: :exception
 
