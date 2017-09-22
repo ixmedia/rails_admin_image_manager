@@ -218,7 +218,7 @@ const mediasStore = {
           if(state.maxImageListItems == -1) commit('SET_MAX_IMAGE_LIST_ITEMS', response.data.total_count)
           // Calling mutation
           commit('ADD_TO_LIST_ITEMS', response.data.items)
-          // commit('UPDATE_READ_ONLY', response.data.readonly)
+          commit('UPDATE_READ_ONLY', response.data.readonly)
 
           // Hiding progess bar
           dispatch('overlayStore/showProgressOverlay', false, {root:true})
@@ -241,7 +241,7 @@ const mediasStore = {
       return new Promise((resolve, reject) => {
         axios.get(`/images/${id}`)
         .then((response) => {
-          // commit('UPDATE_READ_ONLY', response.data.readonly)
+          commit('UPDATE_READ_ONLY', response.data.readonly)
           dispatch('setCurrentImg', response.data.image)
           dispatch('overlayStore/showProgressOverlay', false, {root:true})
           resolve()
