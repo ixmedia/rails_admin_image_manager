@@ -22,8 +22,11 @@ module RailsAdminImageManager
     end
 
     def _check_permissions(action=:read)
-      model = RailsAdmin::AbstractModel.new(to_model_name("::RailsAdminImageManager::File"))
-      @authorization_adapter.try(:authorize, action, model)
+      @authorization_adapter.try(:authorize, action, file_model)
+    end
+
+    def file_model
+      RailsAdmin::AbstractModel.new(to_model_name("::RailsAdminImageManager::File"))
     end
 
     def to_model_name(param)
