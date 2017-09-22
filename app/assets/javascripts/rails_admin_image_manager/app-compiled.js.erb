@@ -11607,7 +11607,10 @@
 	    beforeEnter: function beforeEnter(to, from, next) {
 	      _stores2.default.dispatch('overlayStore/showProgressOverlay', true);
 	      _stores2.default.dispatch('mediasStore/clearCurrentImg');
-	      _stores2.default.dispatch('mediasStore/checkAddMediaPermission').then(next).catch(function () {
+	      _stores2.default.dispatch('mediasStore/checkAddMediaPermission').then(function () {
+	        _stores2.default.dispatch('overlayStore/showProgressOverlay', false);
+	        next();
+	      }).catch(function () {
 	        _stores2.default.dispatch('overlayStore/showProgressOverlay', false);
 	        _stores2.default.dispatch('overlayStore/pushNotification', { error: true, msg: 'Vous n\'avez pas les permissions d\'ajouter un media' }, { root: true });
 	      });
@@ -33849,7 +33852,7 @@
 	    var commit = _ref12.commit;
 
 	    return new Promise(function (resolve, reject) {
-	      _axios2.default.get('/new').then(function () {
+	      _axios2.default.get('/images/new').then(function () {
 	        resolve();
 	      }).catch(function () {
 	        reject();

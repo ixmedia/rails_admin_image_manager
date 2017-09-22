@@ -288,7 +288,7 @@ const mediasStore = {
     },
     checkAddMediaPermission({commit}) {
       return new Promise(function(resolve, reject) {
-        axios.get(`/new`)
+        axios.get(`/images/new`)
         .then(() => { resolve() })
         .catch(() => { reject() })
       })
