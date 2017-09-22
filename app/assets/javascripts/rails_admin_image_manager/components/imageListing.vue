@@ -9,7 +9,7 @@
         <div class="row">
           <div class="col-sm-6">
             <p>
-              <router-link class="btn btn-primary" :to="{ name: 'createImage'}"><i class="fa fa-plus"></i> Ajouter une image</router-link>
+              <router-link v-if="!readOnly" class="btn btn-primary" :to="{ name: 'createImage'}"><i class="fa fa-plus"></i> Ajouter une image</router-link>
               <button v-if="searchedQuery || selectedFilter" @click="resetSearchAndFilters" class="btn btn-default" ><i class="fa fa-undo"></i> Annuler la recherche</button>
             </p>
 
@@ -24,9 +24,9 @@
               <div class="img-options">
                 <div class="img-options-content">
                   <h4 class="h6 font-w400 text-white-op push-15">{{ image.name }}</h4>
-                  <router-link class="btn btn-sm btn-default" :to="{ name: 'showImage', params: { id: image.id }}">Modifier</router-link>
+                  <router-link v-if="!readOnly" class="btn btn-sm btn-default" :to="{ name: 'showImage', params: { id: image.id }}">Modifier</router-link>
                   <image-insert-button :id="image.id"/>
-                  <a class="btn btn-sm btn-default" @click="deleteImage(image)" href="javascript:void(0)">Supprimer</a>
+                  <a v-if="!readOnly" class="btn btn-sm btn-default" @click="deleteImage(image)" href="javascript:void(0)">Supprimer</a>
                 </div>
               </div>
             </div>
@@ -54,8 +54,8 @@
                   <td>{{ image.created_at | formatDate }}</td>
                   <td class="text-right">
                     <image-insert-button :id="image.id"/>
-                    <router-link class="btn btn-xs btn-default" :to="{ name: 'showImage', params: { id: image.id }}"><i class="fa fa-edit"></i></router-link>
-                    <a class="btn btn-xs btn-default" @click="deleteImage(image)" href="javascript:void(0)"><i class="fa fa-trash-o"></i></a>
+                    <router-link v-if="!readOnly" class="btn btn-xs btn-default" :to="{ name: 'showImage', params: { id: image.id }}"><i class="fa fa-edit"></i></router-link>
+                    <a v-if="!readOnly" class="btn btn-xs btn-default" @click="deleteImage(image)" href="javascript:void(0)"><i class="fa fa-trash-o"></i></a>
                   </td>
                 </tr>
               </tbody>
@@ -98,7 +98,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('mediasStore', ['imageListItems', 'maxImageListItems', 'tags', 'activeFilters'])
+    ...mapState('mediasStore', ['imageListItems', 'maxImageListItems', 'tags', 'activeFilters', 'readOnly'])
   },
   methods:{
     fetchImage() {

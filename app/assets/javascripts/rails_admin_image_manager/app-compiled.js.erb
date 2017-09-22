@@ -14782,7 +14782,7 @@
 	    };
 	  },
 
-	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['imageListItems', 'maxImageListItems', 'tags', 'activeFilters'])),
+	  computed: _extends({}, (0, _vuex.mapState)('mediasStore', ['imageListItems', 'maxImageListItems', 'tags', 'activeFilters', 'readOnly'])),
 	  methods: {
 	    fetchImage: function fetchImage() {
 	      var _this2 = this;
@@ -32700,7 +32700,7 @@
 	    staticClass: "row"
 	  }, [_c('div', {
 	    staticClass: "col-sm-6"
-	  }, [_c('p', [_c('router-link', {
+	  }, [_c('p', [(!_vm.readOnly) ? _c('router-link', {
 	    staticClass: "btn btn-primary",
 	    attrs: {
 	      "to": {
@@ -32709,7 +32709,7 @@
 	    }
 	  }, [_c('i', {
 	    staticClass: "fa fa-plus"
-	  }), _vm._v(" Ajouter une image")]), _vm._v(" "), (_vm.searchedQuery || _vm.selectedFilter) ? _c('button', {
+	  }), _vm._v(" Ajouter une image")]) : _vm._e(), _vm._v(" "), (_vm.searchedQuery || _vm.selectedFilter) ? _c('button', {
 	    staticClass: "btn btn-default",
 	    on: {
 	      "click": _vm.resetSearchAndFilters
@@ -32735,7 +32735,7 @@
 	      staticClass: "img-options-content"
 	    }, [_c('h4', {
 	      staticClass: "h6 font-w400 text-white-op push-15"
-	    }, [_vm._v(_vm._s(image.name))]), _vm._v(" "), _c('router-link', {
+	    }, [_vm._v(_vm._s(image.name))]), _vm._v(" "), (!_vm.readOnly) ? _c('router-link', {
 	      staticClass: "btn btn-sm btn-default",
 	      attrs: {
 	        "to": {
@@ -32745,11 +32745,11 @@
 	          }
 	        }
 	      }
-	    }, [_vm._v("Modifier")]), _vm._v(" "), _c('image-insert-button', {
+	    }, [_vm._v("Modifier")]) : _vm._e(), _vm._v(" "), _c('image-insert-button', {
 	      attrs: {
 	        "id": image.id
 	      }
-	    }), _vm._v(" "), _c('a', {
+	    }), _vm._v(" "), (!_vm.readOnly) ? _c('a', {
 	      staticClass: "btn btn-sm btn-default",
 	      attrs: {
 	        "href": "javascript:void(0)"
@@ -32759,7 +32759,7 @@
 	          _vm.deleteImage(image)
 	        }
 	      }
-	    }, [_vm._v("Supprimer")])], 1)])])])
+	    }, [_vm._v("Supprimer")]) : _vm._e()], 1)])])])
 	  })) : _vm._e(), _vm._v(" "), (!_vm.grid) ? _c('div', {
 	    staticClass: "row items-push"
 	  }, [_c('div', {
@@ -32811,7 +32811,7 @@
 	      attrs: {
 	        "id": image.id
 	      }
-	    }), _vm._v(" "), _c('router-link', {
+	    }), _vm._v(" "), (!_vm.readOnly) ? _c('router-link', {
 	      staticClass: "btn btn-xs btn-default",
 	      attrs: {
 	        "to": {
@@ -32823,7 +32823,7 @@
 	      }
 	    }, [_c('i', {
 	      staticClass: "fa fa-edit"
-	    })]), _vm._v(" "), _c('a', {
+	    })]) : _vm._e(), _vm._v(" "), (!_vm.readOnly) ? _c('a', {
 	      staticClass: "btn btn-xs btn-default",
 	      attrs: {
 	        "href": "javascript:void(0)"
@@ -32835,7 +32835,7 @@
 	      }
 	    }, [_c('i', {
 	      staticClass: "fa fa-trash-o"
-	    })])], 1)])
+	    })]) : _vm._e()], 1)])
 	  }))])])]) : _vm._e(), _vm._v(" "), _c('div', {
 	    staticClass: "row text-center items-push"
 	  }, [_c('div', {
@@ -33540,6 +33540,7 @@
 	    currentImgSrc: "",
 	    currentImgTags: [],
 	    imageListItems: [],
+	    readOnly: false,
 	    maxImageListItems: -1,
 	    activeFilters: {
 	      tags: [],
@@ -33552,6 +33553,9 @@
 	    errors: {}
 	  },
 	  mutations: {
+	    UPDATE_READ_ONLY: function UPDATE_READ_ONLY(state, readOnly) {
+	      state.readOnly = readOnly;
+	    },
 	    UPDATE_CURRENT_IMG_ID: function UPDATE_CURRENT_IMG_ID(state, id) {
 	      state.currentImgId = id;
 	    },
@@ -33772,6 +33776,7 @@
 	          if (state.maxImageListItems == -1) commit('SET_MAX_IMAGE_LIST_ITEMS', response.data.total_count);
 	          // Calling mutation
 	          commit('ADD_TO_LIST_ITEMS', response.data.items);
+	          // commit('UPDATE_READ_ONLY', response.data.readonly)
 
 	          // Hiding progess bar
 	          dispatch('overlayStore/showProgressOverlay', false, { root: true });
@@ -33791,12 +33796,14 @@
 	    },
 	    fetchSingleImage: function fetchSingleImage(_ref8, id) {
 	      var dispatch = _ref8.dispatch,
-	          rootDispatch = _ref8.rootDispatch;
+	          rootDispatch = _ref8.rootDispatch,
+	          commit = _ref8.commit;
 
 	      dispatch('overlayStore/showProgressOverlay', true, { root: true });
 	      return new Promise(function (resolve, reject) {
 	        _axios2.default.get('/images/' + id).then(function (response) {
-	          dispatch('setCurrentImg', response.data);
+	          // commit('UPDATE_READ_ONLY', response.data.readonly)
+	          dispatch('setCurrentImg', response.data.image);
 	          dispatch('overlayStore/showProgressOverlay', false, { root: true });
 	          resolve();
 	        }).catch(function () {
