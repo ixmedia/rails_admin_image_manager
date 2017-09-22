@@ -6,6 +6,8 @@
 module Paperclip
   class FilenameCleaner
     def call(filename)
+      filename = filename.parameterize
+
       if @invalid_character_regex
         filename = filename.gsub(@invalid_character_regex, "_").gsub("_", "-")
       else
