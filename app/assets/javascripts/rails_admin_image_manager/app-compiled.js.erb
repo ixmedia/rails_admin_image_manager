@@ -11605,8 +11605,12 @@
 	    name: 'createImage',
 	    component: _imageShow2.default,
 	    beforeEnter: function beforeEnter(to, from, next) {
+	      _stores2.default.dispatch('overlayStore/showProgressOverlay', true);
 	      _stores2.default.dispatch('mediasStore/clearCurrentImg');
-	      next();
+	      _stores2.default.dispatch('mediasStore/checkAddMediaPermission').then(next).catch(function () {
+	        _stores2.default.dispatch('overlayStore/showProgressOverlay', false);
+	        _stores2.default.dispatch('overlayStore/pushNotification', { error: true, msg: 'Vous n\'avez pas les permissions d\'ajouter un media' }, { root: true });
+	      });
 	    }
 	  }]
 	});
@@ -33841,45 +33845,55 @@
 	        dispatch('overlayStore/pushNotification', { error: true, msg: 'Problème lors de la supression de l\'image' }, { root: true });
 	      });
 	    });
-	  }), _defineProperty(_actions, 'setSearchPage', function setSearchPage(_ref12, page) {
+	  }), _defineProperty(_actions, 'checkAddMediaPermission', function checkAddMediaPermission(_ref12) {
 	    var commit = _ref12.commit;
 
-	    commit('SET_PAGE', page);
-	  }), _defineProperty(_actions, 'setSearchQuery', function setSearchQuery(_ref13, query) {
+	    return new Promise(function (resolve, reject) {
+	      _axios2.default.get('/new').then(function () {
+	        resolve();
+	      }).catch(function () {
+	        reject();
+	      });
+	    });
+	  }), _defineProperty(_actions, 'setSearchPage', function setSearchPage(_ref13, page) {
 	    var commit = _ref13.commit;
 
+	    commit('SET_PAGE', page);
+	  }), _defineProperty(_actions, 'setSearchQuery', function setSearchQuery(_ref14, query) {
+	    var commit = _ref14.commit;
+
 	    commit('SET_QUERY', query);
-	  }), _defineProperty(_actions, 'toggleFilter', function toggleFilter(_ref14, type) {
-	    var commit = _ref14.commit,
-	        state = _ref14.state;
+	  }), _defineProperty(_actions, 'toggleFilter', function toggleFilter(_ref15, type) {
+	    var commit = _ref15.commit,
+	        state = _ref15.state;
 
 	    var term = state.activeFilters[type] == 'ASC' ? 'DESC' : 'ASC';
 	    commit('SET_FILTER', [term, type]);
-	  }), _defineProperty(_actions, 'clearImgListing', function clearImgListing(_ref15) {
-	    var commit = _ref15.commit;
+	  }), _defineProperty(_actions, 'clearImgListing', function clearImgListing(_ref16) {
+	    var commit = _ref16.commit;
 
 	    commit('CLEAR_IMG_LISTING');
-	  }), _defineProperty(_actions, 'updateSrc', function updateSrc(_ref16, src) {
-	    var commit = _ref16.commit,
-	        state = _ref16.state;
-
-	    commit('UPDATE_CURRENT_IMG_SRC', src);
-	  }), _defineProperty(_actions, 'addToTagFilter', function addToTagFilter(_ref17, id) {
+	  }), _defineProperty(_actions, 'updateSrc', function updateSrc(_ref17, src) {
 	    var commit = _ref17.commit,
 	        state = _ref17.state;
 
-	    commit('ADD_TO_TAG_FILTERS', id);
-	  }), _defineProperty(_actions, 'removeFromTagFilter', function removeFromTagFilter(_ref18, id) {
+	    commit('UPDATE_CURRENT_IMG_SRC', src);
+	  }), _defineProperty(_actions, 'addToTagFilter', function addToTagFilter(_ref18, id) {
 	    var commit = _ref18.commit,
 	        state = _ref18.state;
 
+	    commit('ADD_TO_TAG_FILTERS', id);
+	  }), _defineProperty(_actions, 'removeFromTagFilter', function removeFromTagFilter(_ref19, id) {
+	    var commit = _ref19.commit,
+	        state = _ref19.state;
+
 	    commit('REMOVE_FROM_TAG_FILTERS', id);
-	  }), _defineProperty(_actions, 'addTag', function addTag(_ref19, string) {
-	    var commit = _ref19.commit;
+	  }), _defineProperty(_actions, 'addTag', function addTag(_ref20, string) {
+	    var commit = _ref20.commit;
 
 	    commit('ADD_CURRENT_IMG_TAG', string);
-	  }), _defineProperty(_actions, 'removeTag', function removeTag(_ref20, string) {
-	    var commit = _ref20.commit;
+	  }), _defineProperty(_actions, 'removeTag', function removeTag(_ref21, string) {
+	    var commit = _ref21.commit;
 
 	    commit('REMOVE_CURRENT_IMG_TAG', string);
 	  }), _actions)

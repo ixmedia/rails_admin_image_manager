@@ -286,6 +286,13 @@ const mediasStore = {
         })
       })
     },
+    checkAddMediaPermission({commit}) {
+      return new Promise(function(resolve, reject) {
+        axios.get(`/new`)
+        .then(() => { resolve() })
+        .catch(() => { reject() })
+      })
+    },
     setSearchPage({commit}, page) {
       commit('SET_PAGE', page)
     },

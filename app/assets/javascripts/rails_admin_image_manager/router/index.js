@@ -38,8 +38,12 @@ let router = new Router({
       name: 'createImage',
       component: imageShow,
       beforeEnter: (to, from, next) => {
+        store.dispatch('overlayStore/showProgressOverlay', true)
         store.dispatch('mediasStore/clearCurrentImg')
-        next()
+        store.dispatch('mediasStore/checkAddMediaPermission').then(next).catch(() => {
+          store.dispatch('overlayStore/showProgressOverlay', false)
+          store.dispatch('overlayStore/pushNotification', {error: true, msg: `Vous n'avez pas les permissions d'ajouter un media`}, {root:true})
+        })
       }
     }
   ]
