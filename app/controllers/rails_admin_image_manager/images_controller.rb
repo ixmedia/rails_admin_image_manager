@@ -34,6 +34,10 @@ module RailsAdminImageManager
       end
     end
 
+    def new
+      _check_permissions(:create)
+    end
+
     def show
       _check_permissions(:update)
 
