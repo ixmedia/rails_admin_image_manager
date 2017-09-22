@@ -18,7 +18,7 @@ module RailsAdminImageManager
             image.src = image.image.url(:index)
           end
 
-          data    = { items: images, total_count: images.total_count, limit_value: images.limit_value, readonly: !@authorization_adapter.authorized?(:update, file_model) }
+          data    = { items: images, total_count: images.total_count, limit_value: images.limit_value, readonly: readonly? }
 
           render json: data, methods: [:src, :tags_list], status: :ok
         }
@@ -46,7 +46,7 @@ module RailsAdminImageManager
       image.src             = image.image.url(:show)
       image.src_for_wysiwyg = {width: params[:width], height: params[:height]} if filter_by?(:width) && filter_by?(:height)
 
-      data                  = { image: image, readonly: !@authorization_adapter.authorized?(:update, file_model) }
+      data                  = { image: image, readonly: readonly? }
 
       render json: data, methods: [:src, :src_for_wysiwyg, :tags_list], status: :ok
     end
@@ -101,6 +101,13 @@ module RailsAdminImageManager
       else
         render json: image.errors, status: :unprocessable_entity
       end
+    end
+
+   private
+
+    def readonly?
+      return false if @authorization_adapter.nil?
+      !@authorization_adapter.authorized?(:update, file_model)
     end
 
     def images_params
