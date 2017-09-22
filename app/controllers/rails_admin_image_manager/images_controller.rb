@@ -36,6 +36,7 @@ module RailsAdminImageManager
 
     def new
       _check_permissions(:create)
+      render json: {msg: 'ok'}, status: :ok
     end
 
     def show
