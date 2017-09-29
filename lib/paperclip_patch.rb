@@ -6,7 +6,11 @@
 module Paperclip
   class FilenameCleaner
     def call(filename)
-      filename = filename.parameterize
+      # Dirty hack to keep the dot in the filename (it's removed by the parameterize function)
+      placeholder = '-p-l-a-c-e-h-o-l-d-e-r-'
+      filename.sub!('.', placeholder)
+      filename = filename.parameterize()
+      filename.sub!(placeholder, '.')
 
       if @invalid_character_regex
         filename = filename.gsub(@invalid_character_regex, "_").gsub("_", "-")
