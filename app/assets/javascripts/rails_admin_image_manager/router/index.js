@@ -30,7 +30,7 @@ let router = new Router({
           store.dispatch('overlayStore/showProgressOverlay', false)
           next()
         })
-        .catch((e) => { console.log(e); store.dispatch('overlayStore/showProgressOverlay', false); })
+        .catch((e) => { store.dispatch('overlayStore/showProgressOverlay', false); })
       }
     },
     {
