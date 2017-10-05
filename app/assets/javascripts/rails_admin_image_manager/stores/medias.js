@@ -129,7 +129,7 @@ const mediasStore = {
       // Generating new dynamic image size before sending it back to CKEDITOR
       axios.get(`/images/${state.currentImgId}?width=${data[0]}&height=${data[1]}`).then((response) => {
         dispatch('overlayStore/showProgressOverlay', false, {root:true})
-        window.opener.CKEDITOR.tools.callFunction(rootState.ckEditorStore.ckId, response.data.src_for_wysiwyg, state.currentImgId, state.currentImgTitle.replace(/"/g, '&quot;'));
+        window.opener.CKEDITOR.tools.callFunction(rootState.ckEditorStore.ckId, response.data.image.src_for_wysiwyg, state.currentImgId, state.currentImgTitle.replace(/"/g, '&quot;'));
         window.close()
       })
 
