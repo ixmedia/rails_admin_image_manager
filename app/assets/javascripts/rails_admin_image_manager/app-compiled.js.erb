@@ -34159,7 +34159,7 @@
 
 
 	// module
-	exports.push([module.id, "\n.image-insert-overlay {\n  box-shadow: 0 0 200px rgba(0, 0, 0, 0.5);\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%,-50%);\n          transform: translate(-50%,-50%);\n  width: 100%;\n  max-width: 475px;\n  z-index: 20;\n}\n.fade-enter-active, .fade-leave-active {\n  transition: opacity .5s\n}\n.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {\n  opacity: 0\n}\n.image-insert-overlay__close {\n  position: absolute;\n  top: 0;\n  right: 0;\n  background-color: transparent;\n  border: none;\n}\n", ""]);
+	exports.push([module.id, "\n.image-insert-overlay {\n  box-shadow: 0 0 200px rgba(0, 0, 0, 0.5);\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%,-50%);\n          transform: translate(-50%,-50%);\n  width: 100%;\n  max-width: 475px;\n  z-index: 20;\n  max-height: 100vh;\n  overflow-y: auto\n}\n.fade-enter-active, .fade-leave-active {\n  transition: opacity .5s\n}\n.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {\n  opacity: 0\n}\n.image-insert-overlay__close {\n  position: absolute;\n  top: 0;\n  right: 0;\n  background-color: transparent;\n  border: none;\n}\n", ""]);
 
 	// exports
 
