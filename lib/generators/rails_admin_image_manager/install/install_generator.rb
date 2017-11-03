@@ -17,6 +17,6 @@ module RailsAdminImageManager
         generate "dynamic_paperclip:install"
       end
 
+    end
   end
- end
 end

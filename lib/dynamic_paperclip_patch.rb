@@ -1,4 +1,21 @@
 module DynamicPaperclip
+  # Patch to avoid the following error :
+  # actionpack-5.1.4/lib/action_dispatch/middleware/stack.rb:35:in `build': undefined method `new' for "DynamicPaperclip::AttachmentStyleGenerator":String (NoMethodError). Did you mean? next
+  # https://github.com/mbouchard/dynamic_paperclip/commit/ad6c209cdd08efb202140faaa6aa647987726409
+  class Railtie < Rails::Railtie
+    initializer 'dynamic_paperclip_patch.insert_middleware' do |app|
+      app.config.middleware.use DynamicPaperclip::AttachmentStyleGenerator
+    end
+
+    config.before_configuration do
+      initializers.delete_if do |initializer|
+        true if initializer.name == 'dynamic_paperclip.insert_middleware'
+      end
+    end
+  end
+end
+
+module DynamicPaperclip
   class Attachment < Paperclip::Attachment
     def dynamic_url(definition)
       raise DynamicPaperclip::Errors::SecretNotSet, "No secret has been configured. Please run the dynamic_paperclip:install generator." unless DynamicPaperclip.config.secret.present?

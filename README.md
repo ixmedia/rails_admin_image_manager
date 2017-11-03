@@ -30,7 +30,7 @@ $ rails db:migrate SCOPE=rails_admin_image_manager
 
 6. Install the image manager CKEditor plugin
 ```bash
-touch app/assets/javascripts/ckeditor/config.js.erb
+mkdir -p app/assets/javascripts/ckeditor && touch app/assets/javascripts/ckeditor/config.js.erb
 echo "//= require 'rails_admin_image_manager/ckeditor_plugin'" | cat - app/assets/javascripts/ckeditor/config.js.erb > temp && mv temp app/assets/javascripts/ckeditor/config.js.erb
 ```
 
