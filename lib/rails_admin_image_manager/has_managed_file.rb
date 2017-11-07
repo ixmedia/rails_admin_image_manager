@@ -36,6 +36,11 @@ module RailsAdminImageManager
     def add_managed_file_before_validation(attribute, id)
       attr_accessor "#{id}_deselect"
 
+      define_method "#{id}_deselect=" do |val|
+        attribute_will_change!("#{id}_deselect") if val == '1'
+        instance_variable_set("@#{id}_deselect", val)
+      end
+
       before_validation { send("#{attribute}=", nil) if send("#{id}_deselect") == '1' }
     end
   end
