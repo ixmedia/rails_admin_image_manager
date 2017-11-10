@@ -109,7 +109,7 @@ end
 To display the image in a Rails template:
 
 ```html
-<img src="<%= image_url @mymodel.image_manager_file.dynamic_url('100x100') %>">
+<img src="<%= image_url @mymodel.image_manager_file.image.dynamic_url('100x100') %>">
 ```
 
 ## Development
