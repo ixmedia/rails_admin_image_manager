@@ -16876,8 +16876,9 @@
 	  return new Promise(function (resolve, reject) {
 	    var file = element.files[0];
 	    var reader = new FileReader();
+	    reader.fileName = file.name;
 	    reader.onloadend = function () {
-	      resolve(reader.result);
+	      resolve({ src: reader.result, name: reader.fileName });
 	    };
 	    reader.readAsDataURL(file);
 	  });
@@ -33211,9 +33212,11 @@
 	    encode: function encode(e) {
 	      var _this = this;
 
-	      (0, _helpers.encodeImageFileAsURL)(e.target).then(function (src) {
+	      (0, _helpers.encodeImageFileAsURL)(e.target).then(function (result) {
 	        if (_this.originalSrc != '') _this.showOriginal = true;
-	        _this.$store.dispatch('mediasStore/updateSrc', src);
+	        _this.$store.dispatch('mediasStore/updateSrc', result.src);
+	        console.log(result.name);
+	        _this.$store.dispatch('mediasStore/updateImageName', result.name);
 	      });
 	    },
 	    undo: function undo() {
@@ -33538,6 +33541,7 @@
 	    currentImgCopyright: "",
 	    currentImgDescription: "",
 	    currentImgSrc: "",
+	    currentImgName: "",
 	    currentImgTags: [],
 	    imageListItems: [],
 	    readOnly: false,
@@ -33567,6 +33571,9 @@
 	    },
 	    UPDATE_CURRENT_IMG_DESC: function UPDATE_CURRENT_IMG_DESC(state, desc) {
 	      state.currentImgDescription = desc;
+	    },
+	    UPDATE_CURRENT_IMG_NAME: function UPDATE_CURRENT_IMG_NAME(state, name) {
+	      state.currentImgName = name;
 	    },
 	    UPDATE_CURRENT_IMG_SRC: function UPDATE_CURRENT_IMG_SRC(state, src) {
 	      state.currentImgSrc = src;
@@ -33646,6 +33653,7 @@
 	        image: {
 	          id: state.currentImgId,
 	          name: state.currentImgTitle,
+	          image_file_name: state.currentImgName,
 	          copyright: state.currentImgCopyright,
 	          description: state.currentImgDescription,
 	          src: state.currentImgSrc,
@@ -33678,6 +33686,7 @@
 	      if (imgData.copyright != undefined) commit('UPDATE_CURRENT_IMG_COPYRIGHT', imgData.copyright);
 	      if (imgData.description != undefined) commit('UPDATE_CURRENT_IMG_DESC', imgData.description);
 	      if (imgData.src != undefined) commit('UPDATE_CURRENT_IMG_SRC', imgData.src);
+	      if (imgData.image_file_name != undefined) commit('UPDATE_CURRENT_IMG_NAME', imgData.image_file_name);
 	      if (imgData.tags_list != undefined) commit('UPDATE_CURRENT_IMG_TAGS', imgData.tags_list);
 	      if (imgData.errors != undefined) commit('SET_ERRORS', imgData.errors);
 	    },
@@ -33888,22 +33897,27 @@
 	        state = _ref17.state;
 
 	    commit('UPDATE_CURRENT_IMG_SRC', src);
-	  }), _defineProperty(_actions, 'addToTagFilter', function addToTagFilter(_ref18, id) {
+	  }), _defineProperty(_actions, 'updateImageName', function updateImageName(_ref18, name) {
 	    var commit = _ref18.commit,
 	        state = _ref18.state;
 
-	    commit('ADD_TO_TAG_FILTERS', id);
-	  }), _defineProperty(_actions, 'removeFromTagFilter', function removeFromTagFilter(_ref19, id) {
+	    commit('UPDATE_CURRENT_IMG_NAME', name);
+	  }), _defineProperty(_actions, 'addToTagFilter', function addToTagFilter(_ref19, id) {
 	    var commit = _ref19.commit,
 	        state = _ref19.state;
 
+	    commit('ADD_TO_TAG_FILTERS', id);
+	  }), _defineProperty(_actions, 'removeFromTagFilter', function removeFromTagFilter(_ref20, id) {
+	    var commit = _ref20.commit,
+	        state = _ref20.state;
+
 	    commit('REMOVE_FROM_TAG_FILTERS', id);
-	  }), _defineProperty(_actions, 'addTag', function addTag(_ref20, string) {
-	    var commit = _ref20.commit;
+	  }), _defineProperty(_actions, 'addTag', function addTag(_ref21, string) {
+	    var commit = _ref21.commit;
 
 	    commit('ADD_CURRENT_IMG_TAG', string);
-	  }), _defineProperty(_actions, 'removeTag', function removeTag(_ref21, string) {
-	    var commit = _ref21.commit;
+	  }), _defineProperty(_actions, 'removeTag', function removeTag(_ref22, string) {
+	    var commit = _ref22.commit;
 
 	    commit('REMOVE_CURRENT_IMG_TAG', string);
 	  }), _actions)

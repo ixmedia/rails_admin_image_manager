@@ -9,6 +9,7 @@ const mediasStore = {
     currentImgCopyright: "",
     currentImgDescription: "",
     currentImgSrc: "",
+    currentImgName: "",
     currentImgTags: [],
     imageListItems: [],
     readOnly: false,
@@ -38,6 +39,9 @@ const mediasStore = {
     },
     UPDATE_CURRENT_IMG_DESC (state, desc) {
       state.currentImgDescription = desc
+    },
+    UPDATE_CURRENT_IMG_NAME (state, name) {
+      state.currentImgName = name
     },
     UPDATE_CURRENT_IMG_SRC (state, src) {
       state.currentImgSrc = src
@@ -115,6 +119,7 @@ const mediasStore = {
         image: {
           id: state.currentImgId,
           name: state.currentImgTitle,
+          image_file_name: state.currentImgName,
           copyright: state.currentImgCopyright,
           description: state.currentImgDescription,
           src: state.currentImgSrc,
@@ -140,6 +145,7 @@ const mediasStore = {
       if (imgData.copyright != undefined) commit('UPDATE_CURRENT_IMG_COPYRIGHT', imgData.copyright)
       if (imgData.description != undefined) commit('UPDATE_CURRENT_IMG_DESC', imgData.description)
       if (imgData.src != undefined) commit('UPDATE_CURRENT_IMG_SRC', imgData.src)
+      if (imgData.image_file_name != undefined) commit('UPDATE_CURRENT_IMG_NAME', imgData.image_file_name)
       if (imgData.tags_list != undefined) commit('UPDATE_CURRENT_IMG_TAGS', imgData.tags_list)
       if (imgData.errors != undefined) commit('SET_ERRORS', imgData.errors)
     },
@@ -314,6 +320,9 @@ const mediasStore = {
     },
     updateSrc ({commit, state}, src) {
       commit('UPDATE_CURRENT_IMG_SRC', src)
+    },
+    updateImageName ({commit, state}, name) {
+      commit('UPDATE_CURRENT_IMG_NAME', name)
     },
     addToTagFilter({commit, state}, id) {
       commit('ADD_TO_TAG_FILTERS', id)

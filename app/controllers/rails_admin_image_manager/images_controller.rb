@@ -111,7 +111,7 @@ module RailsAdminImageManager
     end
 
     def images_params
-      params.require(:image).permit(:id, :name, :description, :copyright, :src, tags: [])
+      params.require(:image).permit(:id, :name, :description, :copyright, :src, :image_file_name, tags: [])
     end
   end
 end

@@ -39,9 +39,11 @@ export default {
   methods: {
     encode(e) {
       encodeImageFileAsURL(e.target)
-      .then((src) => {
+      .then((result) => {
         if (this.originalSrc != '') this.showOriginal = true
-        this.$store.dispatch('mediasStore/updateSrc', src)
+        this.$store.dispatch('mediasStore/updateSrc', result.src)
+        console.log(result.name)
+        this.$store.dispatch('mediasStore/updateImageName', result.name)
       })
     },
     undo() {
