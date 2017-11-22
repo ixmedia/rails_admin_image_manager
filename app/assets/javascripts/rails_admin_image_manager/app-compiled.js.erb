@@ -33215,7 +33215,6 @@
 	      (0, _helpers.encodeImageFileAsURL)(e.target).then(function (result) {
 	        if (_this.originalSrc != '') _this.showOriginal = true;
 	        _this.$store.dispatch('mediasStore/updateSrc', result.src);
-	        console.log(result.name);
 	        _this.$store.dispatch('mediasStore/updateImageName', result.name);
 	      });
 	    },
