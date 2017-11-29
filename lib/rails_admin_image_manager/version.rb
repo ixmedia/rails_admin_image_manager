@@ -1,3 +1,3 @@
 module RailsAdminImageManager
-  VERSION = '0.1.29'
+  VERSION = '0.1.3'
 end
