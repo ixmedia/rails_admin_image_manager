@@ -32,7 +32,7 @@ export default {
     filteredTags() {
       if (this.fuseSearch) {
         return this.fuseSearch.search(this.searchFor);
-      }else {
+      } else {
         return []
       }
 
@@ -47,7 +47,10 @@ export default {
       } else if (e.key == 'Enter') {
         this.$store.dispatch('mediasStore/setSearchQuery', this.query)
         this.$store.dispatch('mediasStore/clearImgListing')
+        this.$store.dispatch('mediasStore/setSearchPage', 1)
         this.$store.dispatch('mediasStore/fetchImage')
+        console.log('search');
+        this.query = ""
       } else if((e.key == 'Backspace' || e.key == 'Meta') && this.query == '' && this.activeFilters.search != '') {
         this.clearSearch()
       }
