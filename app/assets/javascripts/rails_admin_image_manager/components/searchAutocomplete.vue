@@ -3,10 +3,16 @@
     <div class="search-autocomplete__input">
       <input @keyup.prevent="fuzzySearch" class="form-control" v-model="query" type="text"  placeholder="Rechercher par titre ou étiquette ...">
       <div class="search-autocomplete__tags-list">
-        <span @click="selectedTagIndex = index; selectTag()" :class="[{'active': isActive(index)}, 'search-autocomplete__tag']" v-for="(tag,index) in filteredTags">{{tag.name}}</span>
+        <span @click="selectedTagIndex = index; selectTag()" :class="[{'active': isActive(index)}, 'search-autocomplete__tag']" v-for="(tag,index) in filteredTags">
+          <small>étiquette: </small>{{tag.name}}
+        </span>
       </div>
     </div>
-    <span @click="deselectTag(activeTag)" class="label label-primary search-autocomplete__selected-tag" v-for="activeTag in activeFilters.tags">{{getTagFromId(activeTag)}}</span>
+    <span @click="deselectTag(activeTag)" class="label label-primary search-autocomplete__selected-tag" v-for="activeTag in activeFilters.tags">{{getTagFromId(activeTag)}}<i class="fa fa-times"></i></span>
+    <div class="search-autocomplete__searched-term" v-if="searchedTerm">
+      <span>Recherche pour: <strong>{{ searchedTerm }}</strong></span><br>
+      <button type="button" @click="clearSearch" class="search-autocomplete__clear-search font-s12 primary">supprimer</button>
+    </div>
   </div>
 
 </template>
@@ -19,7 +25,8 @@ export default {
     return {
       query: '',
       fuseSearch: null,
-      selectedTagIndex: -1
+      selectedTagIndex: -1,
+      searchedTerm: ''
     }
   },
   computed: {
@@ -45,18 +52,20 @@ export default {
       } else if (e.key == 'Enter' && this.selectedTagIndex >= 0) {
         this.selectTag()
       } else if (e.key == 'Enter') {
-        this.$store.dispatch('mediasStore/setSearchQuery', this.query)
+        this.searchedTerm = this.query
+        this.$store.dispatch('mediasStore/setSearchQuery', this.searchedTerm)
         this.$store.dispatch('mediasStore/clearImgListing')
         this.$store.dispatch('mediasStore/setSearchPage', 1)
         this.$store.dispatch('mediasStore/fetchImage')
-        console.log('search');
         this.query = ""
-      } else if((e.key == 'Backspace' || e.key == 'Meta') && this.query == '' && this.activeFilters.search != '') {
+      } else if((e.key == 'Backspace' || e.key == 'Meta') && this.searchedTerm  == '' && this.activeFilters.search != '') {
         this.clearSearch()
       }
     },
     clearSearch() {
+      this.searchedTerm = ''
       this.$store.dispatch('mediasStore/setSearchQuery', '')
+      this.$store.dispatch('mediasStore/setSearchPage', 1)
       this.$store.dispatch('mediasStore/clearImgListing')
       this.$store.dispatch('mediasStore/fetchImage')
     },
@@ -72,7 +81,6 @@ export default {
       let queryArray = query.split(' ').reverse()
       queryArray[0] = this.filteredTags[this.selectedTagIndex].name
       let newQuery = queryArray.reverse().join(' ')
-      this.$store.dispatch('mediasStore/setSearchQuery', '')
       this.$store.dispatch('mediasStore/setSearchPage', 1)
       this.$store.dispatch('mediasStore/clearImgListing')
       this.$store.dispatch('mediasStore/addToTagFilter', this.filteredTags[this.selectedTagIndex].id)
@@ -82,6 +90,7 @@ export default {
     },
     deselectTag(id){
       this.$store.dispatch('mediasStore/clearImgListing')
+      this.$store.dispatch('mediasStore/setSearchPage', 1)
       this.$store.dispatch('mediasStore/removeFromTagFilter', id)
       this.$store.dispatch('mediasStore/fetchImage')
     },
@@ -108,8 +117,17 @@ export default {
     margin: 3px
     position: relative
     cursor: pointer
+    font-size: 14px
+    padding-right: 14px
+
     &:first-of-type
       margin-left: 0
+
+    i
+      font-size: 10px
+      position: absolute
+      top: 1px
+      right: 2px
 
   .search-autocomplete__input
     position: relative
@@ -137,4 +155,30 @@ export default {
     &.active
       background-color: #5c90d2
       color: white
+
+    small
+      color: #c9c9c9
+      font-size: 11px
+
+  .search-autocomplete__searched-term
+    display: block
+    margin-top: 10px
+    font-size: 12px
+    strong
+      font-size: 14px
+      position: relative
+      font-weight: bold
+      padding-left: 10px
+      padding-right: 14px
+      display: inline-block
+
+  .search-autocomplete__clear-search
+    color: #5c90d2
+    display: block
+    cursor: pointer
+    outline: none
+    background: transparent
+    border: none
+    padding: 0
+
 </style>

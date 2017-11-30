@@ -16107,7 +16107,7 @@
 
 
 	// module
-	exports.push([module.id, "\n.search-autocomplete__selected-tag {\n  display: -webkit-inline-box;\n  display: -ms-inline-flexbox;\n  display: inline-flex;\n  margin: 3px;\n  position: relative;\n  cursor: pointer;\n}\n.search-autocomplete__selected-tag:first-of-type {\n    margin-left: 0;\n}\n.search-autocomplete__input {\n  position: relative;\n}\n.search-autocomplete {\n  width: 100%;\n  position: relative;\n}\n.search-autocomplete__tags-list {\n  position: absolute;\n  top: 100%;\n  width: 100%;\n  z-index: 100;\n  background-color: white;\n  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);\n}\n.search-autocomplete__tag {\n  display: block;\n  padding: 5px;\n  transition: all 200ms linear;\n  cursor: pointer;\n}\n.search-autocomplete__tag:hover {\n    background-color: #ededed;\n}\n.search-autocomplete__tag.active {\n    background-color: #5c90d2;\n    color: white;\n}\n", ""]);
+	exports.push([module.id, "\n.search-autocomplete__selected-tag {\n  display: -webkit-inline-box;\n  display: -ms-inline-flexbox;\n  display: inline-flex;\n  margin: 3px;\n  position: relative;\n  cursor: pointer;\n  font-size: 14px;\n  padding-right: 14px;\n}\n.search-autocomplete__selected-tag:first-of-type {\n    margin-left: 0;\n}\n.search-autocomplete__selected-tag i {\n    font-size: 10px;\n    position: absolute;\n    top: 1px;\n    right: 2px;\n}\n.search-autocomplete__input {\n  position: relative;\n}\n.search-autocomplete {\n  width: 100%;\n  position: relative;\n}\n.search-autocomplete__tags-list {\n  position: absolute;\n  top: 100%;\n  width: 100%;\n  z-index: 100;\n  background-color: white;\n  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);\n}\n.search-autocomplete__tag {\n  display: block;\n  padding: 5px;\n  transition: all 200ms linear;\n  cursor: pointer;\n}\n.search-autocomplete__tag:hover {\n    background-color: #ededed;\n}\n.search-autocomplete__tag.active {\n    background-color: #5c90d2;\n    color: white;\n}\n.search-autocomplete__tag small {\n    color: #c9c9c9;\n    font-size: 11px;\n}\n.search-autocomplete__searched-term {\n  display: block;\n  margin-top: 10px;\n  font-size: 12px;\n}\n.search-autocomplete__searched-term strong {\n    font-size: 14px;\n    position: relative;\n    font-weight: bold;\n    padding-left: 10px;\n    padding-right: 14px;\n    display: inline-block;\n}\n.search-autocomplete__clear-search {\n  color: #5c90d2;\n  display: block;\n  cursor: pointer;\n  outline: none;\n  background: transparent;\n  border: none;\n  padding: 0;\n}\n", ""]);
 
 	// exports
 
@@ -16135,6 +16135,12 @@
 	//
 	//
 	//
+	//
+	//
+	//
+	//
+	//
+	//
 
 	var _vuex = __webpack_require__(44);
 
@@ -16149,7 +16155,8 @@
 	    return {
 	      query: '',
 	      fuseSearch: null,
-	      selectedTagIndex: -1
+	      selectedTagIndex: -1,
+	      searchedTerm: ''
 	    };
 	  },
 
@@ -16174,18 +16181,20 @@
 	      } else if (e.key == 'Enter' && this.selectedTagIndex >= 0) {
 	        this.selectTag();
 	      } else if (e.key == 'Enter') {
-	        this.$store.dispatch('mediasStore/setSearchQuery', this.query);
+	        this.searchedTerm = this.query;
+	        this.$store.dispatch('mediasStore/setSearchQuery', this.searchedTerm);
 	        this.$store.dispatch('mediasStore/clearImgListing');
 	        this.$store.dispatch('mediasStore/setSearchPage', 1);
 	        this.$store.dispatch('mediasStore/fetchImage');
-	        console.log('search');
 	        this.query = "";
-	      } else if ((e.key == 'Backspace' || e.key == 'Meta') && this.query == '' && this.activeFilters.search != '') {
+	      } else if ((e.key == 'Backspace' || e.key == 'Meta') && this.searchedTerm == '' && this.activeFilters.search != '') {
 	        this.clearSearch();
 	      }
 	    },
 	    clearSearch: function clearSearch() {
+	      this.searchedTerm = '';
 	      this.$store.dispatch('mediasStore/setSearchQuery', '');
+	      this.$store.dispatch('mediasStore/setSearchPage', 1);
 	      this.$store.dispatch('mediasStore/clearImgListing');
 	      this.$store.dispatch('mediasStore/fetchImage');
 	    },
@@ -16201,7 +16210,6 @@
 	      var queryArray = query.split(' ').reverse();
 	      queryArray[0] = this.filteredTags[this.selectedTagIndex].name;
 	      var newQuery = queryArray.reverse().join(' ');
-	      this.$store.dispatch('mediasStore/setSearchQuery', '');
 	      this.$store.dispatch('mediasStore/setSearchPage', 1);
 	      this.$store.dispatch('mediasStore/clearImgListing');
 	      this.$store.dispatch('mediasStore/addToTagFilter', this.filteredTags[this.selectedTagIndex].id);
@@ -16211,6 +16219,7 @@
 	    },
 	    deselectTag: function deselectTag(id) {
 	      this.$store.dispatch('mediasStore/clearImgListing');
+	      this.$store.dispatch('mediasStore/setSearchPage', 1);
 	      this.$store.dispatch('mediasStore/removeFromTagFilter', id);
 	      this.$store.dispatch('mediasStore/fetchImage');
 	    },
@@ -16614,7 +16623,7 @@
 	          _vm.selectTag()
 	        }
 	      }
-	    }, [_vm._v(_vm._s(tag.name))])
+	    }, [_c('small', [_vm._v("étiquette: ")]), _vm._v(_vm._s(tag.name) + "\n      ")])
 	  }))]), _vm._v(" "), _vm._l((_vm.activeFilters.tags), function(activeTag) {
 	    return _c('span', {
 	      staticClass: "label label-primary search-autocomplete__selected-tag",
@@ -16623,8 +16632,20 @@
 	          _vm.deselectTag(activeTag)
 	        }
 	      }
-	    }, [_vm._v(_vm._s(_vm.getTagFromId(activeTag)))])
-	  })], 2)
+	    }, [_vm._v(_vm._s(_vm.getTagFromId(activeTag))), _c('i', {
+	      staticClass: "fa fa-times"
+	    })])
+	  }), _vm._v(" "), (_vm.searchedTerm) ? _c('div', {
+	    staticClass: "search-autocomplete__searched-term"
+	  }, [_c('span', [_vm._v("Recherche pour: "), _c('strong', [_vm._v(_vm._s(_vm.searchedTerm))])]), _c('br'), _vm._v(" "), _c('button', {
+	    staticClass: "search-autocomplete__clear-search font-s12 primary",
+	    attrs: {
+	      "type": "button"
+	    },
+	    on: {
+	      "click": _vm.clearSearch
+	    }
+	  }, [_vm._v("supprimer")])]) : _vm._e()], 2)
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 	if (false) {
