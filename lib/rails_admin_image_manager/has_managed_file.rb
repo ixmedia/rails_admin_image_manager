@@ -27,9 +27,9 @@ module RailsAdminImageManager
 
     def add_managed_file_belongs_to(attribute, mandatory)
       if Rails.version.to_i >= 5
-        belongs_to attribute, class_name: “RailsAdminImageManager::File”, optional: !mandatory
+        belongs_to attribute, class_name: "RailsAdminImageManager::File", optional: !mandatory
       else
-        belongs_to attribute, class_name: “RailsAdminImageManager::File”, required: mandatory
+        belongs_to attribute, class_name: "RailsAdminImageManager::File", required: mandatory
       end
     end
 
