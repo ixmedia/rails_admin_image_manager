@@ -9,7 +9,7 @@ module RailsAdminImageManager
       if var_options_value.nil?
         instance_variable_set(var_options_name, options)
 
-        add_managed_file_belongs_to(attribute)
+        add_managed_file_belongs_to(attribute, managed_file_options_mandatory(options))
         add_managed_file_validates_presence_of(id) if managed_file_options_mandatory(options)
         add_managed_file_before_validation(attribute, id) unless managed_file_options_mandatory(options)
       end
@@ -25,8 +25,12 @@ module RailsAdminImageManager
       options.key?(:mandatory) && options[:mandatory] == true ? true : false
     end
 
-    def add_managed_file_belongs_to(attribute)
-      belongs_to attribute, class_name: "RailsAdminImageManager::File"
+    def add_managed_file_belongs_to(attribute, mandatory)
+      if Rails.version.to_i >= 5
+        belongs_to attribute, class_name: “RailsAdminImageManager::File”, optional: !mandatory
+      else
+        belongs_to attribute, class_name: “RailsAdminImageManager::File”, required: mandatory
+      end
     end
 
     def add_managed_file_validates_presence_of(id)
