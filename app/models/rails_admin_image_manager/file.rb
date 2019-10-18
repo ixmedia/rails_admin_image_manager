@@ -17,13 +17,17 @@ module RailsAdminImageManager
     attr_accessor :src_for_wysiwyg
 
     # == Callbacks ============================================================
+
     before_validation :decode_base64_image
+
+    before_save :delete_image_folder
 
     # == Relationships ========================================================
 
     has_and_belongs_to_many :tags, class_name: 'RailsAdminImageManager::Tag', join_table: 'image_manager_files_tags', foreign_key: :image_manager_file_id, association_foreign_key: :image_manager_tag_id
 
     accepts_nested_attributes_for :tags
+
     # == Validations ==========================================================
 
     validates_presence_of :name
@@ -54,6 +58,10 @@ module RailsAdminImageManager
         new_image.original_filename = image_file_name
         self.image = new_image
       end
+    end
+
+    def delete_image_folder
+      FileUtils.rm_rf(::File.dirname(image.path(:original))+'/../') if (self.changes.key?('image_file_name') && self.changes.key?('image_file_size'))
     end
 
     def src_for_wysiwyg=(params)
