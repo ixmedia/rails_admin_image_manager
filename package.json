@@ -38,7 +38,7 @@
     "npm": ">= 3.0.0"
   },
   "dependencies": {
-    "axios": "^0.16.2",
+    "axios": "^0.21.1",
     "vue": "^2.3.2",
     "vue-axios": "^2.0.2",
     "vue-router": "^2.7.0",
