@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
   s.add_dependency "rails",             "~> 5.0", ">= 5.0.2"
-  s.add_dependency "rails_admin",       "~> 1.1", ">= 1.1.1"
+  s.add_dependency "rails_admin",       ">= 1.1.1", "< 3.0"
   s.add_dependency "ckeditor",          "~> 4.2", ">= 4.2.3"
   s.add_dependency "paperclip",         "~> 5.1", ">= 5.1.0"
   s.add_dependency "dynamic_paperclip", ">= 1.0.0.alpha.4"
